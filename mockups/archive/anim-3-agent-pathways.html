@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digixr — Animation 3: Agent Decision Pathways</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #FAFCFD; color: #2D3436; overflow-x: hidden; }
+
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(250,252,253,0.88); backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(226,232,240,0.6);
+      padding: 16px 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo-text { font-size: 22px; font-weight: 700; letter-spacing: 0.12em; background: linear-gradient(135deg, #4CC9D0, #42C68B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .logo-sub { font-size: 10px; letter-spacing: 0.3em; color: #A0AEC0; font-weight: 500; }
+    .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+    .nav-links a { text-decoration: none; color: #4A5568; font-size: 15px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #3BBFA6; }
+    .nav-cta { background: linear-gradient(135deg, #4CC9D0, #42C68B); color: white !important; padding: 10px 24px; border-radius: 10px; font-weight: 600 !important; box-shadow: 0 4px 14px rgba(66,198,139,0.25); }
+
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; padding-top: 80px;
+    }
+    #canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+
+    .hero-content {
+      position: relative; z-index: 10; text-align: center; max-width: 880px; padding: 0 32px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.85); border: 1px solid rgba(76,201,208,0.2);
+      border-radius: 100px; padding: 8px 20px; font-size: 14px; font-weight: 500;
+      color: #2BA8B0; margin-bottom: 32px; backdrop-filter: blur(10px);
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .hero-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #42C68B; animation: bpulse 2s infinite; }
+    .hero-headline {
+      font-size: 72px; font-weight: 800; line-height: 1.05; letter-spacing: -0.03em;
+      margin-bottom: 24px; animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+    }
+    .hero-headline .gradient {
+      background: linear-gradient(135deg, #4CC9D0 0%, #3BBFA6 50%, #42C68B 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-family: 'Inter'; font-size: 19px; line-height: 1.65; color: #718096;
+      max-width: 580px; margin: 0 auto 40px;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+    }
+    .hero-ctas {
+      display: flex; gap: 16px; justify-content: center;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #4CC9D0, #42C68B); color: white;
+      font-family: 'Plus Jakarta Sans'; font-size: 16px; font-weight: 600;
+      padding: 16px 38px; border-radius: 14px; border: none; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(66,198,139,0.3); transition: all 0.3s;
+    }
+    .btn-primary:hover { box-shadow: 0 8px 28px rgba(66,198,139,0.4); transform: translateY(-2px); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.7); color: #3BBFA6;
+      font-family: 'Plus Jakarta Sans'; font-size: 16px; font-weight: 600;
+      padding: 16px 38px; border-radius: 14px; border: 1.5px solid rgba(59,191,166,0.25);
+      cursor: pointer; transition: all 0.3s; backdrop-filter: blur(8px);
+    }
+    .btn-secondary:hover { background: rgba(59,191,166,0.06); border-color: #3BBFA6; }
+
+    .mockup-label {
+      position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 200;
+      background: #2D3436; color: white; padding: 8px 20px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .mockup-label span { color: #42C68B; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes bpulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  </style>
+</head>
+<body>
+
+  <div class="mockup-label">ANIMATION 3 — <span>Agent Decision Pathways (Hexagonal grid + roaming agents)</span></div>
+
+  <nav class="navbar">
+    <div><div class="logo-text">DIGIXR</div><div class="logo-sub">TECHNOLOGIES</div></div>
+    <ul class="nav-links">
+      <li><a href="#">Services</a></li><li><a href="#">Case Studies</a></li>
+      <li><a href="#">Playground</a></li><li><a href="#">Insights</a></li>
+      <li><a href="#">About</a></li><li><a href="#" class="nav-cta">Talk to Agent</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <canvas id="canvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="dot"></span> Agentic AI Native Organization</div>
+      <h1 class="hero-headline">We Don't Just Build<br><span class="gradient">AI Agents.</span><br>We Are Built By Them.</h1>
+      <p class="hero-sub">Digixr Technologies deploys autonomous AI agents that power operations, accelerate delivery, and transform your business from the inside out.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary">Talk to Our Agent →</button>
+        <button class="btn-secondary">Explore Services</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /*
+     * AGENT DECISION PATHWAYS
+     * -----------------------
+     * A subtle hexagonal grid of nodes covers the viewport.
+     * "Agent" dots roam across the grid, choosing paths at each node (decision points).
+     * When an agent arrives at a node, the node lights up briefly.
+     * The path the agent took glows and fades.
+     * Mouse proximity causes nearby hex nodes to brighten (awareness radius).
+     * Multiple agents roam simultaneously with different brand colors.
+     */
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    let hexNodes = [], agents = [];
+    let mouse = { x: -9999, y: -9999 };
+
+    const HEX_SIZE = 55;
+    const AGENT_COUNT = 6;
+
+    function brandLerp(t) {
+      return {
+        r: Math.round(76 + t * (66 - 76)),
+        g: Math.round(201 + t * (198 - 201)),
+        b: Math.round(208 + t * (139 - 208)),
+      };
+    }
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      buildGrid();
+      buildAgents();
+    }
+
+    function buildGrid() {
+      hexNodes = [];
+      const hGap = HEX_SIZE * 1.75;
+      const vGap = HEX_SIZE * 1.52;
+
+      for (let row = -1; row * vGap < H + vGap; row++) {
+        for (let col = -1; col * hGap < W + hGap; col++) {
+          const offset = row % 2 === 0 ? 0 : hGap * 0.5;
+          const x = col * hGap + offset;
+          const y = row * vGap;
+          hexNodes.push({
+            x, y,
+            brightness: 0,
+            neighbors: [],
+          });
+        }
+      }
+
+      // Find neighbors (within ~2x hex size)
+      for (let i = 0; i < hexNodes.length; i++) {
+        for (let j = i + 1; j < hexNodes.length; j++) {
+          const d = Math.sqrt((hexNodes[i].x - hexNodes[j].x) ** 2 + (hexNodes[i].y - hexNodes[j].y) ** 2);
+          if (d < HEX_SIZE * 2.1 && d > HEX_SIZE * 0.5) {
+            hexNodes[i].neighbors.push(j);
+            hexNodes[j].neighbors.push(i);
+          }
+        }
+      }
+    }
+
+    function buildAgents() {
+      agents = [];
+      for (let i = 0; i < AGENT_COUNT; i++) {
+        const startIdx = Math.floor(Math.random() * hexNodes.length);
+        const t = i / (AGENT_COUNT - 1);
+        const col = brandLerp(t);
+        agents.push({
+          currentNode: startIdx,
+          targetNode: -1,
+          x: hexNodes[startIdx].x,
+          y: hexNodes[startIdx].y,
+          progress: 1,
+          speed: 0.008 + Math.random() * 0.006,
+          color: col,
+          trail: [],
+          size: 4 + Math.random() * 2,
+        });
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Draw hex grid connections (very faint)
+      for (let i = 0; i < hexNodes.length; i++) {
+        const n = hexNodes[i];
+        for (const j of n.neighbors) {
+          if (j > i) {
+            const n2 = hexNodes[j];
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(n2.x, n2.y);
+            const baseBright = Math.max(n.brightness, n2.brightness);
+            ctx.strokeStyle = `rgba(76,201,208,${0.025 + baseBright * 0.08})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw hex nodes
+      for (const n of hexNodes) {
+        // Mouse awareness
+        const dx = mouse.x - n.x, dy = mouse.y - n.y;
+        const mDist = Math.sqrt(dx * dx + dy * dy);
+        if (mDist < 180) {
+          n.brightness = Math.max(n.brightness, 0.6 * (1 - mDist / 180));
+        }
+
+        const alpha = 0.08 + n.brightness * 0.5;
+        const size = 2 + n.brightness * 3;
+
+        if (n.brightness > 0.1) {
+          // Glow
+          const glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 14 + n.brightness * 10);
+          glow.addColorStop(0, `rgba(76,201,208,${n.brightness * 0.15})`);
+          glow.addColorStop(1, 'rgba(76,201,208,0)');
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 14 + n.brightness * 10, 0, Math.PI * 2);
+          ctx.fillStyle = glow;
+          ctx.fill();
+        }
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(76,201,208,${alpha})`;
+        ctx.fill();
+
+        // Decay
+        n.brightness *= 0.96;
+      }
+
+      // Update and draw agents
+      for (const agent of agents) {
+        if (agent.progress >= 1) {
+          // Arrived at node — pick next
+          agent.currentNode = agent.targetNode >= 0 ? agent.targetNode : agent.currentNode;
+          hexNodes[agent.currentNode].brightness = 1;
+
+          const neighbors = hexNodes[agent.currentNode].neighbors;
+          if (neighbors.length > 0) {
+            agent.targetNode = neighbors[Math.floor(Math.random() * neighbors.length)];
+            agent.progress = 0;
+            agent.fromX = agent.x;
+            agent.fromY = agent.y;
+          }
+        }
+
+        if (agent.targetNode >= 0 && agent.progress < 1) {
+          agent.progress += agent.speed;
+          const target = hexNodes[agent.targetNode];
+
+          // Ease in-out
+          const t = agent.progress;
+          const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+          agent.x = agent.fromX + (target.x - agent.fromX) * ease;
+          agent.y = agent.fromY + (target.y - agent.fromY) * ease;
+
+          // Add trail point
+          agent.trail.push({ x: agent.x, y: agent.y, age: 0 });
+        }
+
+        // Draw trail
+        for (let t = agent.trail.length - 1; t >= 0; t--) {
+          const tp = agent.trail[t];
+          tp.age += 0.015;
+          if (tp.age > 1) { agent.trail.splice(t, 1); continue; }
+          const alpha = (1 - tp.age) * 0.35;
+          const size = (1 - tp.age) * 2.5;
+          ctx.beginPath();
+          ctx.arc(tp.x, tp.y, size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${agent.color.r},${agent.color.g},${agent.color.b},${alpha})`;
+          ctx.fill();
+        }
+
+        // Agent glow
+        const aGlow = ctx.createRadialGradient(agent.x, agent.y, 0, agent.x, agent.y, 22);
+        aGlow.addColorStop(0, `rgba(${agent.color.r},${agent.color.g},${agent.color.b},0.25)`);
+        aGlow.addColorStop(1, `rgba(${agent.color.r},${agent.color.g},${agent.color.b},0)`);
+        ctx.beginPath();
+        ctx.arc(agent.x, agent.y, 22, 0, Math.PI * 2);
+        ctx.fillStyle = aGlow;
+        ctx.fill();
+
+        // Agent core
+        ctx.beginPath();
+        ctx.arc(agent.x, agent.y, agent.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${agent.color.r},${agent.color.g},${agent.color.b},0.85)`;
+        ctx.fill();
+
+        // White center
+        ctx.beginPath();
+        ctx.arc(agent.x, agent.y, agent.size * 0.35, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.fill();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    canvas.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener('resize', resize);
+    resize();
+    animate();
+  </script>
+</body>
+</html>

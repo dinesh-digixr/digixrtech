@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digixr — Agent Network Animation v2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #FAFCFD; color: #2D3436; overflow-x: hidden; }
+
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(250,252,253,0.88); backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(226,232,240,0.6);
+      padding: 16px 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo-wrap { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { height: 40px; width: auto; }
+    .logo-text { font-size: 22px; font-weight: 700; letter-spacing: 0.12em; background: linear-gradient(135deg, #4CC9D0, #42C68B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .logo-sub { font-size: 10px; letter-spacing: 0.3em; color: #A0AEC0; font-weight: 500; }
+    .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+    .nav-links a { text-decoration: none; color: #4A5568; font-size: 15px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #3BBFA6; }
+    .nav-cta { background: linear-gradient(135deg, #4CC9D0, #42C68B); color: white !important; padding: 10px 24px; border-radius: 10px; font-weight: 600 !important; box-shadow: 0 4px 14px rgba(66,198,139,0.25); }
+
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; padding-top: 80px;
+    }
+    #canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+
+    .hero-content {
+      position: relative; z-index: 10; text-align: center; max-width: 880px; padding: 0 32px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.85); border: 1px solid rgba(76,201,208,0.2);
+      border-radius: 100px; padding: 8px 20px; font-size: 14px; font-weight: 500;
+      color: #2BA8B0; margin-bottom: 32px; backdrop-filter: blur(10px);
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .hero-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #42C68B; animation: pulse 2s infinite; }
+    .hero-headline {
+      font-size: 72px; font-weight: 800; line-height: 1.05; letter-spacing: -0.03em;
+      margin-bottom: 24px; animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+    }
+    .hero-headline .gradient {
+      background: linear-gradient(135deg, #4CC9D0 0%, #3BBFA6 50%, #42C68B 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-family: 'Inter'; font-size: 19px; line-height: 1.65; color: #718096;
+      max-width: 580px; margin: 0 auto 40px;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+    }
+    .hero-ctas {
+      display: flex; gap: 16px; justify-content: center;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #4CC9D0, #42C68B); color: white;
+      font-family: 'Plus Jakarta Sans'; font-size: 16px; font-weight: 600;
+      padding: 16px 38px; border-radius: 14px; border: none; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(66,198,139,0.3); transition: all 0.3s;
+    }
+    .btn-primary:hover { box-shadow: 0 8px 28px rgba(66,198,139,0.4); transform: translateY(-2px); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.7); color: #3BBFA6;
+      font-family: 'Plus Jakarta Sans'; font-size: 16px; font-weight: 600;
+      padding: 16px 38px; border-radius: 14px; border: 1.5px solid rgba(59,191,166,0.25);
+      cursor: pointer; transition: all 0.3s; backdrop-filter: blur(8px);
+    }
+    .btn-secondary:hover { background: rgba(59,191,166,0.06); border-color: #3BBFA6; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* ─── Tablet ─── */
+    @media (max-width: 1024px) {
+      .navbar { padding: 14px 32px; }
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 14px; }
+      .hero-headline { font-size: 52px; }
+      .hero-sub { font-size: 17px; max-width: 480px; }
+      .hero-content { max-width: 600px; }
+    }
+
+    /* ─── Mobile ─── */
+    @media (max-width: 768px) {
+      .navbar { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .logo-icon { height: 32px; }
+      .logo-wrap { gap: 8px; }
+      .hero { padding-top: 70px; }
+      .hero-content { max-width: 100%; padding: 0 48px; }
+      .hero-badge { font-size: 12px; padding: 6px 14px; margin-bottom: 20px; }
+      .hero-headline { font-size: 34px; margin-bottom: 16px; }
+      .hero-sub { font-size: 15px; line-height: 1.55; max-width: 320px; margin-bottom: 28px; }
+      .hero-ctas { flex-direction: column; align-items: center; gap: 12px; }
+      .btn-primary, .btn-secondary { padding: 14px 32px; font-size: 15px; width: 100%; max-width: 280px; }
+    }
+
+    /* ─── Small mobile ─── */
+    @media (max-width: 480px) {
+      .hero-content { padding: 0 36px; }
+      .hero-headline { font-size: 28px; }
+      .hero-sub { font-size: 14px; max-width: 260px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo-wrap">
+      <img src="../image/logo/logo-symbol-dark.png" alt="Digixr" class="logo-icon">
+      <div><div class="logo-text">DIGIXR</div><div class="logo-sub">TECHNOLOGIES</div></div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">Services</a></li><li><a href="#">Case Studies</a></li>
+      <li><a href="#">Playground</a></li><li><a href="#">Insights</a></li>
+      <li><a href="#">About</a></li><li><a href="#" class="nav-cta">Talk to Agent</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <canvas id="canvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="dot"></span> Agentic AI Native Organization</div>
+      <h1 class="hero-headline">We Don't Just Build<br><span class="gradient">AI Agents.</span><br>We Are Built By Them.</h1>
+      <p class="hero-sub">Digixr Technologies deploys autonomous AI agents that power operations, accelerate delivery, and transform your business from the inside out.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary">Talk to Our Agent →</button>
+        <button class="btn-secondary">Explore Services</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    let mouse = { x: -9999, y: -9999 };
+
+    /* ─── Brand palette ─── */
+    const CYAN    = { r: 76,  g: 201, b: 208 };
+    const TEAL    = { r: 59,  g: 191, b: 166 };
+    const EMERALD = { r: 66,  g: 198, b: 139 };
+    function rgba(c, a) { return `rgba(${c.r},${c.g},${c.b},${a})`; }
+    function lerpColor(a, b, t) {
+      return { r: Math.round(a.r + (b.r - a.r) * t), g: Math.round(a.g + (b.g - a.g) * t), b: Math.round(a.b + (b.b - a.b) * t) };
+    }
+
+    /* ─── Agent icon definitions with labels ─── */
+    const agentTypes = [
+      { label: 'Strategy',    drawIcon: drawBrain,  color: CYAN },
+      { label: 'Code',        drawIcon: drawCode,   color: TEAL },
+      { label: 'Support',     drawIcon: drawChat,   color: EMERALD },
+      { label: 'Analytics',   drawIcon: drawChart,  color: CYAN },
+      { label: 'Automation',  drawIcon: drawBolt,   color: TEAL },
+      { label: 'Security',    drawIcon: drawShield, color: EMERALD },
+      { label: 'Research',    drawIcon: drawSearch, color: CYAN },
+      { label: 'Ops',         drawIcon: drawGear,   color: TEAL },
+    ];
+
+    /* ─── Agent icon draw functions (scaled up, bolder strokes) ─── */
+
+    function drawBrain(x, y, s, alpha) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+      ctx.strokeStyle = rgba(CYAN, alpha); ctx.lineWidth = 2.6; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.arc(-2, 0, 8, Math.PI * 0.5, Math.PI * 1.5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-2, -8); ctx.quadraticCurveTo(-9, -3, -2, 0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-2, 0); ctx.quadraticCurveTo(-10, 3, -2, 8); ctx.stroke();
+      ctx.beginPath(); ctx.arc(2, 0, 8, -Math.PI * 0.5, Math.PI * 0.5); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(2, -8); ctx.quadraticCurveTo(9, -3, 2, 0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(2, 0); ctx.quadraticCurveTo(10, 3, 2, 8); ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawCode(x, y, s, alpha) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+      ctx.strokeStyle = rgba(TEAL, alpha); ctx.lineWidth = 2.8; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.beginPath(); ctx.moveTo(-5, -6); ctx.lineTo(-10, 0); ctx.lineTo(-5, 6); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(5, -6); ctx.lineTo(10, 0); ctx.lineTo(5, 6); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(2.5, -8); ctx.lineTo(-2.5, 8); ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawChat(x, y, s, alpha) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+      ctx.strokeStyle = rgba(EMERALD, alpha); ctx.lineWidth = 2.6; ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-8, -6); ctx.lineTo(8, -6); ctx.quadraticCurveTo(10, -6, 10, -4);
+      ctx.lineTo(10, 3); ctx.quadraticCurveTo(10, 5, 8, 5);
+      ctx.lineTo(-2, 5); ctx.lineTo(-5, 9); ctx.lineTo(-5, 5);
+      ctx.lineTo(-8, 5); ctx.quadraticCurveTo(-10, 5, -10, 3);
+      ctx.lineTo(-10, -4); ctx.quadraticCurveTo(-10, -6, -8, -6);
+      ctx.stroke();
+      ctx.fillStyle = rgba(EMERALD, alpha);
+      ctx.beginPath(); ctx.arc(-4.5, 0, 1.5, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(0, 0, 1.5, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(4.5, 0, 1.5, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+
+    function drawChart(x, y, s, alpha) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+      ctx.strokeStyle = rgba(CYAN, alpha); ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+      ctx.fillStyle = rgba(CYAN, alpha * 0.35);
+      ctx.fillRect(-8, 2, 4, 7); ctx.strokeRect(-8, 2, 4, 7);
+      ctx.fillRect(-2, -3, 4, 12); ctx.strokeRect(-2, -3, 4, 12);
+      ctx.fillRect(4, -7, 4, 16); ctx.strokeRect(4, -7, 4, 16);
+      ctx.strokeStyle = rgba(EMERALD, alpha); ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.moveTo(-6, 1); ctx.lineTo(0, -4); ctx.lineTo(6, -8); ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawBolt(x, y, s, alpha) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+      ctx.fillStyle = rgba(TEAL, alpha * 0.45);
+      ctx.strokeStyle = rgba(TEAL, alpha); ctx.lineWidth = 2.4; ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(1.5, -10); ctx.lineTo(-5, 1); ctx.lineTo(0, 1); ctx.lineTo(-1.5, 10); ctx.lineTo(5, -1); ctx.lineTo(0, -1);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawShield(x, y, s, alpha) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+      ctx.strokeStyle = rgba(EMERALD, alpha); ctx.lineWidth = 2.6; ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(0, -9); ctx.lineTo(8, -5); ctx.lineTo(8, 2); ctx.quadraticCurveTo(8, 9, 0, 11);
+      ctx.quadraticCurveTo(-8, 9, -8, 2); ctx.lineTo(-8, -5); ctx.closePath();
+      ctx.fillStyle = rgba(EMERALD, alpha * 0.12); ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle = rgba(EMERALD, alpha); ctx.lineWidth = 2.8; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-3.5, 1); ctx.lineTo(-1, 4); ctx.lineTo(4.5, -2.5); ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawSearch(x, y, s, alpha) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+      ctx.strokeStyle = rgba(CYAN, alpha); ctx.lineWidth = 2.6; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.arc(-2, -2, 7, 0, Math.PI*2); ctx.stroke();
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(3, 3); ctx.lineTo(8, 8); ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawGear(x, y, s, alpha) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+      ctx.strokeStyle = rgba(TEAL, alpha); ctx.lineWidth = 2.4;
+      const teeth = 6, outerR = 9, innerR = 6;
+      ctx.beginPath();
+      for (let i = 0; i < teeth; i++) {
+        const a1 = (Math.PI * 2 / teeth) * i - 0.2;
+        const a2 = (Math.PI * 2 / teeth) * i + 0.2;
+        const a3 = (Math.PI * 2 / teeth) * (i + 0.5) - 0.2;
+        const a4 = (Math.PI * 2 / teeth) * (i + 0.5) + 0.2;
+        if (i === 0) ctx.moveTo(Math.cos(a1) * outerR, Math.sin(a1) * outerR);
+        ctx.lineTo(Math.cos(a2) * outerR, Math.sin(a2) * outerR);
+        ctx.lineTo(Math.cos(a3) * innerR, Math.sin(a3) * innerR);
+        ctx.lineTo(Math.cos(a4) * innerR, Math.sin(a4) * innerR);
+        ctx.lineTo(Math.cos((Math.PI * 2 / teeth) * (i + 1) - 0.2) * outerR,
+                   Math.sin((Math.PI * 2 / teeth) * (i + 1) - 0.2) * outerR);
+      }
+      ctx.closePath(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, 0, 3.5, 0, Math.PI*2); ctx.stroke();
+      ctx.restore();
+    }
+
+    /* ─── Agent nodes ─── */
+    let agentNodes = [];
+    let signals = [];
+    let ambientParticles = [];
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      placeAgents();
+      createAmbientParticles();
+    }
+
+    function placeAgents() {
+      agentNodes = [];
+      const count = agentTypes.length;
+      const centerX = W / 2, centerY = H / 2;
+      const isMobile = W < 768;
+      const isTablet = W >= 768 && W < 1024;
+      const margin = isMobile ? 50 : 120;
+
+      if (isMobile) {
+        // Mobile: place agents in 2 columns flanking the content
+        // 4 on left side, 4 on right side, stacked vertically
+        const colX = [W * 0.12, W * 0.88];
+        const startY = H * 0.15;
+        const spacingY = (H * 0.7) / 3;
+        const positions = [];
+        for (let row = 0; row < 4; row++) {
+          positions.push({ x: colX[0] + (Math.random() - 0.5) * 10, y: startY + row * spacingY });
+          positions.push({ x: colX[1] + (Math.random() - 0.5) * 10, y: startY + row * spacingY });
+        }
+        for (let i = 0; i < count; i++) {
+          const pos = positions[i];
+          agentNodes.push({
+            x: pos.x, y: pos.y,
+            baseX: pos.x, baseY: pos.y,
+            type: agentTypes[i],
+            color: agentTypes[i].color,
+            brightness: 0.3,
+            targetBrightness: 0.3,
+            pulsePhase: Math.random() * Math.PI * 2,
+            iconScale: 0.95,
+            hovered: false,
+          });
+        }
+      } else {
+        // Desktop/Tablet: evenly spaced around an ellipse with good separation
+        const radiusX = isTablet ? Math.min(W * 0.42, 340) : Math.min(W * 0.4, 480);
+        const radiusY = isTablet ? Math.min(H * 0.38, 300) : Math.min(H * 0.38, 360);
+        // Start from top-right and go clockwise
+        const startAngle = -Math.PI * 0.35;
+
+        for (let i = 0; i < count; i++) {
+          const angle = startAngle + (Math.PI * 2 / count) * i;
+          let x = centerX + Math.cos(angle) * radiusX;
+          let y = centerY + Math.sin(angle) * radiusY;
+
+          // Clamp to viewport
+          x = Math.max(margin, Math.min(W - margin, x));
+          y = Math.max(margin + 60, Math.min(H - margin, y));
+
+          agentNodes.push({
+            x, y,
+            baseX: x, baseY: y,
+            type: agentTypes[i],
+            color: agentTypes[i].color,
+            brightness: 0.3,
+            targetBrightness: 0.3,
+            pulsePhase: Math.random() * Math.PI * 2,
+            iconScale: isTablet ? 1.1 : 1.35,
+            hovered: false,
+          });
+        }
+      }
+    }
+
+    function createAmbientParticles() {
+      ambientParticles = [];
+      const count = Math.min(40, Math.floor(W * H / 35000));
+      for (let i = 0; i < count; i++) {
+        ambientParticles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.12,
+          vy: (Math.random() - 0.5) * 0.12,
+          size: 0.8 + Math.random() * 1.4,
+          alpha: 0.06 + Math.random() * 0.1,
+        });
+      }
+    }
+
+    function spawnSignal() {
+      if (agentNodes.length < 2) return;
+      let a = Math.floor(Math.random() * agentNodes.length);
+      let b = Math.floor(Math.random() * agentNodes.length);
+      while (b === a) b = Math.floor(Math.random() * agentNodes.length);
+
+      const from = agentNodes[a], to = agentNodes[b];
+      const color = lerpColor(from.color, to.color, 0.5);
+
+      const mx = (from.x + to.x) / 2;
+      const my = (from.y + to.y) / 2;
+      const dx = to.x - from.x, dy = to.y - from.y;
+      const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      const perpX = -dy / dist * (30 + Math.random() * 50) * (Math.random() > 0.5 ? 1 : -1);
+      const perpY =  dx / dist * (30 + Math.random() * 50) * (Math.random() > 0.5 ? 1 : -1);
+
+      signals.push({
+        fromIdx: a, toIdx: b,
+        fromX: from.x, fromY: from.y,
+        toX: to.x, toY: to.y,
+        cpX: mx + perpX, cpY: my + perpY,
+        progress: 0,
+        speed: 0.005 + Math.random() * 0.004,
+        color,
+        trail: [],
+      });
+
+      from.targetBrightness = Math.min(from.targetBrightness + 0.35, 0.9);
+    }
+
+    function quadBezier(p0x, p0y, p1x, p1y, p2x, p2y, t) {
+      const u = 1 - t;
+      return {
+        x: u*u*p0x + 2*u*t*p1x + t*t*p2x,
+        y: u*u*p0y + 2*u*t*p1y + t*t*p2y,
+      };
+    }
+
+    function animate(time) {
+      ctx.clearRect(0, 0, W, H);
+      const now = time * 0.001;
+
+      /* ── Ambient particles ── */
+      for (const p of ambientParticles) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = rgba(TEAL, p.alpha);
+        ctx.fill();
+      }
+
+      /* ── Connection lines between agents ── */
+      for (let i = 0; i < agentNodes.length; i++) {
+        for (let j = i + 1; j < agentNodes.length; j++) {
+          const a = agentNodes[i], b = agentNodes[j];
+          const d = Math.sqrt((a.x - b.x)**2 + (a.y - b.y)**2);
+          if (d > W * 0.6) continue;
+
+          const alpha = 0.035 * (1 - d / (W * 0.6));
+          const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+          const dx = b.x - a.x, dy = b.y - a.y;
+          const len = Math.sqrt(dx*dx + dy*dy) || 1;
+          const cpX = mx + (-dy/len) * 18;
+          const cpY = my + (dx/len) * 18;
+
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.quadraticCurveTo(cpX, cpY, b.x, b.y);
+          ctx.strokeStyle = rgba(TEAL, alpha);
+          ctx.lineWidth = 0.7;
+          ctx.setLineDash([4, 7]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+
+      /* ── Signals traveling along curves ── */
+      for (let i = signals.length - 1; i >= 0; i--) {
+        const s = signals[i];
+        s.progress += s.speed;
+
+        if (s.progress >= 1) {
+          agentNodes[s.toIdx].targetBrightness = 1;
+          signals.splice(i, 1);
+          continue;
+        }
+
+        const pos = quadBezier(s.fromX, s.fromY, s.cpX, s.cpY, s.toX, s.toY, s.progress);
+        s.trail.push({ x: pos.x, y: pos.y, age: 0 });
+
+        // Glowing trail path
+        if (s.trail.length > 2) {
+          ctx.beginPath();
+          ctx.moveTo(s.trail[0].x, s.trail[0].y);
+          for (let t = 1; t < s.trail.length; t++) {
+            ctx.lineTo(s.trail[t].x, s.trail[t].y);
+          }
+          ctx.strokeStyle = rgba(s.color, 0.15);
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+        }
+
+        // Trail particles
+        for (let t = s.trail.length - 1; t >= 0; t--) {
+          const tp = s.trail[t];
+          tp.age += 0.02;
+          if (tp.age > 1) { s.trail.splice(t, 1); continue; }
+          const a = (1 - tp.age) * 0.3;
+          const sz = (1 - tp.age) * 2.5;
+          ctx.beginPath();
+          ctx.arc(tp.x, tp.y, sz, 0, Math.PI * 2);
+          ctx.fillStyle = rgba(s.color, a);
+          ctx.fill();
+        }
+
+        // Signal head glow
+        const glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, 18);
+        glow.addColorStop(0, rgba(s.color, 0.5));
+        glow.addColorStop(1, rgba(s.color, 0));
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 18, 0, Math.PI * 2);
+        ctx.fillStyle = glow;
+        ctx.fill();
+
+        // Core white dot
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.fill();
+      }
+
+      /* ── Agent nodes (prominent version) ── */
+      const isMobile = W < 768;
+      for (let i = 0; i < agentNodes.length; i++) {
+        const ag = agentNodes[i];
+
+        // Gentle float (smaller on mobile)
+        const floatX = isMobile ? 2 : 5;
+        const floatY = isMobile ? 1.5 : 4;
+        ag.x = ag.baseX + Math.sin(now * 0.5 + ag.pulsePhase) * floatX;
+        ag.y = ag.baseY + Math.cos(now * 0.4 + ag.pulsePhase) * floatY;
+
+        // Mouse proximity
+        const dx = mouse.x - ag.x, dy = mouse.y - ag.y;
+        const mDist = Math.sqrt(dx*dx + dy*dy);
+        ag.hovered = mDist < 60;
+        if (mDist < 220) {
+          ag.targetBrightness = Math.max(ag.targetBrightness, 0.7 * (1 - mDist / 220));
+        }
+
+        // Smooth brightness transitions
+        ag.brightness += (ag.targetBrightness - ag.brightness) * 0.06;
+        ag.targetBrightness += (0.3 - ag.targetBrightness) * 0.01;
+
+        const b = ag.brightness;
+        const hoverBoost = ag.hovered ? 0.3 : 0;
+
+        // ── Outer pulse ring ──
+        const ringPulse = Math.sin(now * 1.2 + ag.pulsePhase) * 0.5 + 0.5;
+        const ringAlpha = 0.06 + b * 0.1 + ringPulse * 0.03;
+        const mobileScale = isMobile ? 0.6 : 1;
+        const ringSize = (38 + b * 8 + ringPulse * 4) * mobileScale;
+        ctx.beginPath();
+        ctx.arc(ag.x, ag.y, ringSize, 0, Math.PI * 2);
+        ctx.strokeStyle = rgba(ag.color, ringAlpha);
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // Second ring (double ring effect) — skip on mobile
+        if (!isMobile) {
+          ctx.beginPath();
+          ctx.arc(ag.x, ag.y, ringSize + 8, 0, Math.PI * 2);
+          ctx.strokeStyle = rgba(ag.color, ringAlpha * 0.4);
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+
+        // ── Background glow (larger, more visible) ──
+        const glowSize = (34 + b * 18 + hoverBoost * 10) * mobileScale;
+        const bgGlow = ctx.createRadialGradient(ag.x, ag.y, 0, ag.x, ag.y, glowSize);
+        bgGlow.addColorStop(0, rgba(ag.color, 0.1 + b * 0.15 + hoverBoost * 0.1));
+        bgGlow.addColorStop(0.6, rgba(ag.color, 0.03 + b * 0.05));
+        bgGlow.addColorStop(1, rgba(ag.color, 0));
+        ctx.beginPath();
+        ctx.arc(ag.x, ag.y, glowSize, 0, Math.PI * 2);
+        ctx.fillStyle = bgGlow;
+        ctx.fill();
+
+        // ── Icon container — rounded square, more opaque ──
+        const boxSize = (isMobile ? 18 : 26) + hoverBoost * 4;
+        const r = 9;
+        ctx.beginPath();
+        ctx.moveTo(ag.x - boxSize + r, ag.y - boxSize);
+        ctx.lineTo(ag.x + boxSize - r, ag.y - boxSize);
+        ctx.quadraticCurveTo(ag.x + boxSize, ag.y - boxSize, ag.x + boxSize, ag.y - boxSize + r);
+        ctx.lineTo(ag.x + boxSize, ag.y + boxSize - r);
+        ctx.quadraticCurveTo(ag.x + boxSize, ag.y + boxSize, ag.x + boxSize - r, ag.y + boxSize);
+        ctx.lineTo(ag.x - boxSize + r, ag.y + boxSize);
+        ctx.quadraticCurveTo(ag.x - boxSize, ag.y + boxSize, ag.x - boxSize, ag.y + boxSize - r);
+        ctx.lineTo(ag.x - boxSize, ag.y - boxSize + r);
+        ctx.quadraticCurveTo(ag.x - boxSize, ag.y - boxSize, ag.x - boxSize + r, ag.y - boxSize);
+        ctx.closePath();
+
+        // Soft tinted fill — slightly colored so icons pop against it
+        const tintAlpha = 0.06 + b * 0.04;
+        ctx.fillStyle = `rgba(255,255,255,${0.88 + b * 0.1 + hoverBoost * 0.02})`;
+        ctx.shadowColor = rgba(ag.color, 0.2 + b * 0.15);
+        ctx.shadowBlur = 20 + b * 10;
+        ctx.fill();
+        ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
+
+        // Tinted inner wash so white doesn't wash out the icons
+        ctx.fillStyle = rgba(ag.color, tintAlpha);
+        ctx.fill();
+
+        // Border with stronger color
+        ctx.strokeStyle = rgba(ag.color, 0.35 + b * 0.4 + hoverBoost * 0.2);
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+
+        // ── Draw the icon (full opacity, bold) ──
+        const iconAlpha = 0.8 + b * 0.2 + hoverBoost * 0.1;
+        ag.type.drawIcon(ag.x, ag.y, ag.iconScale + hoverBoost * 0.15, Math.min(iconAlpha, 1));
+
+        // ── Label below the icon container (hide on small mobile) ──
+        if (W > 480) {
+          const labelAlpha = 0.5 + b * 0.35 + hoverBoost * 0.15;
+          const labelSize = isMobile ? 9 : 12 + hoverBoost * 1;
+          ctx.font = `600 ${labelSize}px 'Plus Jakarta Sans', sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillStyle = rgba(ag.color, labelAlpha);
+          ctx.fillText(ag.type.label, ag.x, ag.y + boxSize + 6);
+        }
+
+        // ── Small status dot (top-right corner) ──
+        const dotPulse = Math.sin(now * 2 + ag.pulsePhase) * 0.3 + 0.7;
+        ctx.beginPath();
+        ctx.arc(ag.x + boxSize - 4, ag.y - boxSize + 4, 3, 0, Math.PI * 2);
+        ctx.fillStyle = rgba(ag.color, (0.4 + b * 0.5) * dotPulse);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(ag.x + boxSize - 4, ag.y - boxSize + 4, 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${0.7 * dotPulse})`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // Spawn signals at interval
+    setInterval(spawnSignal, 1200);
+
+    canvas.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    canvas.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

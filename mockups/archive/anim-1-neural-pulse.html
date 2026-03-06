@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digixr — Animation 1: Neural Network Pulse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #FAFCFD; color: #2D3436; overflow-x: hidden; }
+
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(250,252,253,0.88); backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(226,232,240,0.6);
+      padding: 16px 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo-text { font-size: 22px; font-weight: 700; letter-spacing: 0.12em; background: linear-gradient(135deg, #4CC9D0, #42C68B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .logo-sub { font-size: 10px; letter-spacing: 0.3em; color: #A0AEC0; font-weight: 500; }
+    .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+    .nav-links a { text-decoration: none; color: #4A5568; font-size: 15px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #3BBFA6; }
+    .nav-cta { background: linear-gradient(135deg, #4CC9D0, #42C68B); color: white !important; padding: 10px 24px; border-radius: 10px; font-weight: 600 !important; box-shadow: 0 4px 14px rgba(66,198,139,0.25); }
+
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; padding-top: 80px;
+    }
+    #canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+
+    .hero-content {
+      position: relative; z-index: 10; text-align: center; max-width: 880px; padding: 0 32px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.85); border: 1px solid rgba(76,201,208,0.2);
+      border-radius: 100px; padding: 8px 20px; font-size: 14px; font-weight: 500;
+      color: #2BA8B0; margin-bottom: 32px; backdrop-filter: blur(10px);
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .hero-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #42C68B; animation: pulse 2s infinite; }
+    .hero-headline {
+      font-size: 72px; font-weight: 800; line-height: 1.05; letter-spacing: -0.03em;
+      margin-bottom: 24px; animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+    }
+    .hero-headline .gradient {
+      background: linear-gradient(135deg, #4CC9D0 0%, #3BBFA6 50%, #42C68B 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-family: 'Inter'; font-size: 19px; line-height: 1.65; color: #718096;
+      max-width: 580px; margin: 0 auto 40px;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+    }
+    .hero-ctas {
+      display: flex; gap: 16px; justify-content: center;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #4CC9D0, #42C68B); color: white;
+      font-family: 'Plus Jakarta Sans'; font-size: 16px; font-weight: 600;
+      padding: 16px 38px; border-radius: 14px; border: none; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(66,198,139,0.3); transition: all 0.3s;
+    }
+    .btn-primary:hover { box-shadow: 0 8px 28px rgba(66,198,139,0.4); transform: translateY(-2px); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.7); color: #3BBFA6;
+      font-family: 'Plus Jakarta Sans'; font-size: 16px; font-weight: 600;
+      padding: 16px 38px; border-radius: 14px; border: 1.5px solid rgba(59,191,166,0.25);
+      cursor: pointer; transition: all 0.3s; backdrop-filter: blur(8px);
+    }
+    .btn-secondary:hover { background: rgba(59,191,166,0.06); border-color: #3BBFA6; }
+
+    .mockup-label {
+      position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 200;
+      background: #2D3436; color: white; padding: 8px 20px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .mockup-label span { color: #42C68B; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  </style>
+</head>
+<body>
+
+  <div class="mockup-label">ANIMATION 1 — <span>Neural Network with Signal Pulses</span></div>
+
+  <nav class="navbar">
+    <div><div class="logo-text">DIGIXR</div><div class="logo-sub">TECHNOLOGIES</div></div>
+    <ul class="nav-links">
+      <li><a href="#">Services</a></li><li><a href="#">Case Studies</a></li>
+      <li><a href="#">Playground</a></li><li><a href="#">Insights</a></li>
+      <li><a href="#">About</a></li><li><a href="#" class="nav-cta">Talk to Agent</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <canvas id="canvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="dot"></span> Agentic AI Native Organization</div>
+      <h1 class="hero-headline">We Don't Just Build<br><span class="gradient">AI Agents.</span><br>We Are Built By Them.</h1>
+      <p class="hero-sub">Digixr Technologies deploys autonomous AI agents that power operations, accelerate delivery, and transform your business from the inside out.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary">Talk to Our Agent →</button>
+        <button class="btn-secondary">Explore Services</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /*
+     * NEURAL NETWORK PULSE
+     * ---------------------
+     * Nodes arranged in visible layers (like an NN diagram).
+     * Connections form between layers. Signal "pulses" of light
+     * travel along connections — like data flowing through a brain.
+     * Mouse proximity brightens nearby nodes.
+     */
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, nodes = [], connections = [], signals = [];
+    let mouse = { x: -1000, y: -1000 };
+    const LAYERS = 6;
+    const SIGNAL_SPEED = 1.8;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      buildNetwork();
+    }
+
+    function buildNetwork() {
+      nodes = [];
+      connections = [];
+      signals = [];
+
+      const layerGap = W / (LAYERS + 1);
+      const nodesPerLayer = [4, 7, 10, 10, 7, 4];
+
+      for (let l = 0; l < LAYERS; l++) {
+        const count = nodesPerLayer[l];
+        const x = layerGap * (l + 1);
+        const segH = H / (count + 1);
+
+        for (let n = 0; n < count; n++) {
+          const y = segH * (n + 1);
+          const t = l / (LAYERS - 1); // 0 = left (cyan), 1 = right (emerald)
+          nodes.push({
+            x, y,
+            baseX: x, baseY: y,
+            layer: l,
+            r: Math.round(76 + t * (66 - 76)),
+            g: Math.round(201 + t * (198 - 201)),
+            b: Math.round(208 + t * (139 - 208)),
+            size: 3 + Math.random() * 1.5,
+            brightness: 0.3,
+          });
+        }
+      }
+
+      // Connect adjacent layers
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = 0; j < nodes.length; j++) {
+          if (nodes[j].layer === nodes[i].layer + 1) {
+            const dy = Math.abs(nodes[i].y - nodes[j].y);
+            // Only connect to nearby nodes in next layer
+            if (dy < H / 3.5) {
+              connections.push({ from: i, to: j, opacity: 0.04 + Math.random() * 0.03 });
+            }
+          }
+        }
+      }
+    }
+
+    function spawnSignal() {
+      if (connections.length === 0) return;
+      const conn = connections[Math.floor(Math.random() * connections.length)];
+      const from = nodes[conn.from];
+      const to = nodes[conn.to];
+      const t = from.layer / (LAYERS - 1);
+
+      signals.push({
+        fromX: from.x, fromY: from.y,
+        toX: to.x, toY: to.y,
+        progress: 0,
+        speed: SIGNAL_SPEED + Math.random() * 0.8,
+        r: Math.round(76 + t * (66 - 76)),
+        g: Math.round(201 + t * (198 - 201)),
+        b: Math.round(208 + t * (139 - 208)),
+        connIdx: connections.indexOf(conn),
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Draw connections
+      for (const conn of connections) {
+        const a = nodes[conn.from], b = nodes[conn.to];
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        // Slight curve for organic feel
+        const cpX = (a.x + b.x) / 2;
+        const cpY = (a.y + b.y) / 2 + (Math.random() - 0.5) * 0.5;
+        ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(76,201,208,${conn.opacity})`;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      }
+
+      // Draw signals
+      for (let i = signals.length - 1; i >= 0; i--) {
+        const s = signals[i];
+        s.progress += s.speed / 100;
+
+        if (s.progress >= 1) {
+          // Brighten destination node briefly
+          const conn = connections[s.connIdx];
+          if (conn) nodes[conn.to].brightness = 1;
+          signals.splice(i, 1);
+          continue;
+        }
+
+        const x = s.fromX + (s.toX - s.fromX) * s.progress;
+        const y = s.fromY + (s.toY - s.fromY) * s.progress;
+        const alpha = Math.sin(s.progress * Math.PI); // Fade in and out
+
+        // Glow
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, 12);
+        gradient.addColorStop(0, `rgba(${s.r},${s.g},${s.b},${0.6 * alpha})`);
+        gradient.addColorStop(1, `rgba(${s.r},${s.g},${s.b},0)`);
+        ctx.beginPath();
+        ctx.arc(x, y, 12, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+
+        // Core dot
+        ctx.beginPath();
+        ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${s.r},${s.g},${s.b},${alpha})`;
+        ctx.fill();
+
+        // Brighten the connection line the signal is on
+        if (connections[s.connIdx]) {
+          connections[s.connIdx].opacity = 0.04 + 0.12 * alpha;
+        }
+      }
+
+      // Draw nodes
+      for (const node of nodes) {
+        // Mouse interaction
+        const dx = mouse.x - node.x, dy = mouse.y - node.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 200) {
+          node.brightness = Math.max(node.brightness, 0.7 * (1 - dist / 200));
+        }
+
+        // Subtle float
+        node.x = node.baseX + Math.sin(Date.now() * 0.001 + node.baseY * 0.01) * 2;
+        node.y = node.baseY + Math.cos(Date.now() * 0.001 + node.baseX * 0.01) * 2;
+
+        // Glow ring
+        if (node.brightness > 0.4) {
+          const glow = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, 18);
+          glow.addColorStop(0, `rgba(${node.r},${node.g},${node.b},${0.15 * node.brightness})`);
+          glow.addColorStop(1, `rgba(${node.r},${node.g},${node.b},0)`);
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, 18, 0, Math.PI * 2);
+          ctx.fillStyle = glow;
+          ctx.fill();
+        }
+
+        // Node circle
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${node.r},${node.g},${node.b},${0.25 + 0.65 * node.brightness})`;
+        ctx.fill();
+
+        // Decay brightness
+        node.brightness *= 0.97;
+        if (node.brightness < 0.3) node.brightness = 0.3;
+      }
+
+      // Restore connection opacity
+      for (const conn of connections) {
+        conn.opacity += (0.04 - conn.opacity) * 0.05;
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // Spawn signals periodically
+    setInterval(spawnSignal, 120);
+
+    canvas.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener('resize', resize);
+    resize();
+    animate();
+  </script>
+</body>
+</html>

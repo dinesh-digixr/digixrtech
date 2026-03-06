@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digixr Hero — Option A4: Particle Network + Prominent Agent Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #FAFCFD; color: #2D3436; overflow-x: hidden; }
+
+    /* ──────────── NAVBAR ──────────── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(250,252,253,0.88); backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(226,232,240,0.6);
+      padding: 16px 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo-text {
+      font-size: 22px; font-weight: 700; letter-spacing: 0.12em;
+      background: linear-gradient(135deg, #4CC9D0, #42C68B);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .logo-sub { font-size: 10px; letter-spacing: 0.3em; color: #A0AEC0; font-weight: 500; }
+    .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+    .nav-links a { text-decoration: none; color: #4A5568; font-size: 15px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #3BBFA6; }
+    .nav-cta {
+      background: linear-gradient(135deg, #4CC9D0, #42C68B);
+      color: white !important; padding: 10px 24px; border-radius: 10px;
+      font-weight: 600 !important; box-shadow: 0 4px 14px rgba(66,198,139,0.25);
+    }
+
+    /* ──────────── HERO ──────────── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      position: relative; overflow: hidden; padding: 120px 64px 80px;
+    }
+
+    #particle-canvas {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+    }
+
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 50%, rgba(76,201,208,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 50%, rgba(66,198,139,0.05) 0%, transparent 50%);
+      z-index: 1;
+    }
+
+    .hero-layout {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+      align-items: center; max-width: 1320px; margin: 0 auto; width: 100%;
+      position: relative; z-index: 10;
+    }
+
+    /* ──────────── LEFT: TEXT ──────────── */
+    .hero-text {}
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.85); border: 1px solid rgba(76,201,208,0.2);
+      border-radius: 100px; padding: 8px 20px;
+      font-size: 13px; font-weight: 500; color: #2BA8B0;
+      margin-bottom: 28px; backdrop-filter: blur(10px);
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .hero-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #42C68B; animation: pulse 2s infinite; }
+
+    .hero-headline {
+      font-size: 56px; font-weight: 800; line-height: 1.06;
+      letter-spacing: -0.03em; margin-bottom: 20px;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+    }
+    .hero-headline .gradient {
+      background: linear-gradient(135deg, #4CC9D0, #3BBFA6, #42C68B);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-family: 'Inter'; font-size: 17px; line-height: 1.7;
+      color: #718096; max-width: 480px; margin-bottom: 36px;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+    }
+
+    .hero-ctas {
+      display: flex; gap: 14px;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #4CC9D0, #42C68B);
+      color: white; font-family: 'Plus Jakarta Sans'; font-size: 16px;
+      font-weight: 600; padding: 16px 36px; border-radius: 14px;
+      border: none; cursor: pointer; box-shadow: 0 4px 18px rgba(66,198,139,0.3);
+      transition: all 0.3s;
+    }
+    .btn-primary:hover { box-shadow: 0 8px 28px rgba(66,198,139,0.4); transform: translateY(-2px); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.7); color: #3BBFA6;
+      font-family: 'Plus Jakarta Sans'; font-size: 16px; font-weight: 600;
+      padding: 16px 36px; border-radius: 14px;
+      border: 1.5px solid rgba(59,191,166,0.25); cursor: pointer;
+      transition: all 0.3s; backdrop-filter: blur(8px);
+    }
+    .btn-secondary:hover { background: rgba(59,191,166,0.06); border-color: #3BBFA6; }
+
+    /* Trust badges */
+    .trust-row {
+      display: flex; gap: 24px; margin-top: 40px;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s both;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: #718096; font-weight: 500;
+    }
+    .trust-item .check {
+      width: 20px; height: 20px; border-radius: 6px;
+      background: rgba(66,198,139,0.1); color: #42C68B;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+    }
+
+    /* ──────────── RIGHT: AGENT DEMO CARD ──────────── */
+    .agent-demo-wrapper {
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s both;
+      position: relative;
+    }
+
+    /* Glow behind card */
+    .agent-demo-wrapper::before {
+      content: ''; position: absolute;
+      top: 10%; left: 5%; right: 5%; bottom: 10%;
+      background: linear-gradient(135deg, rgba(76,201,208,0.15), rgba(66,198,139,0.1));
+      filter: blur(50px); border-radius: 30px; z-index: 0;
+    }
+
+    .agent-demo {
+      position: relative; z-index: 1;
+      background: rgba(255,255,255,0.9); backdrop-filter: blur(20px);
+      border: 1px solid rgba(226,232,240,0.8);
+      border-radius: 24px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+    }
+
+    .agent-bar {
+      padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #EDF2F7;
+    }
+    .agent-bar-left { display: flex; align-items: center; gap: 10px; }
+    .agent-avatar {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, #4CC9D0, #42C68B);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: white;
+    }
+    .agent-bar-info h4 { font-size: 14px; font-weight: 600; color: #2D3436; }
+    .agent-bar-info span {
+      font-size: 11px; color: #42C68B; font-weight: 500;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .agent-bar-info span .online-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #42C68B;
+      animation: pulse 2s infinite;
+    }
+    .agent-bar-right { display: flex; gap: 6px; }
+    .dot-btn { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-btn.r { background: #FC8181; }
+    .dot-btn.y { background: #F6AD55; }
+    .dot-btn.g { background: #42C68B; }
+
+    .agent-body { padding: 24px 20px; display: flex; flex-direction: column; gap: 14px; min-height: 320px; }
+
+    .msg {
+      max-width: 88%; padding: 14px 18px; font-size: 14px;
+      line-height: 1.55; font-family: 'Inter';
+      opacity: 0; transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
+      transform: translateY(12px);
+    }
+    .msg.visible { opacity: 1; transform: translateY(0); }
+
+    .msg.agent {
+      background: linear-gradient(135deg, rgba(76,201,208,0.07), rgba(66,198,139,0.07));
+      border: 1px solid rgba(59,191,166,0.12);
+      border-radius: 18px 18px 18px 6px;
+      color: #2D3436; align-self: flex-start;
+    }
+    .msg.user {
+      background: #F7FAFC; border: 1px solid #E2E8F0;
+      border-radius: 18px 18px 6px 18px;
+      color: #4A5568; align-self: flex-end;
+    }
+
+    .msg .action-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 10px; padding: 6px 14px; border-radius: 8px;
+      background: linear-gradient(135deg, #4CC9D0, #42C68B);
+      color: white; font-size: 12px; font-weight: 600;
+      border: none; cursor: pointer; transition: all 0.2s;
+    }
+    .msg .action-btn:hover { transform: scale(1.03); }
+
+    .msg .agent-chips {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;
+    }
+    .msg .chip {
+      padding: 5px 12px; border-radius: 8px;
+      background: rgba(59,191,166,0.08); color: #2A9A84;
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      transition: all 0.2s; border: 1px solid rgba(59,191,166,0.15);
+    }
+    .msg .chip:hover { background: rgba(59,191,166,0.15); }
+
+    .typing-indicator {
+      display: flex; gap: 4px; padding: 14px 18px; align-self: flex-start;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .typing-indicator.visible { opacity: 1; }
+    .typing-indicator span {
+      width: 7px; height: 7px; border-radius: 50%; background: #3BBFA6;
+      animation: typingPulse 1.4s infinite;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    .agent-input-bar {
+      padding: 14px 20px; border-top: 1px solid #EDF2F7;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .agent-input-bar input {
+      flex: 1; border: none; font-size: 14px; font-family: 'Inter';
+      color: #2D3436; outline: none; background: transparent;
+    }
+    .agent-input-bar input::placeholder { color: #A0AEC0; }
+    .agent-input-bar .send-btn {
+      width: 38px; height: 38px; border-radius: 12px;
+      background: linear-gradient(135deg, #4CC9D0, #42C68B);
+      border: none; color: white; font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s;
+    }
+    .agent-input-bar .send-btn:hover { transform: scale(1.06); }
+
+    /* ──────────── LABEL ──────────── */
+    .mockup-label {
+      position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 200;
+      background: #2D3436; color: white; padding: 8px 20px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .mockup-label span { color: #42C68B; }
+
+    /* ──────────── ANIMATIONS ──────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @keyframes typingPulse {
+      0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+      30% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mockup-label">OPTION A4 — <span>Particle Network + Agent Demo</span></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div>
+      <div class="logo-text">DIGIXR</div>
+      <div class="logo-sub">TECHNOLOGIES</div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">Services</a></li>
+      <li><a href="#">Case Studies</a></li>
+      <li><a href="#">Playground</a></li>
+      <li><a href="#">Insights</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#" class="nav-cta">Talk to Agent</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="hero-layout">
+
+      <!-- LEFT: TEXT -->
+      <div class="hero-text">
+        <div class="hero-badge"><span class="dot"></span> Agentic AI Native</div>
+
+        <h1 class="hero-headline">
+          Meet Dex.<br>
+          Your First<br>
+          <span class="gradient">AI Agent.</span>
+        </h1>
+
+        <p class="hero-sub">
+          Dex is just one of the autonomous agents we build. Talk to it right now — then imagine what a team of agents could do for your business.
+        </p>
+
+        <div class="hero-ctas">
+          <button class="btn-primary">Start a Conversation →</button>
+          <button class="btn-secondary">View All Services</button>
+        </div>
+
+        <div class="trust-row">
+          <div class="trust-item">
+            <span class="check">✓</span> SOC 2 Compliant
+          </div>
+          <div class="trust-item">
+            <span class="check">✓</span> Sub-second latency
+          </div>
+          <div class="trust-item">
+            <span class="check">✓</span> 99.9% Uptime
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: AGENT DEMO -->
+      <div class="agent-demo-wrapper">
+        <div class="agent-demo">
+          <div class="agent-bar">
+            <div class="agent-bar-left">
+              <div class="agent-avatar">D</div>
+              <div class="agent-bar-info">
+                <h4>Dex — Digixr Agent</h4>
+                <span><span class="online-dot"></span> Active now</span>
+              </div>
+            </div>
+            <div class="agent-bar-right">
+              <div class="dot-btn r"></div>
+              <div class="dot-btn y"></div>
+              <div class="dot-btn g"></div>
+            </div>
+          </div>
+
+          <div class="agent-body">
+            <div class="msg agent" id="m1">
+              Hey! 👋 I'm <strong>Dex</strong>, Digixr's AI agent. I can help you explore our services, show case studies, or even demo what an agent can do for your business.
+              <div class="agent-chips">
+                <span class="chip">What services do you offer?</span>
+                <span class="chip">Show me a demo</span>
+                <span class="chip">Book a consultation</span>
+              </div>
+            </div>
+
+            <div class="msg user" id="m2">
+              What kind of agents can you build for my business?
+            </div>
+
+            <div class="typing-indicator" id="typing">
+              <span></span><span></span><span></span>
+            </div>
+
+            <div class="msg agent" id="m3">
+              Great question! We build agents for:
+              <br><br>
+              <strong>🔹 Customer Support</strong> — Handle 80%+ of inquiries autonomously<br>
+              <strong>🔹 Sales & Lead Qualification</strong> — Qualify, nurture, and book meetings<br>
+              <strong>🔹 Operations</strong> — Automate workflows, data entry, reporting<br>
+              <strong>🔹 Code & QA</strong> — Review code, run tests, fix bugs
+              <br>
+              <button class="action-btn">📅 Book a Strategy Call</button>
+            </div>
+          </div>
+
+          <div class="agent-input-bar">
+            <input type="text" placeholder="Ask Dex anything..." />
+            <button class="send-btn">→</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    // ──────────── PARTICLE NETWORK ────────────
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, pts = [], mouse = { x: -1000, y: -1000 };
+
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    function init() {
+      pts = [];
+      const n = Math.min(55, Math.floor(W * H / 22000));
+      for (let i = 0; i < n; i++) {
+        const t = Math.random();
+        pts.push({
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+          size: Math.random() * 2 + 0.8,
+          color: `rgba(${76+Math.round(t*(66-76))},${201+Math.round(t*(198-201))},${208+Math.round(t*(139-208))},0.4)`,
+        });
+      }
+    }
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        const dx = mouse.x - p.x, dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 250) { p.vx += dx * 0.00003; p.vy += dy * 0.00003; }
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.fillStyle = p.color; ctx.fill();
+        for (let j = i+1; j < pts.length; j++) {
+          const p2 = pts[j];
+          const d = Math.sqrt((p.x-p2.x)**2 + (p.y-p2.y)**2);
+          if (d < 130) {
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(76,201,208,${0.055 * (1 - d/130)})`;
+            ctx.lineWidth = 0.6; ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+    canvas.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener('resize', () => { resize(); init(); });
+    resize(); init(); draw();
+
+    // ──────────── CHAT ANIMATION SEQUENCE ────────────
+    const msgs = ['m1', 'm2', 'm3'];
+    const delays = [800, 2500, 5500];
+
+    // Show typing before m3
+    setTimeout(() => {
+      document.getElementById('m1').classList.add('visible');
+    }, delays[0]);
+
+    setTimeout(() => {
+      document.getElementById('m2').classList.add('visible');
+    }, delays[1]);
+
+    setTimeout(() => {
+      document.getElementById('typing').classList.add('visible');
+    }, 3800);
+
+    setTimeout(() => {
+      document.getElementById('typing').classList.remove('visible');
+      document.getElementById('m3').classList.add('visible');
+    }, delays[2]);
+  </script>
+</body>
+</html>

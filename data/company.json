@@ -1,0 +1,314 @@
+{
+  "company": {
+    "name": "Digixr Technologies",
+    "tagline": "Empowering Businesses with AI Powered Innovation",
+    "aspiration": "Revolutionizing Businesses and Enabling a Better World Through Scalable, Ethical, and Impactful AI Solutions",
+    "founded": 2022,
+    "employees": "10-12",
+    "location": "Coimbatore, India",
+    "specializations": [
+      "Agentic AI Services",
+      "ERP Services",
+      "Next-gen App Services"
+    ]
+  },
+
+  "founders": [
+    {
+      "name": "Dineshkumar Duraisamy",
+      "role": "Co-Founder",
+      "photo": "image/team/dinesh.jpg",
+      "experience": "20+ Years of IT Experience",
+      "education": "IIM Bangalore (PGP 9-11)",
+      "highlights": [
+        "Senior Product Management roles @ Unisys, Cognizant",
+        "Experienced in engineering Transformative AI products",
+        "Specialised in Agentic AI Solutions"
+      ]
+    },
+    {
+      "name": "Saravanakumar D",
+      "role": "Co-Founder",
+      "photo": "image/team/saravana.jpg",
+      "experience": "17+ Years of IT Experience",
+      "education": "Engineering graduate, GCT Coimbatore",
+      "highlights": [
+        "Enterprise architect roles in Robert Bosch, NEXT Techno Solutions",
+        "Patent holder on Wireless Technologies",
+        "Passionate about Design Patterns and Engineering best practices"
+      ]
+    }
+  ],
+
+  "services": [
+    {
+      "id": "context-engineering",
+      "stage": "01",
+      "stageLabel": "Context",
+      "title": "Context Engineering Services",
+      "icon": "layers",
+      "color": "#4CC9D0",
+      "description": "Intelligence before code. We engineer the context layer — system constraints, domain knowledge, and task boundaries — so your agents think right before they act.",
+      "offerings": [
+        {
+          "category": "Layering of Context",
+          "items": [
+            "System Context",
+            "Domain Context",
+            "Task Context",
+            "Interaction Context",
+            "Response Context"
+          ]
+        },
+        {
+          "category": "Context Chaining",
+          "items": [
+            "Multi-step Query Decomposition",
+            "Cross-Domain Context Synthesis",
+            "Contextual Recommendation Pipelines",
+            "Chain-of-Context Orchestration"
+          ]
+        },
+        {
+          "category": "Knowledge Engineering",
+          "items": [
+            "RAG Pipeline Design",
+            "Knowledge Graph Architecture",
+            "Retrieval Strategy",
+            "Chunking & Embedding Optimization"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "agent-engineering",
+      "stage": "02",
+      "stageLabel": "Build",
+      "title": "Agent Engineering & Development",
+      "icon": "cpu",
+      "color": "#3BBFA6",
+      "description": "Your core AI capability, engineered right. From single-agent pipelines to multi-agent orchestration — we design, build, and ship production-grade agents that actually work in the real world.",
+      "offerings": [
+        {
+          "category": "Agent Design & Architecture",
+          "items": [
+            "Agent Workflow vs Agentic AI",
+            "ReAct & CoT Reasoning",
+            "Supervisor & Swarm Patterns",
+            "Multi-Agent Orchestration"
+          ]
+        },
+        {
+          "category": "LLM Strategy",
+          "items": [
+            "Model Selection & Benchmarking",
+            "Prompt Engineering",
+            "Fine-tuning & Distillation",
+            "Cost Optimization"
+          ]
+        },
+        {
+          "category": "MCP Tool Integration",
+          "items": [
+            "Function Calling Protocols",
+            "API & Database Connectors",
+            "CRM & ERP Integration",
+            "External Tool Binding"
+          ]
+        },
+        {
+          "category": "Agent Lifecycle Management",
+          "items": [
+            "Performance Monitoring",
+            "LLM Observability",
+            "Memory Management",
+            "Versioning & Rollback"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "agent-security",
+      "stage": "03",
+      "stageLabel": "Secure",
+      "title": "Agent Security",
+      "icon": "shield",
+      "color": "#FFB84D",
+      "description": "Most companies treat agent security as an afterthought. We make it a dedicated lifecycle stage — because one prompt injection can undo months of engineering.",
+      "offerings": [
+        {
+          "category": "Prompt Security",
+          "items": [
+            "Prompt Injection Detection & Defense",
+            "Jailbreak Prevention",
+            "Input Sanitization",
+            "Adversarial Prompt Testing"
+          ]
+        },
+        {
+          "category": "Data Protection",
+          "items": [
+            "Data Exfiltration Prevention",
+            "PII Detection & Redaction",
+            "Context Window Leakage Prevention",
+            "Sensitive Data Boundaries"
+          ]
+        },
+        {
+          "category": "Access & Permission Control",
+          "items": [
+            "Agent Permission Boundaries",
+            "Tool Access Governance",
+            "Human-in-the-Loop Gates",
+            "Least-Privilege Execution"
+          ]
+        },
+        {
+          "category": "Runtime Guardrails",
+          "items": [
+            "Output Filtering & Validation",
+            "Action Sandboxing",
+            "Rate Limiting & Cost Controls",
+            "Fallback & Escalation Strategies"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ai-assurance",
+      "stage": "04",
+      "stageLabel": "Assure",
+      "title": "Agentic AI Assurance Services",
+      "icon": "check-circle",
+      "color": "#42C68B",
+      "description": "Ship with confidence, not crossed fingers. We validate your agents for reliability, fairness, and trust — because an unverified agent is a liability, not an asset.",
+      "offerings": [
+        {
+          "category": "Agentic Evaluation",
+          "items": [
+            "Convergence & Agent Trajectory",
+            "Task Completion Accuracy",
+            "Agent Denial Rate",
+            "Multi-step Reasoning Validation"
+          ]
+        },
+        {
+          "category": "LLM-as-a-Judge",
+          "items": [
+            "RAGAS",
+            "DeepEVal",
+            "Custom Judge Pipelines",
+            "Human-AI Agreement Scoring"
+          ]
+        },
+        {
+          "category": "Explainable AI",
+          "items": [
+            "SHAP",
+            "LIME",
+            "Attention Visualization",
+            "Decision Audit Trails"
+          ]
+        },
+        {
+          "category": "Trustworthy Assurance",
+          "items": [
+            "Entity / Topic Bias",
+            "Hallucination Detection",
+            "Refusal Ratio",
+            "Toxicity Scoring"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "clients": [
+    {
+      "id": "timesmart",
+      "name": "TimeSmart.AI",
+      "logo": "image/clients/timesmart.png",
+      "description": "Managed the development of entire backend for the TimeSmart.ai SaaS platform. Built with proper Microservices architecture and design paradigms, leveraging Java Spring Boot and MongoDB Technologies.",
+      "tags": ["SaaS", "Microservices", "Java Spring Boot", "MongoDB"]
+    },
+    {
+      "id": "smoor",
+      "name": "SMOOR",
+      "subtitle": "True Couverture Chocolates",
+      "logo": "image/clients/smoor.png",
+      "description": "Managed the development and maintenance of the ERP Platform covering their end to end backend supply chain from procurement to manufacturing to Sales and Delivery. Built on top of open source ERPNext Platform.",
+      "tags": ["ERP", "Supply Chain", "ERPNext", "Manufacturing"]
+    },
+    {
+      "id": "capsmart",
+      "name": "CAPSmart",
+      "logo": "image/clients/capsmart.png",
+      "description": "Managed the development of entire backend for the CAPSmart SaaS platform. Built with proper Microservices architecture and design paradigms, leveraging Java Spring Boot and MongoDB Technologies.",
+      "tags": ["SaaS", "Microservices", "Java Spring Boot", "MongoDB"]
+    },
+    {
+      "id": "iba",
+      "name": "IBA",
+      "subtitle": "Ibacart",
+      "logo": "image/clients/iba.png",
+      "description": "Setting up the eCommerce platform for Ibacart using the Shopify engine. Custom development of key policies as per their business needs. Integration with 3rd party logistics and payment providers.",
+      "tags": ["eCommerce", "Shopify", "Logistics", "Payments"]
+    }
+  ],
+
+  "caseStudies": [
+    {
+      "id": "contract-chatbot",
+      "title": "Q&A Chatbot for Contract Management Portal",
+      "description": "Multi-agent system for intelligent contract querying using Vector RAG and Graph RAG.",
+      "architecture": {
+        "agents": [
+          {
+            "name": "Supervisor Agent",
+            "role": "Query analysis, classification & decomposition"
+          },
+          {
+            "name": "Contract Query Agent",
+            "role": "Handles Semantic Query over a particular contract",
+            "tech": "Vector RAG"
+          },
+          {
+            "name": "Contract Manager Query Agent",
+            "role": "Handles Multi-hop or Multi-entity related complex queries",
+            "tech": "Graph RAG"
+          }
+        ],
+        "pipeline": [
+          "PDF Ingestion",
+          "Chunking",
+          "Embedding",
+          "Entity Extraction",
+          "Relationship Extraction"
+        ],
+        "infrastructure": ["Vector DB", "Knowledge Graph"]
+      }
+    },
+    {
+      "id": "contract-creation",
+      "title": "Automated Contract Creation",
+      "description": "AI-powered contract creation pipeline with extraction and validation using ReAct-based agents.",
+      "architecture": {
+        "agents": [
+          {
+            "name": "Extraction Agent",
+            "role": "ReAct-based agent for extracting contract terms, services, and compensation",
+            "outputs": "Extracted Info (JSON format)"
+          },
+          {
+            "name": "Critique Agent",
+            "role": "Validates extracted data with structural, completeness, and correctness checks",
+            "actions": {
+              "onSuccess": "Push to Contract Management System",
+              "onFailure": "Route to Contract Manager Review"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

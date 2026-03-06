@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digixr — Services Section Mockup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #FAFCFD; color: #2D3436; overflow-x: hidden; }
+
+    /* ─── Brand palette CSS vars ─── */
+    :root {
+      --cyan: #4CC9D0;
+      --cyan-rgb: 76,201,208;
+      --teal: #3BBFA6;
+      --teal-rgb: 59,191,166;
+      --emerald: #42C68B;
+      --emerald-rgb: 66,198,139;
+      --amber: #FFB84D;
+      --amber-rgb: 255,184,77;
+      --dark-bg: #0a0a12;
+      --dark-surface: #12121e;
+      --dark-border: rgba(255,255,255,0.06);
+    }
+
+    /* ─── Navbar ─── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(250,252,253,0.88); backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(226,232,240,0.6);
+      padding: 16px 64px; display: flex; align-items: center; justify-content: space-between;
+      transition: backdrop-filter 0.3s;
+    }
+    .logo-wrap { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { height: 40px; width: auto; }
+    .logo-text { font-size: 22px; font-weight: 700; letter-spacing: 0.12em; background: linear-gradient(135deg, var(--cyan), var(--emerald)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .logo-sub { font-size: 10px; letter-spacing: 0.3em; color: #A0AEC0; font-weight: 500; }
+    .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+    .nav-links a { text-decoration: none; color: #4A5568; font-size: 15px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-cta { background: linear-gradient(135deg, var(--cyan), var(--emerald)); color: white !important; padding: 10px 24px; border-radius: 10px; font-weight: 600 !important; box-shadow: 0 4px 14px rgba(66,198,139,0.25); }
+
+    /* ─── Hero (simplified for mockup) ─── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; padding-top: 80px;
+      /* background driven by JS — starts #FAFCFD */
+    }
+    #heroCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+    .hero-content { position: relative; z-index: 10; text-align: center; max-width: 880px; padding: 0 32px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.85); border: 1px solid rgba(76,201,208,0.2);
+      border-radius: 100px; padding: 8px 20px; font-size: 14px; font-weight: 500;
+      color: #2BA8B0; margin-bottom: 32px; backdrop-filter: blur(10px);
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .hero-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); animation: pulse 2s infinite; }
+    .hero-headline {
+      font-size: 72px; font-weight: 800; line-height: 1.05; letter-spacing: -0.03em;
+      margin-bottom: 24px; animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+    }
+    .hero-headline .gradient { background: linear-gradient(135deg, var(--cyan) 0%, var(--teal) 50%, var(--emerald) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-sub {
+      font-family: 'Inter'; font-size: 19px; line-height: 1.65; color: #718096;
+      max-width: 580px; margin: 0 auto 40px;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+    }
+    .hero-ctas {
+      display: flex; gap: 16px; justify-content: center;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), var(--emerald)); color: white;
+      font-family: 'Plus Jakarta Sans'; font-size: 16px; font-weight: 600;
+      padding: 16px 38px; border-radius: 14px; border: none; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(66,198,139,0.3); transition: all 0.3s;
+    }
+    .btn-primary:hover { box-shadow: 0 8px 28px rgba(66,198,139,0.4); transform: translateY(-2px); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.7); color: var(--teal);
+      font-family: 'Plus Jakarta Sans'; font-size: 16px; font-weight: 600;
+      padding: 16px 38px; border-radius: 14px; border: 1.5px solid rgba(59,191,166,0.25);
+      cursor: pointer; transition: all 0.3s; backdrop-filter: blur(8px);
+    }
+    .btn-secondary:hover { background: rgba(59,191,166,0.06); border-color: var(--teal); }
+
+    /* ─── Transition zone: just spacing + glow accent ─── */
+    .transition-zone {
+      height: 120px; position: relative;
+    }
+    /* Subtle teal glow horizon */
+    .transition-zone::before {
+      content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent 5%, rgba(var(--teal-rgb), 0.15) 50%, transparent 95%);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .transition-zone.glow-visible::before { opacity: 1; }
+
+    /* ─── Services section ─── */
+    .services-section {
+      position: relative; padding-bottom: 120px;
+      /* No background — body bg handles everything */
+    }
+
+    /* ─── Section header ─── */
+    .section-header {
+      text-align: center; padding: 80px 32px 60px; position: relative;
+    }
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 20px;
+    }
+    .section-label::before, .section-label::after {
+      content: ''; width: 24px; height: 1px; background: rgba(59,191,166,0.4);
+    }
+    .section-title {
+      font-size: 48px; font-weight: 800; letter-spacing: -0.02em; color: white;
+      line-height: 1.15; margin-bottom: 16px;
+    }
+    .section-title .gradient { background: linear-gradient(135deg, var(--cyan), var(--emerald)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .section-subtitle {
+      font-family: 'Inter'; font-size: 18px; color: rgba(255,255,255,0.45);
+      max-width: 600px; margin: 0 auto; line-height: 1.6;
+    }
+
+    /* ─── Sticky lifecycle bar ─── */
+    .lifecycle-bar {
+      position: sticky; top: 72px; z-index: 90;
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px 32px;
+      background: transparent; backdrop-filter: blur(20px);
+      border-bottom: 1px solid transparent;
+      opacity: 0; transform: translateY(-10px);
+      transition: opacity 0.4s, transform 0.4s, background 0.3s, border-color 0.3s;
+    }
+    .lifecycle-bar.visible { opacity: 1; transform: translateY(0); }
+    .lifecycle-track {
+      display: flex; align-items: center; gap: 0; max-width: 640px; width: 100%;
+    }
+    .lifecycle-node {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 16px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.05em;
+      color: rgba(255,255,255,0.3); transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+      white-space: nowrap; cursor: pointer;
+    }
+    .lifecycle-node .num {
+      width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; border: 1.5px solid rgba(255,255,255,0.12);
+      transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    .lifecycle-connector {
+      flex: 1; height: 1px; background: rgba(255,255,255,0.08); position: relative; min-width: 40px;
+    }
+    .lifecycle-connector .fill {
+      position: absolute; top: 0; left: 0; height: 100%; width: 0;
+      transition: width 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    /* Active states */
+    .lifecycle-node[data-active="true"] { color: white; }
+    .lifecycle-node[data-service="context"][data-active="true"] .num { border-color: var(--cyan); background: rgba(var(--cyan-rgb),0.15); color: var(--cyan); box-shadow: 0 0 12px rgba(var(--cyan-rgb),0.3); }
+    .lifecycle-node[data-service="build"][data-active="true"] .num { border-color: var(--teal); background: rgba(var(--teal-rgb),0.15); color: var(--teal); box-shadow: 0 0 12px rgba(var(--teal-rgb),0.3); }
+    .lifecycle-node[data-service="secure"][data-active="true"] .num { border-color: var(--amber); background: rgba(var(--amber-rgb),0.15); color: var(--amber); box-shadow: 0 0 12px rgba(var(--amber-rgb),0.3); }
+    .lifecycle-node[data-service="assure"][data-active="true"] .num { border-color: var(--emerald); background: rgba(var(--emerald-rgb),0.15); color: var(--emerald); box-shadow: 0 0 12px rgba(var(--emerald-rgb),0.3); }
+    /* Past (completed) states */
+    .lifecycle-node[data-past="true"] { color: rgba(255,255,255,0.5); }
+    .lifecycle-node[data-past="true"] .num { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); }
+    .lifecycle-connector[data-filled="true"] .fill { width: 100%; }
+    .lifecycle-connector[data-service="context"] .fill { background: linear-gradient(90deg, var(--cyan), var(--teal)); }
+    .lifecycle-connector[data-service="build"] .fill { background: linear-gradient(90deg, var(--teal), var(--amber)); }
+    .lifecycle-connector[data-service="secure"] .fill { background: linear-gradient(90deg, var(--amber), var(--emerald)); }
+
+    /* ─── Service panel ─── */
+    .service-panel {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+      max-width: 1280px; margin: 0 auto; padding: 80px 64px; position: relative;
+      align-items: center;
+    }
+    .service-panel.reversed { direction: rtl; }
+    .service-panel.reversed > * { direction: ltr; }
+
+    /* Background number */
+    .service-panel::before {
+      content: attr(data-num);
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-size: 320px; font-weight: 800; color: rgba(255,255,255,0.015);
+      pointer-events: none; user-select: none; line-height: 1;
+    }
+
+    /* ─── Canvas visualization area ─── */
+    .viz-area {
+      position: relative; aspect-ratio: 4/3; border-radius: 20px;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--dark-border);
+      overflow: hidden;
+    }
+    .viz-area canvas { width: 100%; height: 100%; display: block; }
+
+    /* ─── Service content ─── */
+    .service-content { position: relative; }
+    .service-eyebrow {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .service-panel[data-service="context"] .service-eyebrow { color: var(--cyan); }
+    .service-panel[data-service="build"] .service-eyebrow { color: var(--teal); }
+    .service-panel[data-service="secure"] .service-eyebrow { color: var(--amber); }
+    .service-panel[data-service="assure"] .service-eyebrow { color: var(--emerald); }
+
+    .service-title {
+      font-size: 36px; font-weight: 800; color: white; letter-spacing: -0.02em;
+      line-height: 1.15; margin-bottom: 16px;
+    }
+    .service-desc {
+      font-family: 'Inter'; font-size: 16px; color: rgba(255,255,255,0.5);
+      line-height: 1.7; margin-bottom: 32px;
+    }
+
+    /* ─── Offering categories (accordion) ─── */
+    .offering {
+      border: 1px solid var(--dark-border); border-radius: 14px;
+      margin-bottom: 10px; overflow: hidden;
+      transition: border-color 0.35s cubic-bezier(0.16,1,0.3,1);
+      background: rgba(255,255,255,0.02);
+    }
+    .offering:hover, .offering.active {
+      border-color: rgba(255,255,255,0.12);
+    }
+    .offering-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; cursor: pointer; user-select: none;
+      transition: background 0.2s;
+    }
+    .offering-header:hover { background: rgba(255,255,255,0.03); }
+    .offering-name {
+      font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.85);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .offering-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .service-panel[data-service="context"] .offering-dot { background: var(--cyan); }
+    .service-panel[data-service="build"] .offering-dot { background: var(--teal); }
+    .service-panel[data-service="secure"] .offering-dot { background: var(--amber); }
+    .service-panel[data-service="assure"] .offering-dot { background: var(--emerald); }
+
+    .offering-chevron {
+      width: 20px; height: 20px; color: rgba(255,255,255,0.3);
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .offering.active .offering-chevron { transform: rotate(180deg); }
+
+    .offering-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .offering.active .offering-body { max-height: 300px; }
+    .offering-items {
+      padding: 0 20px 16px; display: flex; flex-wrap: wrap; gap: 8px;
+    }
+
+    /* ─── Tech tags ─── */
+    .tech-tag {
+      display: inline-flex; padding: 5px 14px; border-radius: 100px;
+      font-family: 'Inter'; font-size: 13px; font-weight: 500;
+      transition: all 0.25s;
+    }
+    .service-panel[data-service="context"] .tech-tag {
+      background: rgba(var(--cyan-rgb), 0.08); color: var(--cyan);
+      border: 1px solid rgba(var(--cyan-rgb), 0.15);
+    }
+    .service-panel[data-service="build"] .tech-tag {
+      background: rgba(var(--teal-rgb), 0.08); color: var(--teal);
+      border: 1px solid rgba(var(--teal-rgb), 0.15);
+    }
+    .service-panel[data-service="secure"] .tech-tag {
+      background: rgba(var(--amber-rgb), 0.08); color: var(--amber);
+      border: 1px solid rgba(var(--amber-rgb), 0.15);
+    }
+    .service-panel[data-service="assure"] .tech-tag {
+      background: rgba(var(--emerald-rgb), 0.08); color: var(--emerald);
+      border: 1px solid rgba(var(--emerald-rgb), 0.15);
+    }
+    .tech-tag:hover { transform: translateY(-1px); }
+
+    /* ─── River divider between services ─── */
+    .river-divider {
+      height: 120px; position: relative; max-width: 1280px; margin: 0 auto;
+    }
+    .river-divider canvas { width: 100%; height: 100%; }
+
+    /* ─── Agent chat widget ─── */
+    .chat-widget {
+      position: fixed; bottom: 24px; right: 24px; z-index: 200;
+    }
+    .chat-toggle {
+      width: 60px; height: 60px; border-radius: 50%; border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--cyan), var(--emerald));
+      box-shadow: 0 4px 20px rgba(66,198,139,0.35);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s; position: relative;
+    }
+    .chat-toggle:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(66,198,139,0.45); }
+    .chat-toggle svg { width: 26px; height: 26px; color: white; }
+    .chat-toggle .chat-pulse {
+      position: absolute; inset: -4px; border-radius: 50%;
+      border: 2px solid var(--emerald); opacity: 0;
+      animation: chatPulse 2.5s infinite;
+    }
+    @keyframes chatPulse { 0% { opacity: 0.6; transform: scale(1); } 100% { opacity: 0; transform: scale(1.4); } }
+
+    .chat-panel {
+      position: absolute; bottom: 72px; right: 0;
+      width: 380px; height: 520px;
+      background: rgba(18,18,30,0.95); backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; overflow: hidden;
+      transform: scale(0.9) translateY(10px); opacity: 0;
+      pointer-events: none; transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      display: flex; flex-direction: column;
+    }
+    .chat-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+
+    .chat-header {
+      padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .chat-avatar {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(var(--cyan-rgb),0.2), rgba(var(--emerald-rgb),0.2));
+      border: 1px solid rgba(var(--teal-rgb),0.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .chat-avatar svg { width: 18px; height: 18px; color: var(--teal); }
+    .chat-header-text h4 { font-size: 15px; color: white; font-weight: 600; }
+    .chat-header-text p { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 20px 24px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .chat-msg {
+      max-width: 85%; padding: 12px 16px; border-radius: 14px;
+      font-family: 'Inter'; font-size: 14px; line-height: 1.55;
+      animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .chat-msg.agent {
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.06); align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .chat-msg.agent .reasoning {
+      font-size: 12px; color: var(--teal); margin-top: 8px;
+      padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.06);
+      font-style: italic;
+    }
+    .chat-quick-actions {
+      display: flex; flex-wrap: wrap; gap: 6px; padding: 0 24px 12px;
+    }
+    .quick-action {
+      padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 500;
+      background: rgba(var(--teal-rgb), 0.08); color: var(--teal);
+      border: 1px solid rgba(var(--teal-rgb), 0.15); cursor: pointer;
+      font-family: 'Inter'; transition: all 0.2s;
+    }
+    .quick-action:hover { background: rgba(var(--teal-rgb), 0.15); }
+
+    .chat-input-area {
+      padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; gap: 10px;
+    }
+    .chat-input {
+      flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 10px 14px; color: white; font-family: 'Inter';
+      font-size: 14px; outline: none; transition: border-color 0.2s;
+    }
+    .chat-input::placeholder { color: rgba(255,255,255,0.25); }
+    .chat-input:focus { border-color: rgba(var(--teal-rgb), 0.4); }
+    .chat-send {
+      width: 40px; height: 40px; border-radius: 10px; border: none;
+      background: linear-gradient(135deg, var(--cyan), var(--emerald)); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .chat-send:hover { transform: scale(1.05); }
+    .chat-send svg { width: 18px; height: 18px; color: white; }
+
+    /* ─── Animations ─── */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Scroll-triggered animations */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── Reduced motion ─── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+
+    /* ─── Tablet ─── */
+    @media (max-width: 1024px) {
+      .navbar { padding: 14px 32px; }
+      .nav-links { gap: 20px; }
+      .nav-links a { font-size: 14px; }
+      .hero-headline { font-size: 52px; }
+      .hero-sub { font-size: 17px; max-width: 480px; }
+      .hero-content { max-width: 600px; }
+      .section-title { font-size: 38px; }
+      .service-panel { grid-template-columns: 1fr; gap: 32px; padding: 60px 48px; }
+      .service-panel.reversed { direction: ltr; }
+      .service-title { font-size: 30px; }
+      .lifecycle-node span:not(.num) { display: none; }
+    }
+
+    /* ─── Mobile ─── */
+    @media (max-width: 768px) {
+      .navbar { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .logo-icon { height: 32px; }
+      .logo-wrap { gap: 8px; }
+      .hero { padding-top: 70px; }
+      .hero-content { max-width: 100%; padding: 0 48px; }
+      .hero-badge { font-size: 12px; padding: 6px 14px; margin-bottom: 20px; }
+      .hero-headline { font-size: 34px; margin-bottom: 16px; }
+      .hero-sub { font-size: 15px; line-height: 1.55; max-width: 320px; margin-bottom: 28px; }
+      .hero-ctas { flex-direction: column; align-items: center; gap: 12px; }
+      .btn-primary, .btn-secondary { padding: 14px 32px; font-size: 15px; width: 100%; max-width: 280px; }
+      .section-title { font-size: 30px; }
+      .section-subtitle { font-size: 15px; }
+      .service-panel { padding: 40px 24px; gap: 24px; }
+      .service-title { font-size: 26px; }
+      .service-panel::before { font-size: 180px; }
+      .lifecycle-bar { top: 56px; padding: 12px 16px; }
+      .chat-panel { width: calc(100vw - 48px); right: -12px; height: 460px; }
+    }
+
+    /* ─── Small mobile ─── */
+    @media (max-width: 480px) {
+      .hero-content { padding: 0 36px; }
+      .hero-headline { font-size: 28px; }
+      .hero-sub { font-size: 14px; max-width: 260px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ Navbar ═══ -->
+  <nav class="navbar" id="navbar">
+    <div class="logo-wrap">
+      <img src="../image/logo/logo-symbol-dark.png" alt="Digixr" class="logo-icon">
+      <div><div class="logo-text">DIGIXR</div><div class="logo-sub">TECHNOLOGIES</div></div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li><li><a href="#">Case Studies</a></li>
+      <li><a href="#">Playground</a></li><li><a href="#">Insights</a></li>
+      <li><a href="#">About</a></li><li><a href="#" class="nav-cta">Talk to Agent</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══ Hero ═══ -->
+  <section class="hero" id="heroSection">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="dot"></span> Agentic AI Native Organization</div>
+      <h1 class="hero-headline">We Don't Just Build<br><span class="gradient">AI Agents.</span><br>We Are Built By Them.</h1>
+      <p class="hero-sub">Digixr Technologies deploys autonomous AI agents that power operations, accelerate delivery, and transform your business from the inside out.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">Talk to Our Agent →</button>
+        <button class="btn-secondary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">Explore Services</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Light-to-dark transition ═══ -->
+  <div class="transition-zone"></div>
+
+  <!-- ═══ Services section ═══ -->
+  <section class="services-section" id="services">
+
+    <!-- Section header -->
+    <div class="section-header reveal">
+      <div class="section-label">Our GenAI Services</div>
+      <h2 class="section-title">Context. Build. Secure. <span class="gradient">Assure.</span></h2>
+      <p class="section-subtitle">Four stages of the AI agent lifecycle — context first, secure by design, assured at scale.</p>
+    </div>
+
+    <!-- Sticky lifecycle bar -->
+    <div class="lifecycle-bar" id="lifecycleBar">
+      <div class="lifecycle-track">
+        <div class="lifecycle-node" data-service="context" data-active="false" onclick="scrollToService('context')">
+          <span class="num">01</span><span>CONTEXT</span>
+        </div>
+        <div class="lifecycle-connector" data-service="context"><div class="fill"></div></div>
+        <div class="lifecycle-node" data-service="build" data-active="false" onclick="scrollToService('build')">
+          <span class="num">02</span><span>BUILD</span>
+        </div>
+        <div class="lifecycle-connector" data-service="build"><div class="fill"></div></div>
+        <div class="lifecycle-node" data-service="secure" data-active="false" onclick="scrollToService('secure')">
+          <span class="num">03</span><span>SECURE</span>
+        </div>
+        <div class="lifecycle-connector" data-service="secure"><div class="fill"></div></div>
+        <div class="lifecycle-node" data-service="assure" data-active="false" onclick="scrollToService('assure')">
+          <span class="num">04</span><span>ASSURE</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Service 1: Context Engineering ─── -->
+    <div class="service-panel" data-service="context" data-num="01" id="panel-context">
+      <div class="viz-area reveal">
+        <canvas id="vizContext"></canvas>
+      </div>
+      <div class="service-content">
+        <div class="service-eyebrow reveal">Stage 01 — Context</div>
+        <h3 class="service-title reveal reveal-delay-1">Context Engineering<br>Services</h3>
+        <p class="service-desc reveal reveal-delay-2">Intelligence before code. We engineer the context layer — system constraints, domain knowledge, and task boundaries — so your agents think right before they act.</p>
+        <div class="offerings-list reveal reveal-delay-3">
+          <div class="offering" data-highlight="layers">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Layering of Context</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">System Context</span>
+                <span class="tech-tag">Domain Context</span>
+                <span class="tech-tag">Task Context</span>
+                <span class="tech-tag">Interaction Context</span>
+                <span class="tech-tag">Response Context</span>
+              </div>
+            </div>
+          </div>
+          <div class="offering" data-highlight="chain">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Context Chaining</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">Multi-step Query Decomposition</span>
+                <span class="tech-tag">Cross-Domain Context Synthesis</span>
+                <span class="tech-tag">Contextual Recommendation Pipelines</span>
+                <span class="tech-tag">Chain-of-Context Orchestration</span>
+              </div>
+            </div>
+          </div>
+          <div class="offering" data-highlight="knowledge">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Knowledge Engineering</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">RAG Pipeline Design</span>
+                <span class="tech-tag">Knowledge Graph Architecture</span>
+                <span class="tech-tag">Retrieval Strategy</span>
+                <span class="tech-tag">Chunking & Embedding Optimization</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- River divider 1 -->
+    <div class="river-divider"><canvas id="river1"></canvas></div>
+
+    <!-- ─── Service 2: Agent Engineering ─── -->
+    <div class="service-panel reversed" data-service="build" data-num="02" id="panel-build">
+      <div class="viz-area reveal">
+        <canvas id="vizBuild"></canvas>
+      </div>
+      <div class="service-content">
+        <div class="service-eyebrow reveal">Stage 02 — Build</div>
+        <h3 class="service-title reveal reveal-delay-1">Agent Engineering<br>& Development</h3>
+        <p class="service-desc reveal reveal-delay-2">Your core AI capability, engineered right. From single-agent pipelines to multi-agent orchestration — we design, build, and ship production-grade agents that actually work in the real world.</p>
+        <div class="offerings-list reveal reveal-delay-3">
+          <div class="offering" data-highlight="design">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Agent Design & Architecture</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">Agent Workflow vs Agentic AI</span>
+                <span class="tech-tag">ReAct & CoT Reasoning</span>
+                <span class="tech-tag">Supervisor & Swarm Patterns</span>
+                <span class="tech-tag">Multi-Agent Orchestration</span>
+              </div>
+            </div>
+          </div>
+          <div class="offering" data-highlight="llm">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> LLM Strategy</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">Model Selection & Benchmarking</span>
+                <span class="tech-tag">Prompt Engineering</span>
+                <span class="tech-tag">Fine-tuning & Distillation</span>
+                <span class="tech-tag">Cost Optimization</span>
+              </div>
+            </div>
+          </div>
+          <div class="offering" data-highlight="tools">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> MCP Tool Integration</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">Function Calling Protocols</span>
+                <span class="tech-tag">API & Database Connectors</span>
+                <span class="tech-tag">CRM & ERP Integration</span>
+                <span class="tech-tag">External Tool Binding</span>
+              </div>
+            </div>
+          </div>
+          <div class="offering" data-highlight="lifecycle">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Agent Lifecycle Management</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">Performance Monitoring</span>
+                <span class="tech-tag">LLM Observability</span>
+                <span class="tech-tag">Memory Management</span>
+                <span class="tech-tag">Versioning & Rollback</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- River divider 2 -->
+    <div class="river-divider"><canvas id="river2"></canvas></div>
+
+    <!-- ─── Service 3: Agent Security (NEW) ─── -->
+    <div class="service-panel" data-service="secure" data-num="03" id="panel-secure">
+      <div class="viz-area reveal">
+        <canvas id="vizSecure"></canvas>
+      </div>
+      <div class="service-content">
+        <div class="service-eyebrow reveal">Stage 03 — Secure</div>
+        <h3 class="service-title reveal reveal-delay-1">Agent<br>Security</h3>
+        <p class="service-desc reveal reveal-delay-2">Most companies treat agent security as an afterthought. We make it a dedicated lifecycle stage — because one prompt injection can undo months of engineering.</p>
+        <div class="offerings-list reveal reveal-delay-3">
+          <div class="offering" data-highlight="prompt">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Prompt Security</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">Prompt Injection Defense</span>
+                <span class="tech-tag">Jailbreak Prevention</span>
+                <span class="tech-tag">Input Sanitization</span>
+                <span class="tech-tag">Adversarial Testing</span>
+              </div>
+            </div>
+          </div>
+          <div class="offering" data-highlight="data">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Data Protection</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">Exfiltration Prevention</span>
+                <span class="tech-tag">PII Detection & Redaction</span>
+                <span class="tech-tag">Context Window Leakage</span>
+                <span class="tech-tag">Data Boundaries</span>
+              </div>
+            </div>
+          </div>
+          <div class="offering" data-highlight="access">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Access & Permission Control</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">Permission Boundaries</span>
+                <span class="tech-tag">Tool Access Governance</span>
+                <span class="tech-tag">Human-in-the-Loop Gates</span>
+                <span class="tech-tag">Least-Privilege Execution</span>
+              </div>
+            </div>
+          </div>
+          <div class="offering" data-highlight="guardrails">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Runtime Guardrails</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">Output Filtering</span>
+                <span class="tech-tag">Action Sandboxing</span>
+                <span class="tech-tag">Rate Limiting & Cost Controls</span>
+                <span class="tech-tag">Fallback Strategies</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- River divider 3 -->
+    <div class="river-divider"><canvas id="river3"></canvas></div>
+
+    <!-- ─── Service 4: AI Assurance ─── -->
+    <div class="service-panel reversed" data-service="assure" data-num="04" id="panel-assure">
+      <div class="viz-area reveal">
+        <canvas id="vizAssure"></canvas>
+      </div>
+      <div class="service-content">
+        <div class="service-eyebrow reveal">Stage 04 — Assure</div>
+        <h3 class="service-title reveal reveal-delay-1">Agentic AI<br>Assurance Services</h3>
+        <p class="service-desc reveal reveal-delay-2">Ship with confidence, not crossed fingers. We validate your agents for reliability, fairness, and trust — because an unverified agent is a liability, not an asset.</p>
+        <div class="offerings-list reveal reveal-delay-3">
+          <div class="offering" data-highlight="eval">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Agentic Evaluation</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">Convergence & Agent Trajectory</span>
+                <span class="tech-tag">Task Completion Accuracy</span>
+                <span class="tech-tag">Agent Denial Rate</span>
+                <span class="tech-tag">Multi-step Reasoning Validation</span>
+              </div>
+            </div>
+          </div>
+          <div class="offering" data-highlight="judge">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> LLM-as-a-Judge</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">RAGAS</span>
+                <span class="tech-tag">DeepEVal</span>
+                <span class="tech-tag">Custom Judge Pipelines</span>
+                <span class="tech-tag">Human-AI Agreement Scoring</span>
+              </div>
+            </div>
+          </div>
+          <div class="offering" data-highlight="xai">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Explainable AI</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">SHAP</span>
+                <span class="tech-tag">LIME</span>
+                <span class="tech-tag">Attention Visualization</span>
+                <span class="tech-tag">Decision Audit Trails</span>
+              </div>
+            </div>
+          </div>
+          <div class="offering" data-highlight="trust">
+            <div class="offering-header" onclick="toggleOffering(this)">
+              <span class="offering-name"><span class="offering-dot"></span> Trustworthy Assurance</span>
+              <svg class="offering-chevron" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/></svg>
+            </div>
+            <div class="offering-body">
+              <div class="offering-items">
+                <span class="tech-tag">Entity / Topic Bias</span>
+                <span class="tech-tag">Hallucination Detection</span>
+                <span class="tech-tag">Refusal Ratio</span>
+                <span class="tech-tag">Toxicity Scoring</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Agent chat widget ═══ -->
+  <div class="chat-widget" id="chatWidget">
+    <div class="chat-panel" id="chatPanel">
+      <div class="chat-header">
+        <div class="chat-avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4v2a4 4 0 01-8 0V6a4 4 0 014-4zM6.5 18C6.5 15 9 13 12 13s5.5 2 5.5 5"/><circle cx="12" cy="12" r="10"/></svg>
+        </div>
+        <div class="chat-header-text">
+          <h4>Digixr Agent</h4>
+          <p>Powered by our own Context Engineering</p>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-msg agent">
+          Hi! I'm an AI agent built using the same practices we offer to our clients.
+          <br><br>
+          I can help you understand our services, walk through case studies, or discuss how we'd approach your specific challenge.
+          <div class="reasoning">Using ReAct reasoning with layered context: System (Digixr knowledge) + Domain (your industry) + Task (your question)</div>
+        </div>
+      </div>
+      <div class="chat-quick-actions">
+        <button class="quick-action">Our services</button>
+        <button class="quick-action">Case studies</button>
+        <button class="quick-action">My use case</button>
+      </div>
+      <div class="chat-input-area">
+        <input class="chat-input" placeholder="Ask me anything..." id="chatInput">
+        <button class="chat-send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>
+        </button>
+      </div>
+    </div>
+    <button class="chat-toggle" onclick="toggleChat()">
+      <span class="chat-pulse"></span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    </button>
+  </div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════════════════
+       SHARED UTILITIES (from hero animation)
+       ═══════════════════════════════════════════════════════════════ */
+    const CYAN    = { r: 76,  g: 201, b: 208 };
+    const TEAL    = { r: 59,  g: 191, b: 166 };
+    const AMBER   = { r: 255, g: 184, b: 77 };
+    const EMERALD = { r: 66,  g: 198, b: 139 };
+    const WHITE   = { r: 255, g: 255, b: 255 };
+
+    function rgba(c, a) { return `rgba(${c.r},${c.g},${c.b},${a})`; }
+    function lerpColor(a, b, t) {
+      return { r: Math.round(a.r + (b.r - a.r) * t), g: Math.round(a.g + (b.g - a.g) * t), b: Math.round(a.b + (b.b - a.b) * t) };
+    }
+    function quadBezier(p0x, p0y, p1x, p1y, p2x, p2y, t) {
+      const u = 1 - t;
+      return { x: u*u*p0x + 2*u*t*p1x + t*t*p2x, y: u*u*p0y + 2*u*t*p1y + t*t*p2y };
+    }
+    function dist(x1, y1, x2, y2) { return Math.sqrt((x1-x2)**2 + (y1-y2)**2); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       HERO CANVAS (simplified agent network)
+       ═══════════════════════════════════════════════════════════════ */
+    const heroCanvas = document.getElementById('heroCanvas');
+    const heroCtx = heroCanvas.getContext('2d');
+    let heroW, heroH;
+    let heroMouse = { x: -9999, y: -9999 };
+    let heroNodes = [];
+    let heroSignals = [];
+    let heroParticles = [];
+
+    const agentTypes = [
+      { label: 'Strategy', color: CYAN }, { label: 'Code', color: TEAL },
+      { label: 'Support', color: EMERALD }, { label: 'Analytics', color: CYAN },
+      { label: 'Automation', color: TEAL }, { label: 'Security', color: EMERALD },
+      { label: 'Research', color: CYAN }, { label: 'Ops', color: TEAL },
+    ];
+
+    function drawNodeIcon(ctx, type, x, y, s, alpha) {
+      ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+      const c = type.color;
+      ctx.strokeStyle = rgba(c, alpha); ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      // Simple distinct shape per type
+      const idx = agentTypes.indexOf(type);
+      if (idx === 0 || idx === 3 || idx === 6) { // circle types
+        ctx.beginPath(); ctx.arc(0, 0, 7, 0, Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI*2); ctx.fillStyle = rgba(c, alpha*0.5); ctx.fill();
+      } else if (idx === 1 || idx === 4 || idx === 7) { // diamond types
+        ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(8,0); ctx.lineTo(0,8); ctx.lineTo(-8,0); ctx.closePath(); ctx.stroke();
+      } else { // square types
+        ctx.strokeRect(-6,-6,12,12);
+      }
+      ctx.restore();
+    }
+
+    function heroResize() {
+      heroW = heroCanvas.width = heroCanvas.offsetWidth;
+      heroH = heroCanvas.height = heroCanvas.offsetHeight;
+      heroNodes = [];
+      const cx = heroW/2, cy = heroH/2;
+      const isMobile = heroW < 768;
+      const rX = isMobile ? heroW*0.35 : Math.min(heroW*0.4, 480);
+      const rY = isMobile ? heroH*0.32 : Math.min(heroH*0.38, 360);
+
+      for (let i = 0; i < agentTypes.length; i++) {
+        const angle = -Math.PI*0.35 + (Math.PI*2/agentTypes.length)*i;
+        const x = Math.max(60, Math.min(heroW-60, cx + Math.cos(angle)*rX));
+        const y = Math.max(100, Math.min(heroH-60, cy + Math.sin(angle)*rY));
+        heroNodes.push({ x, y, baseX: x, baseY: y, type: agentTypes[i], brightness: 0.3, targetBrightness: 0.3, phase: Math.random()*Math.PI*2, scale: isMobile ? 0.9 : 1.3 });
+      }
+      heroParticles = [];
+      const pCount = Math.min(35, Math.floor(heroW*heroH/40000));
+      for (let i = 0; i < pCount; i++) {
+        heroParticles.push({ x: Math.random()*heroW, y: Math.random()*heroH, vx: (Math.random()-0.5)*0.1, vy: (Math.random()-0.5)*0.1, size: 0.8+Math.random()*1.2, alpha: 0.05+Math.random()*0.08 });
+      }
+    }
+
+    function spawnHeroSignal() {
+      if (heroNodes.length < 2) return;
+      let a = Math.floor(Math.random()*heroNodes.length), b;
+      do { b = Math.floor(Math.random()*heroNodes.length); } while (b === a);
+      const from = heroNodes[a], to = heroNodes[b];
+      const mx = (from.x+to.x)/2, my = (from.y+to.y)/2;
+      const dx = to.x-from.x, dy = to.y-from.y;
+      const d = Math.sqrt(dx*dx+dy*dy)||1;
+      const perp = (30+Math.random()*50)*(Math.random()>0.5?1:-1);
+      heroSignals.push({ from: a, to: b, fx: from.x, fy: from.y, tx: to.x, ty: to.y, cpx: mx+(-dy/d)*perp, cpy: my+(dx/d)*perp, p: 0, speed: 0.005+Math.random()*0.004, color: lerpColor(from.type.color, to.type.color, 0.5), trail: [] });
+    }
+
+    function animateHero(time) {
+      heroCtx.clearRect(0, 0, heroW, heroH);
+      const now = time * 0.001;
+      const isMobile = heroW < 768;
+
+      // Ambient particles
+      for (const p of heroParticles) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > heroW) p.vx *= -1;
+        if (p.y < 0 || p.y > heroH) p.vy *= -1;
+        heroCtx.beginPath(); heroCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        heroCtx.fillStyle = rgba(TEAL, p.alpha); heroCtx.fill();
+      }
+
+      // Connection lines
+      for (let i = 0; i < heroNodes.length; i++) {
+        for (let j = i+1; j < heroNodes.length; j++) {
+          const a = heroNodes[i], b = heroNodes[j];
+          const d = dist(a.x, a.y, b.x, b.y);
+          if (d > heroW*0.6) continue;
+          const alpha = 0.03*(1-d/(heroW*0.6));
+          const mx = (a.x+b.x)/2, my = (a.y+b.y)/2;
+          const dx = b.x-a.x, dy = b.y-a.y;
+          const len = Math.sqrt(dx*dx+dy*dy)||1;
+          heroCtx.beginPath(); heroCtx.moveTo(a.x, a.y);
+          heroCtx.quadraticCurveTo(mx+(-dy/len)*18, my+(dx/len)*18, b.x, b.y);
+          heroCtx.strokeStyle = rgba(TEAL, alpha); heroCtx.lineWidth = 0.7;
+          heroCtx.setLineDash([4,7]); heroCtx.stroke(); heroCtx.setLineDash([]);
+        }
+      }
+
+      // Signals
+      for (let i = heroSignals.length-1; i >= 0; i--) {
+        const s = heroSignals[i]; s.p += s.speed;
+        if (s.p >= 1) { heroNodes[s.to].targetBrightness = 1; heroSignals.splice(i,1); continue; }
+        const pos = quadBezier(s.fx,s.fy,s.cpx,s.cpy,s.tx,s.ty,s.p);
+        s.trail.push({x:pos.x,y:pos.y,age:0});
+        if (s.trail.length > 2) {
+          heroCtx.beginPath(); heroCtx.moveTo(s.trail[0].x, s.trail[0].y);
+          for (let t=1;t<s.trail.length;t++) heroCtx.lineTo(s.trail[t].x, s.trail[t].y);
+          heroCtx.strokeStyle = rgba(s.color, 0.12); heroCtx.lineWidth = 2; heroCtx.stroke();
+        }
+        for (let t=s.trail.length-1;t>=0;t--) {
+          const tp = s.trail[t]; tp.age += 0.02;
+          if (tp.age > 1) { s.trail.splice(t,1); continue; }
+          heroCtx.beginPath(); heroCtx.arc(tp.x,tp.y,(1-tp.age)*2,0,Math.PI*2);
+          heroCtx.fillStyle = rgba(s.color,(1-tp.age)*0.25); heroCtx.fill();
+        }
+        const glow = heroCtx.createRadialGradient(pos.x,pos.y,0,pos.x,pos.y,14);
+        glow.addColorStop(0, rgba(s.color,0.4)); glow.addColorStop(1, rgba(s.color,0));
+        heroCtx.beginPath(); heroCtx.arc(pos.x,pos.y,14,0,Math.PI*2); heroCtx.fillStyle = glow; heroCtx.fill();
+        heroCtx.beginPath(); heroCtx.arc(pos.x,pos.y,2.5,0,Math.PI*2); heroCtx.fillStyle = 'rgba(255,255,255,0.85)'; heroCtx.fill();
+      }
+
+      // Nodes
+      for (const ag of heroNodes) {
+        const fX = isMobile ? 2 : 5, fY = isMobile ? 1.5 : 4;
+        ag.x = ag.baseX + Math.sin(now*0.5+ag.phase)*fX;
+        ag.y = ag.baseY + Math.cos(now*0.4+ag.phase)*fY;
+        const dx = heroMouse.x-ag.x, dy = heroMouse.y-ag.y, mD = Math.sqrt(dx*dx+dy*dy);
+        if (mD < 220) ag.targetBrightness = Math.max(ag.targetBrightness, 0.7*(1-mD/220));
+        ag.brightness += (ag.targetBrightness-ag.brightness)*0.06;
+        ag.targetBrightness += (0.3-ag.targetBrightness)*0.01;
+        const b = ag.brightness;
+
+        // Pulse ring
+        const rp = Math.sin(now*1.2+ag.phase)*0.5+0.5;
+        const ms = isMobile?0.6:1;
+        const rs = (36+b*8+rp*4)*ms;
+        heroCtx.beginPath(); heroCtx.arc(ag.x,ag.y,rs,0,Math.PI*2);
+        heroCtx.strokeStyle = rgba(ag.type.color, 0.06+b*0.1); heroCtx.lineWidth = 1; heroCtx.stroke();
+
+        // Glow
+        const gs = (32+b*16)*ms;
+        const glow = heroCtx.createRadialGradient(ag.x,ag.y,0,ag.x,ag.y,gs);
+        glow.addColorStop(0, rgba(ag.type.color, 0.08+b*0.12));
+        glow.addColorStop(1, rgba(ag.type.color, 0));
+        heroCtx.beginPath(); heroCtx.arc(ag.x,ag.y,gs,0,Math.PI*2); heroCtx.fillStyle = glow; heroCtx.fill();
+
+        // Icon box
+        const bs = isMobile?16:24;
+        const r = 8;
+        heroCtx.beginPath();
+        heroCtx.moveTo(ag.x-bs+r,ag.y-bs); heroCtx.lineTo(ag.x+bs-r,ag.y-bs);
+        heroCtx.quadraticCurveTo(ag.x+bs,ag.y-bs,ag.x+bs,ag.y-bs+r);
+        heroCtx.lineTo(ag.x+bs,ag.y+bs-r);
+        heroCtx.quadraticCurveTo(ag.x+bs,ag.y+bs,ag.x+bs-r,ag.y+bs);
+        heroCtx.lineTo(ag.x-bs+r,ag.y+bs);
+        heroCtx.quadraticCurveTo(ag.x-bs,ag.y+bs,ag.x-bs,ag.y+bs-r);
+        heroCtx.lineTo(ag.x-bs,ag.y-bs+r);
+        heroCtx.quadraticCurveTo(ag.x-bs,ag.y-bs,ag.x-bs+r,ag.y-bs);
+        heroCtx.closePath();
+        heroCtx.fillStyle = `rgba(255,255,255,${0.88+b*0.1})`;
+        heroCtx.shadowColor = rgba(ag.type.color, 0.15+b*0.1); heroCtx.shadowBlur = 16;
+        heroCtx.fill(); heroCtx.shadowColor='transparent'; heroCtx.shadowBlur=0;
+        heroCtx.fillStyle = rgba(ag.type.color, 0.05+b*0.03); heroCtx.fill();
+        heroCtx.strokeStyle = rgba(ag.type.color, 0.3+b*0.4); heroCtx.lineWidth = 1.5; heroCtx.stroke();
+
+        drawNodeIcon(heroCtx, ag.type, ag.x, ag.y, ag.scale, 0.75+b*0.25);
+
+        if (heroW > 480) {
+          heroCtx.font = `600 ${isMobile?9:11}px 'Plus Jakarta Sans'`;
+          heroCtx.textAlign = 'center'; heroCtx.textBaseline = 'top';
+          heroCtx.fillStyle = rgba(ag.type.color, 0.45+b*0.35);
+          heroCtx.fillText(ag.type.label, ag.x, ag.y+bs+6);
+        }
+      }
+
+      requestAnimationFrame(animateHero);
+    }
+
+    heroCanvas.addEventListener('mousemove', e => { heroMouse.x = e.clientX; heroMouse.y = e.clientY; });
+    heroCanvas.addEventListener('mouseleave', () => { heroMouse.x = -9999; heroMouse.y = -9999; });
+    window.addEventListener('resize', heroResize);
+    heroResize();
+    requestAnimationFrame(animateHero);
+    setInterval(spawnHeroSignal, 1200);
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       SERVICE VISUALIZATION 1: AGENT ORCHESTRATION MAP
+       ═══════════════════════════════════════════════════════════════ */
+    (function() {
+      const canvas = document.getElementById('vizBuild');
+      const ctx = canvas.getContext('2d');
+      let W, H, nodes = [], signals = [], activeHighlight = null;
+
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        W = canvas.width = rect.width;
+        H = canvas.height = rect.height;
+        createNodes();
+      }
+
+      function createNodes() {
+        nodes = [];
+        const cx = W/2, cy = H/2;
+        const scale = Math.min(W,H)/400;
+
+        // Central supervisor
+        nodes.push({ x: cx, y: cy, baseX: cx, baseY: cy, label: 'Supervisor', color: CYAN, size: 28*scale, group: 'design', phase: 0 });
+
+        // Worker agents (around supervisor)
+        const workers = [
+          { label: 'ReAct', angle: -Math.PI*0.6, color: CYAN, group: 'design' },
+          { label: 'CoT', angle: -Math.PI*0.15, color: CYAN, group: 'design' },
+          { label: 'Multi-Agent', angle: Math.PI*0.25, color: CYAN, group: 'design' },
+        ];
+        const wR = 100*scale;
+        workers.forEach((w, i) => {
+          nodes.push({ x: cx+Math.cos(w.angle)*wR, y: cy+Math.sin(w.angle)*wR, baseX: cx+Math.cos(w.angle)*wR, baseY: cy+Math.sin(w.angle)*wR, label: w.label, color: w.color, size: 20*scale, group: w.group, phase: i*1.2 });
+        });
+
+        // MCP Tool satellites (outer ring)
+        const tools = [
+          { label: 'API', angle: Math.PI*0.7, color: TEAL, group: 'tools' },
+          { label: 'DB', angle: Math.PI*1.0, color: TEAL, group: 'tools' },
+          { label: 'CRM', angle: Math.PI*1.35, color: TEAL, group: 'tools' },
+        ];
+        const tR = 160*scale;
+        tools.forEach((t, i) => {
+          nodes.push({ x: cx+Math.cos(t.angle)*tR, y: cy+Math.sin(t.angle)*tR, baseX: cx+Math.cos(t.angle)*tR, baseY: cy+Math.sin(t.angle)*tR, label: t.label, color: t.color, size: 16*scale, group: t.group, phase: i*1.5+3 });
+        });
+      }
+
+      function spawnSignal() {
+        if (nodes.length < 2) {return;}
+        // Signals flow from supervisor (0) to workers (1-3) or workers to tools (4-6)
+        const pairs = [[0,1],[0,2],[0,3],[1,4],[2,5],[3,6],[4,0],[5,0],[6,0]];
+        const pair = pairs[Math.floor(Math.random()*pairs.length)];
+        const from = nodes[pair[0]], to = nodes[pair[1]];
+        const mx = (from.x+to.x)/2, my = (from.y+to.y)/2;
+        const dx = to.x-from.x, dy = to.y-from.y;
+        const d = Math.sqrt(dx*dx+dy*dy)||1;
+        const perp = (15+Math.random()*25)*(Math.random()>0.5?1:-1);
+        signals.push({ fx:from.x,fy:from.y,tx:to.x,ty:to.y, cpx:mx+(-dy/d)*perp, cpy:my+(dx/d)*perp, p:0, speed:0.008+Math.random()*0.006, color:lerpColor(from.color,to.color,0.5), trail:[] });
+      }
+
+      function animate(time) {
+        if (!isInView(canvas)) { requestAnimationFrame(animate); return; }
+        ctx.clearRect(0,0,W,H);
+        const now = time*0.001;
+
+        // Get highlight from hovered offering
+        const panel = document.getElementById('panel-build');
+        const hovered = panel.querySelector('.offering:hover');
+        activeHighlight = hovered ? hovered.dataset.highlight : null;
+
+        // Connection lines
+        const connections = [[0,1],[0,2],[0,3],[1,4],[2,5],[3,6]];
+        for (const [ai,bi] of connections) {
+          const a = nodes[ai], b = nodes[bi];
+          const isHighlighted = activeHighlight && (
+            (activeHighlight === 'design' && a.group === 'design' && b.group === 'design') ||
+            (activeHighlight === 'tools' && (a.group === 'tools' || b.group === 'tools'))
+          );
+          const alpha = isHighlighted ? 0.25 : (activeHighlight ? 0.04 : 0.08);
+          ctx.beginPath(); ctx.moveTo(a.x, a.y);
+          const mx = (a.x+b.x)/2, my = (a.y+b.y)/2;
+          ctx.quadraticCurveTo(mx+(Math.random()-0.5)*2, my+(Math.random()-0.5)*2, b.x, b.y);
+          ctx.strokeStyle = rgba(lerpColor(a.color,b.color,0.5), alpha);
+          ctx.lineWidth = isHighlighted ? 1.5 : 0.8;
+          ctx.setLineDash([3,5]); ctx.stroke(); ctx.setLineDash([]);
+        }
+
+        // Signals
+        for (let i = signals.length-1; i >= 0; i--) {
+          const s = signals[i]; s.p += s.speed;
+          if (s.p >= 1) { signals.splice(i,1); continue; }
+          const pos = quadBezier(s.fx,s.fy,s.cpx,s.cpy,s.tx,s.ty,s.p);
+          s.trail.push({x:pos.x,y:pos.y,age:0});
+          for (let t=s.trail.length-1;t>=0;t--) {
+            const tp = s.trail[t]; tp.age += 0.025;
+            if (tp.age > 1) { s.trail.splice(t,1); continue; }
+            ctx.beginPath(); ctx.arc(tp.x,tp.y,(1-tp.age)*2.5,0,Math.PI*2);
+            ctx.fillStyle = rgba(s.color,(1-tp.age)*0.2); ctx.fill();
+          }
+          const glow = ctx.createRadialGradient(pos.x,pos.y,0,pos.x,pos.y,12);
+          glow.addColorStop(0, rgba(s.color,0.45)); glow.addColorStop(1, rgba(s.color,0));
+          ctx.beginPath(); ctx.arc(pos.x,pos.y,12,0,Math.PI*2); ctx.fillStyle = glow; ctx.fill();
+          ctx.beginPath(); ctx.arc(pos.x,pos.y,2,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.8)'; ctx.fill();
+        }
+
+        // Lifecycle ring (outermost)
+        const lifecycleHighlighted = activeHighlight === 'lifecycle';
+        const ringAlpha = lifecycleHighlighted ? 0.2 : 0.04;
+        const ringPulse = Math.sin(now*0.8)*0.5+0.5;
+        ctx.beginPath(); ctx.arc(W/2, H/2, Math.min(W,H)*0.44, 0, Math.PI*2);
+        ctx.strokeStyle = rgba(CYAN, ringAlpha + ringPulse*0.03);
+        ctx.lineWidth = lifecycleHighlighted ? 2 : 1;
+        ctx.setLineDash([6,8]); ctx.stroke(); ctx.setLineDash([]);
+
+        // Nodes
+        for (const n of nodes) {
+          n.x = n.baseX + Math.sin(now*0.4+n.phase)*3;
+          n.y = n.baseY + Math.cos(now*0.35+n.phase)*2.5;
+
+          const isHighlighted = activeHighlight && (
+            (activeHighlight === 'design' && n.group === 'design') ||
+            (activeHighlight === 'tools' && n.group === 'tools') ||
+            (activeHighlight === 'lifecycle')
+          );
+          const dimmed = activeHighlight && !isHighlighted;
+          const alpha = dimmed ? 0.2 : 1;
+
+          // Glow
+          const gs = n.size*2;
+          const glow = ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,gs);
+          glow.addColorStop(0, rgba(n.color, 0.12*alpha));
+          glow.addColorStop(1, rgba(n.color, 0));
+          ctx.beginPath(); ctx.arc(n.x,n.y,gs,0,Math.PI*2); ctx.fillStyle=glow; ctx.fill();
+
+          // Node circle
+          ctx.beginPath(); ctx.arc(n.x, n.y, n.size, 0, Math.PI*2);
+          ctx.fillStyle = rgba(n.color, 0.08*alpha);
+          ctx.strokeStyle = rgba(n.color, (isHighlighted?0.8:0.35)*alpha);
+          ctx.lineWidth = isHighlighted ? 2 : 1.2; ctx.fill(); ctx.stroke();
+
+          // Inner dot
+          ctx.beginPath(); ctx.arc(n.x, n.y, n.size*0.35, 0, Math.PI*2);
+          ctx.fillStyle = rgba(n.color, (isHighlighted?0.7:0.4)*alpha); ctx.fill();
+
+          // Label
+          const fontSize = Math.max(9, n.size*0.5);
+          ctx.font = `600 ${fontSize}px 'Inter'`;
+          ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+          ctx.fillStyle = rgba(n.color, (isHighlighted?0.9:0.5)*alpha);
+          ctx.fillText(n.label, n.x, n.y + n.size + 6);
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      requestAnimationFrame(animate);
+      setInterval(spawnSignal, 800);
+    })();
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       SERVICE VISUALIZATION 2: EVALUATION DASHBOARD
+       ═══════════════════════════════════════════════════════════════ */
+    (function() {
+      const canvas = document.getElementById('vizAssure');
+      const ctx = canvas.getContext('2d');
+      let W, H, gates = [], packets = [];
+
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        W = canvas.width = rect.width;
+        H = canvas.height = rect.height;
+        createGates();
+      }
+
+      function createGates() {
+        gates = [];
+        const gateData = [
+          { label: 'Agentic Eval', metric: 'Convergence', value: 94.7, unit: '%', color: TEAL, highlight: 'eval' },
+          { label: 'LLM Judge', metric: 'RAGAS Score', value: 0.91, unit: '', color: TEAL, highlight: 'judge' },
+          { label: 'Explainable AI', metric: 'SHAP Coverage', value: 87, unit: '%', color: TEAL, highlight: 'xai' },
+          { label: 'Trustworthy', metric: 'Toxicity', value: 0.02, unit: '%', color: TEAL, highlight: 'trust' },
+        ];
+        const startY = H*0.12, endY = H*0.88;
+        const spacing = (endY - startY) / (gateData.length - 1);
+        gateData.forEach((g, i) => {
+          gates.push({ ...g, x: W*0.35, y: startY + i*spacing, width: W*0.5, displayValue: 0, targetValue: g.value });
+        });
+      }
+
+      function spawnPacket() {
+        packets.push({
+          x: W*0.1, y: H*0.05 + Math.random()*H*0.05,
+          speed: 1.2 + Math.random()*0.8,
+          gate: 0, passed: true, color: TEAL, alpha: 0.8,
+          size: 3 + Math.random()*2,
+        });
+      }
+
+      function animate(time) {
+        if (!isInView(canvas)) { requestAnimationFrame(animate); return; }
+        ctx.clearRect(0,0,W,H);
+        const now = time*0.001;
+
+        const panel = document.getElementById('panel-assure');
+        const hovered = panel.querySelector('.offering:hover');
+        const activeHighlight = hovered ? hovered.dataset.highlight : null;
+
+        // Pipeline line (vertical)
+        ctx.beginPath();
+        ctx.moveTo(W*0.35, H*0.05);
+        ctx.lineTo(W*0.35, H*0.95);
+        ctx.strokeStyle = rgba(TEAL, 0.08);
+        ctx.lineWidth = 1; ctx.setLineDash([4,6]); ctx.stroke(); ctx.setLineDash([]);
+
+        // Gates
+        for (const g of gates) {
+          const isHighlighted = activeHighlight === g.highlight;
+          const dimmed = activeHighlight && !isHighlighted;
+          const alpha = dimmed ? 0.15 : 1;
+
+          // Gate line
+          ctx.beginPath();
+          ctx.moveTo(g.x - g.width*0.15, g.y);
+          ctx.lineTo(g.x + g.width*0.5, g.y);
+          ctx.strokeStyle = rgba(g.color, (isHighlighted ? 0.5 : 0.15) * alpha);
+          ctx.lineWidth = isHighlighted ? 2 : 1;
+          ctx.stroke();
+
+          // Gate glow on highlight
+          if (isHighlighted) {
+            const glow = ctx.createRadialGradient(g.x + g.width*0.2, g.y, 0, g.x + g.width*0.2, g.y, 60);
+            glow.addColorStop(0, rgba(g.color, 0.08)); glow.addColorStop(1, rgba(g.color, 0));
+            ctx.beginPath(); ctx.arc(g.x + g.width*0.2, g.y, 60, 0, Math.PI*2);
+            ctx.fillStyle = glow; ctx.fill();
+          }
+
+          // Gate label
+          ctx.font = `600 ${Math.max(10, W*0.025)}px 'Inter'`;
+          ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+          ctx.fillStyle = rgba(WHITE, (isHighlighted ? 0.9 : 0.45) * alpha);
+          ctx.fillText(g.label, g.x + g.width*0.08, g.y - 8);
+
+          // Metric counter
+          g.displayValue += (g.targetValue - g.displayValue) * 0.03;
+          const valStr = g.targetValue < 1 ? g.displayValue.toFixed(2) : Math.round(g.displayValue).toString();
+          ctx.font = `700 ${Math.max(14, W*0.038)}px 'Inter'`;
+          ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+          ctx.fillStyle = rgba(g.color, (isHighlighted ? 1 : 0.6) * alpha);
+          ctx.fillText(valStr + g.unit, g.x + g.width*0.5, g.y);
+
+          // Metric name
+          ctx.font = `500 ${Math.max(9, W*0.02)}px 'Inter'`;
+          ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+          ctx.fillStyle = rgba(WHITE, (isHighlighted ? 0.5 : 0.25) * alpha);
+          ctx.fillText(g.metric, g.x + g.width*0.5, g.y + 6);
+        }
+
+        // Packets
+        for (let i = packets.length-1; i >= 0; i--) {
+          const pk = packets[i];
+          pk.y += pk.speed;
+
+          // Check if passing through a gate
+          for (let gi = 0; gi < gates.length; gi++) {
+            if (pk.gate === gi && Math.abs(pk.y - gates[gi].y) < 4) {
+              pk.gate = gi + 1;
+              pk.passed = Math.random() > 0.1; // 90% pass
+              if (!pk.passed) { pk.color = { r: 255, g: 180, b: 50 }; } // amber
+              else { pk.color = EMERALD; }
+            }
+          }
+
+          if (pk.y > H + 10) { packets.splice(i, 1); continue; }
+
+          // Draw packet
+          const glow = ctx.createRadialGradient(pk.x + (Math.sin(now*3+i)*8), pk.y, 0, pk.x + (Math.sin(now*3+i)*8), pk.y, pk.size*4);
+          glow.addColorStop(0, rgba(pk.color, pk.alpha*0.4));
+          glow.addColorStop(1, rgba(pk.color, 0));
+          ctx.beginPath(); ctx.arc(pk.x + (Math.sin(now*3+i)*8), pk.y, pk.size*4, 0, Math.PI*2);
+          ctx.fillStyle = glow; ctx.fill();
+
+          ctx.beginPath(); ctx.arc(pk.x + (Math.sin(now*3+i)*8), pk.y, pk.size, 0, Math.PI*2);
+          ctx.fillStyle = rgba(pk.color, pk.alpha); ctx.fill();
+
+          ctx.beginPath(); ctx.arc(pk.x + (Math.sin(now*3+i)*8), pk.y, pk.size*0.4, 0, Math.PI*2);
+          ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.fill();
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      requestAnimationFrame(animate);
+      setInterval(spawnPacket, 600);
+    })();
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       SERVICE VISUALIZATION 3: CONTEXT LENS
+       ═══════════════════════════════════════════════════════════════ */
+    (function() {
+      const canvas = document.getElementById('vizContext');
+      const ctx = canvas.getContext('2d');
+      let W, H, particles = [];
+
+      const layers = [
+        { label: 'System', highlight: 'layers' },
+        { label: 'Domain', highlight: 'layers' },
+        { label: 'Task', highlight: 'layers' },
+        { label: 'Interaction', highlight: 'layers' },
+        { label: 'Response', highlight: 'layers' },
+      ];
+
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        W = canvas.width = rect.width;
+        H = canvas.height = rect.height;
+      }
+
+      function spawnParticle() {
+        const angle = Math.random() * Math.PI * 2;
+        const r = Math.min(W,H)*0.46;
+        particles.push({
+          x: W/2 + Math.cos(angle)*r,
+          y: H*0.42 + Math.sin(angle)*r,
+          targetX: W/2 + (Math.random()-0.5)*10,
+          targetY: H*0.42 + (Math.random()-0.5)*10,
+          progress: 0, speed: 0.003 + Math.random()*0.003,
+          color: lerpColor(CYAN, EMERALD, Math.random()),
+          size: 1.5 + Math.random()*2,
+          alpha: 0.6 + Math.random()*0.4,
+        });
+      }
+
+      function animate(time) {
+        if (!isInView(canvas)) { requestAnimationFrame(animate); return; }
+        ctx.clearRect(0,0,W,H);
+        const now = time*0.001;
+
+        const panel = document.getElementById('panel-context');
+        const hovered = panel.querySelector('.offering:hover');
+        const activeHighlight = hovered ? hovered.dataset.highlight : null;
+
+        const cx = W/2, cy = H*0.42;
+        const maxR = Math.min(W,H)*0.38;
+
+        // Draw concentric rings
+        for (let i = 0; i < layers.length; i++) {
+          const t = i / (layers.length - 1);
+          const r = maxR * (1 - t*0.75);
+          const color = lerpColor(CYAN, EMERALD, t);
+          const isHighlighted = activeHighlight === 'layers';
+          const baseAlpha = isHighlighted ? 0.2 : 0.08;
+          const pulseAlpha = Math.sin(now*0.6 + i*0.5)*0.02;
+
+          // Ring fill
+          ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+          ctx.fillStyle = rgba(color, (baseAlpha*0.3 + pulseAlpha)*0.5);
+          ctx.fill();
+
+          // Ring stroke
+          ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+          ctx.strokeStyle = rgba(color, baseAlpha + pulseAlpha);
+          ctx.lineWidth = isHighlighted ? 1.8 : 1;
+          ctx.stroke();
+
+          // Label
+          const labelX = cx + r*0.7;
+          const labelY = cy - r*0.7;
+          if (W > 400) {
+            ctx.font = `500 ${Math.max(9, W*0.022)}px 'Inter'`;
+            ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+            ctx.fillStyle = rgba(color, isHighlighted ? 0.7 : 0.3);
+            ctx.fillText(layers[i].label, labelX, labelY);
+          }
+        }
+
+        // Particles moving inward (refining)
+        for (let i = particles.length-1; i >= 0; i--) {
+          const p = particles[i];
+          p.progress += p.speed;
+          if (p.progress >= 1) { particles.splice(i, 1); continue; }
+
+          const t = p.progress;
+          const eased = t < 0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; // easeInOutQuad
+          const x = p.x + (p.targetX - p.x) * eased;
+          const y = p.y + (p.targetY - p.y) * eased;
+
+          // As particle moves inward, it gets brighter and changes color
+          const colorT = eased;
+          const color = lerpColor(CYAN, EMERALD, colorT);
+          const size = p.size * (1 - eased*0.5); // shrinks as it focuses
+          const alpha = p.alpha * (0.3 + eased*0.7);
+
+          // Glow
+          const glow = ctx.createRadialGradient(x, y, 0, x, y, size*5);
+          glow.addColorStop(0, rgba(color, alpha*0.3));
+          glow.addColorStop(1, rgba(color, 0));
+          ctx.beginPath(); ctx.arc(x, y, size*5, 0, Math.PI*2);
+          ctx.fillStyle = glow; ctx.fill();
+
+          // Dot
+          ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI*2);
+          ctx.fillStyle = rgba(color, alpha); ctx.fill();
+        }
+
+        // Center output glow
+        const centerPulse = Math.sin(now*1.5)*0.3 + 0.7;
+        const centerGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 25);
+        centerGlow.addColorStop(0, rgba(EMERALD, 0.3*centerPulse));
+        centerGlow.addColorStop(0.5, rgba(EMERALD, 0.08*centerPulse));
+        centerGlow.addColorStop(1, rgba(EMERALD, 0));
+        ctx.beginPath(); ctx.arc(cx, cy, 25, 0, Math.PI*2);
+        ctx.fillStyle = centerGlow; ctx.fill();
+
+        // Center dot
+        ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI*2);
+        ctx.fillStyle = rgba(EMERALD, 0.8); ctx.fill();
+        ctx.beginPath(); ctx.arc(cx, cy, 2, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fill();
+
+        // ─── Context chaining (bottom) ───
+        const chainY = H*0.85;
+        const chainNodes = ['Analysis', 'Synthesis', 'Recommendation'];
+        const chainSpacing = Math.min(W*0.28, 140);
+        const chainStartX = cx - chainSpacing;
+        const isChainHighlighted = activeHighlight === 'chain';
+        const chainAlpha = isChainHighlighted ? 0.8 : 0.35;
+
+        for (let i = 0; i < chainNodes.length; i++) {
+          const nx = chainStartX + i*chainSpacing;
+          const color = lerpColor(CYAN, EMERALD, i/2);
+
+          // Connector to next
+          if (i < chainNodes.length - 1) {
+            const nextX = chainStartX + (i+1)*chainSpacing;
+            ctx.beginPath(); ctx.moveTo(nx+20, chainY); ctx.lineTo(nextX-20, chainY);
+            ctx.strokeStyle = rgba(color, chainAlpha*0.4);
+            ctx.lineWidth = 1; ctx.setLineDash([3,4]); ctx.stroke(); ctx.setLineDash([]);
+
+            // Arrow
+            if (isChainHighlighted) {
+              const arrowX = (nx+20+nextX-20)/2 + Math.sin(now*2+i)*15;
+              ctx.beginPath(); ctx.arc(arrowX, chainY, 2.5, 0, Math.PI*2);
+              ctx.fillStyle = rgba(color, 0.6); ctx.fill();
+            }
+          }
+
+          // Node
+          ctx.beginPath(); ctx.arc(nx, chainY, 14, 0, Math.PI*2);
+          ctx.fillStyle = rgba(color, 0.06*chainAlpha/0.35);
+          ctx.strokeStyle = rgba(color, chainAlpha*0.5);
+          ctx.lineWidth = 1.2; ctx.fill(); ctx.stroke();
+
+          // Label
+          if (W > 380) {
+            ctx.font = `500 ${Math.max(8, W*0.02)}px 'Inter'`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+            ctx.fillStyle = rgba(color, chainAlpha);
+            ctx.fillText(chainNodes[i], nx, chainY + 20);
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      requestAnimationFrame(animate);
+      setInterval(spawnParticle, 200);
+    })();
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       SERVICE VISUALIZATION 4: SHIELD MATRIX (Agent Security)
+       ═══════════════════════════════════════════════════════════════ */
+    (function() {
+      const canvas = document.getElementById('vizSecure');
+      const ctx = canvas.getContext('2d');
+      let W, H, threats = [], interceptFlashes = [];
+
+      const rings = [
+        { label: 'Prompt Security', highlight: 'prompt', radiusFactor: 0.92 },
+        { label: 'Data Protection', highlight: 'data', radiusFactor: 0.72 },
+        { label: 'Access Control', highlight: 'access', radiusFactor: 0.52 },
+        { label: 'Runtime Guardrails', highlight: 'guardrails', radiusFactor: 0.32 },
+      ];
+
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        W = canvas.width = rect.width;
+        H = canvas.height = rect.height;
+      }
+
+      function spawnThreat() {
+        const angle = Math.random() * Math.PI * 2;
+        const maxR = Math.min(W, H) * 0.46;
+        const interceptRing = Math.floor(Math.random() * 4); // which ring catches it
+        threats.push({
+          angle, x: W/2 + Math.cos(angle) * (maxR + 30), y: H/2 + Math.sin(angle) * (maxR + 30),
+          speed: 0.4 + Math.random() * 0.6, progress: 0,
+          interceptRing, intercepted: false,
+          alpha: 0.7 + Math.random() * 0.3,
+          size: 2 + Math.random() * 2,
+        });
+      }
+
+      function animate(time) {
+        if (!isInView(canvas)) { requestAnimationFrame(animate); return; }
+        ctx.clearRect(0, 0, W, H);
+        const now = time * 0.001;
+
+        const panel = document.getElementById('panel-secure');
+        const hovered = panel.querySelector('.offering:hover');
+        const activeHighlight = hovered ? hovered.dataset.highlight : null;
+
+        const cx = W / 2, cy = H / 2;
+        const maxR = Math.min(W, H) * 0.42;
+
+        // Central agent node
+        const centerPulse = Math.sin(now * 1.2) * 0.15 + 0.85;
+        const centerGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 30);
+        centerGlow.addColorStop(0, rgba(AMBER, 0.25 * centerPulse));
+        centerGlow.addColorStop(0.6, rgba(AMBER, 0.06 * centerPulse));
+        centerGlow.addColorStop(1, rgba(AMBER, 0));
+        ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI * 2);
+        ctx.fillStyle = centerGlow; ctx.fill();
+
+        // Agent icon (shield shape)
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - 12); ctx.lineTo(cx + 10, cy - 6);
+        ctx.lineTo(cx + 10, cy + 4); ctx.quadraticCurveTo(cx, cy + 14, cx, cy + 14);
+        ctx.quadraticCurveTo(cx, cy + 14, cx - 10, cy + 4);
+        ctx.lineTo(cx - 10, cy - 6); ctx.closePath();
+        ctx.fillStyle = rgba(AMBER, 0.15); ctx.fill();
+        ctx.strokeStyle = rgba(AMBER, 0.7); ctx.lineWidth = 1.5; ctx.stroke();
+
+        // Checkmark inside shield
+        ctx.beginPath(); ctx.moveTo(cx - 4, cy); ctx.lineTo(cx - 1, cy + 4); ctx.lineTo(cx + 5, cy - 4);
+        ctx.strokeStyle = rgba(AMBER, 0.8); ctx.lineWidth = 1.8; ctx.stroke();
+
+        // Defense rings
+        for (let i = 0; i < rings.length; i++) {
+          const ring = rings[i];
+          const r = maxR * ring.radiusFactor;
+          const isHighlighted = activeHighlight === ring.highlight;
+          const dimmed = activeHighlight && !isHighlighted;
+
+          // Ring rotation
+          const rotation = now * (0.08 + i * 0.03) * (i % 2 === 0 ? 1 : -1);
+
+          // Ring arc segments (not full circles — defense sectors)
+          const segments = 6 + i * 2;
+          const gapAngle = Math.PI * 2 / segments * 0.25;
+          const segAngle = Math.PI * 2 / segments - gapAngle;
+
+          for (let s = 0; s < segments; s++) {
+            const startAngle = rotation + (Math.PI * 2 / segments) * s;
+            const endAngle = startAngle + segAngle;
+
+            const ringAlpha = isHighlighted ? 0.45 : (dimmed ? 0.04 : 0.12);
+            const pulseAlpha = Math.sin(now * 0.8 + i * 0.7 + s * 0.3) * 0.03;
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, startAngle, endAngle);
+            ctx.strokeStyle = rgba(AMBER, ringAlpha + pulseAlpha);
+            ctx.lineWidth = isHighlighted ? 2.5 : 1.2;
+            ctx.stroke();
+          }
+
+          // Ring label
+          if (W > 400 && (isHighlighted || !activeHighlight)) {
+            const labelAngle = rotation + Math.PI * 1.5;
+            const labelR = r + 12;
+            const lx = cx + Math.cos(labelAngle) * labelR;
+            const ly = cy + Math.sin(labelAngle) * labelR;
+            ctx.font = `500 ${Math.max(8, W * 0.018)}px 'Inter'`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillStyle = rgba(AMBER, isHighlighted ? 0.8 : 0.25);
+            ctx.fillText(ring.label, lx, ly);
+          }
+
+          // Glow ring on highlight
+          if (isHighlighted) {
+            const glowGrad = ctx.createRadialGradient(cx, cy, r - 8, cx, cy, r + 8);
+            glowGrad.addColorStop(0, rgba(AMBER, 0));
+            glowGrad.addColorStop(0.5, rgba(AMBER, 0.06));
+            glowGrad.addColorStop(1, rgba(AMBER, 0));
+            ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.lineWidth = 16; ctx.strokeStyle = glowGrad; ctx.stroke();
+          }
+        }
+
+        // Threats (incoming red/amber particles)
+        for (let i = threats.length - 1; i >= 0; i--) {
+          const t = threats[i];
+          t.progress += t.speed * 0.008;
+
+          const targetR = maxR * rings[t.interceptRing].radiusFactor;
+          const startR = maxR + 30;
+          const currentR = startR - (startR - targetR) * Math.min(t.progress, 1);
+
+          t.x = cx + Math.cos(t.angle) * currentR;
+          t.y = cy + Math.sin(t.angle) * currentR;
+
+          if (!t.intercepted && t.progress >= 1) {
+            t.intercepted = true;
+            // Flash at interception point
+            interceptFlashes.push({
+              x: t.x, y: t.y, age: 0, ring: t.interceptRing,
+              color: AMBER,
+            });
+          }
+
+          if (t.intercepted) {
+            t.alpha -= 0.04;
+            if (t.alpha <= 0) { threats.splice(i, 1); continue; }
+          }
+
+          // Threat particle color: red/amber gradient
+          const threatColor = t.intercepted
+            ? AMBER
+            : { r: lerp(255, 255, t.progress), g: lerp(80, 184, t.progress), b: lerp(60, 77, t.progress) };
+
+          // Glow
+          const glow = ctx.createRadialGradient(t.x, t.y, 0, t.x, t.y, t.size * 4);
+          glow.addColorStop(0, rgba(threatColor, t.alpha * 0.4));
+          glow.addColorStop(1, rgba(threatColor, 0));
+          ctx.beginPath(); ctx.arc(t.x, t.y, t.size * 4, 0, Math.PI * 2);
+          ctx.fillStyle = glow; ctx.fill();
+
+          // Dot
+          ctx.beginPath(); ctx.arc(t.x, t.y, t.size, 0, Math.PI * 2);
+          ctx.fillStyle = rgba(threatColor, t.alpha); ctx.fill();
+        }
+
+        // Intercept flashes
+        for (let i = interceptFlashes.length - 1; i >= 0; i--) {
+          const f = interceptFlashes[i];
+          f.age += 0.03;
+          if (f.age >= 1) { interceptFlashes.splice(i, 1); continue; }
+
+          const flashR = 6 + f.age * 20;
+          const flashAlpha = (1 - f.age) * 0.5;
+          ctx.beginPath(); ctx.arc(f.x, f.y, flashR, 0, Math.PI * 2);
+          ctx.strokeStyle = rgba(f.color, flashAlpha);
+          ctx.lineWidth = 2 * (1 - f.age); ctx.stroke();
+
+          // Small burst particles
+          for (let p = 0; p < 3; p++) {
+            const bAngle = (f.age * 4) + p * (Math.PI * 2 / 3);
+            const bR = f.age * 15;
+            const bx = f.x + Math.cos(bAngle) * bR;
+            const by = f.y + Math.sin(bAngle) * bR;
+            ctx.beginPath(); ctx.arc(bx, by, 1.5 * (1 - f.age), 0, Math.PI * 2);
+            ctx.fillStyle = rgba(f.color, flashAlpha * 0.6); ctx.fill();
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      requestAnimationFrame(animate);
+      setInterval(spawnThreat, 450);
+    })();
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       RIVER DIVIDERS (signal particles between services)
+       ═══════════════════════════════════════════════════════════════ */
+    function initRiver(canvasId, fromColor, toColor) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      let W, H, particles = [];
+
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        W = canvas.width = rect.width;
+        H = canvas.height = rect.height;
+      }
+
+      function animate(time) {
+        if (!isInView(canvas)) { requestAnimationFrame(animate); return; }
+        ctx.clearRect(0,0,W,H);
+        const now = time*0.001;
+
+        // Flowing center line
+        ctx.beginPath();
+        ctx.moveTo(W*0.5, 0);
+        ctx.quadraticCurveTo(W*0.5 + Math.sin(now)*20, H*0.5, W*0.5, H);
+        ctx.strokeStyle = rgba(lerpColor(fromColor, toColor, 0.5), 0.06);
+        ctx.lineWidth = 1; ctx.setLineDash([4,8]); ctx.stroke(); ctx.setLineDash([]);
+
+        // Particles flowing down
+        if (Math.random() < 0.08) {
+          particles.push({
+            x: W*0.5 + (Math.random()-0.5)*30,
+            y: -5, speed: 0.8+Math.random()*1.2,
+            color: lerpColor(fromColor, toColor, Math.random()),
+            size: 1.5+Math.random()*2, alpha: 0.3+Math.random()*0.4,
+          });
+        }
+
+        for (let i = particles.length-1; i >= 0; i--) {
+          const p = particles[i];
+          p.y += p.speed;
+          p.x += Math.sin(now*2+i*0.5)*0.3;
+          if (p.y > H+10) { particles.splice(i,1); continue; }
+
+          const t = p.y/H;
+          const color = lerpColor(fromColor, toColor, t);
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+          ctx.fillStyle = rgba(color, p.alpha*(1-Math.abs(t-0.5)*0.5));
+          ctx.fill();
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      requestAnimationFrame(animate);
+    }
+
+    initRiver('river1', CYAN, TEAL);
+    initRiver('river2', TEAL, AMBER);
+    initRiver('river3', AMBER, EMERALD);
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       SCROLL INTERACTIONS
+       ═══════════════════════════════════════════════════════════════ */
+
+    // Viewport check for canvas optimization
+    function isInView(el) {
+      const r = el.getBoundingClientRect();
+      return r.bottom > -100 && r.top < window.innerHeight + 100;
+    }
+
+    // Scroll reveal
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Lifecycle bar visibility
+    const lifecycleBar = document.getElementById('lifecycleBar');
+    const servicesSection = document.getElementById('services');
+    const lifecycleObserver = new IntersectionObserver(([entry]) => {
+      lifecycleBar.classList.toggle('visible', entry.isIntersecting);
+    }, { threshold: 0.05 });
+    lifecycleObserver.observe(servicesSection);
+
+    // Lifecycle bar active state
+    const panels = ['context', 'build', 'secure', 'assure'];
+    const panelObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const service = entry.target.dataset.service;
+        const idx = panels.indexOf(service);
+
+        document.querySelectorAll('.lifecycle-node').forEach((n, i) => {
+          n.dataset.active = (i === idx).toString();
+          n.dataset.past = (i < idx).toString();
+        });
+        document.querySelectorAll('.lifecycle-connector').forEach((c, i) => {
+          c.dataset.filled = (i < idx).toString();
+        });
+      });
+    }, { threshold: 0.4 });
+    document.querySelectorAll('.service-panel').forEach(p => panelObserver.observe(p));
+
+    function scrollToService(service) {
+      document.getElementById('panel-' + service).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // ─── Scroll-driven light-to-dark transition ───
+    // Single unified background — no overlays, no seams
+    const navbar = document.getElementById('navbar');
+    const heroSection = document.getElementById('heroSection');
+    const heroContent = document.querySelector('.hero-content');
+    const transZone = document.querySelector('.transition-zone');
+    const lcBar = document.getElementById('lifecycleBar');
+
+    // Light: rgb(250,252,253)  →  Dark: rgb(10,10,18)
+    const LIGHT = { r: 250, g: 252, b: 253 };
+    const DARK  = { r: 10,  g: 10,  b: 18 };
+
+    function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
+
+    function updateScrollTransition() {
+      const heroRect = heroSection.getBoundingClientRect();
+      const heroH = heroRect.height;
+      const scrolled = Math.max(0, -heroRect.top);
+
+      // Darkening: starts immediately, fully dark by bottom of hero
+      const rawProgress = Math.min(1, scrolled / heroH);
+      // Ease-in quad: barely noticeable at first, accelerates
+      const eased = rawProgress * rawProgress;
+
+      // Unified background color — applied to BOTH body and hero
+      const bgR = lerp(LIGHT.r, DARK.r, eased);
+      const bgG = lerp(LIGHT.g, DARK.g, eased);
+      const bgB = lerp(LIGHT.b, DARK.b, eased);
+      const bgColor = `rgb(${bgR},${bgG},${bgB})`;
+      document.body.style.backgroundColor = bgColor;
+      heroSection.style.backgroundColor = bgColor;
+
+      // Hero text color: dark text fades to light as bg darkens
+      const textBrightness = lerp(45, 255, eased); // #2D → #FF
+      const textAlpha = 1 - Math.max(0, (rawProgress - 0.5) / 0.5) * 0.5;
+      heroSection.style.color = `rgba(${textBrightness},${textBrightness},${textBrightness},${textAlpha})`;
+
+      // Hero subtext
+      const subR = lerp(113, 180, eased);
+      const subG = lerp(128, 180, eased);
+      const subB = lerp(150, 180, eased);
+      document.querySelector('.hero-sub').style.color = `rgba(${subR},${subG},${subB},${textAlpha})`;
+
+      // Hero content: gentle lift after 40% scroll
+      const contentFade = Math.max(0, (rawProgress - 0.4) / 0.6);
+      heroContent.style.opacity = 1 - contentFade * 0.5;
+      heroContent.style.transform = `translateY(${contentFade * -15}px)`;
+
+      // Transition zone glow
+      transZone.classList.toggle('glow-visible', eased > 0.6 && eased < 0.95);
+
+      // Lifecycle bar — stays transparent, just subtle border when dark
+      if (lcBar.classList.contains('visible')) {
+        lcBar.style.borderBottomColor = `rgba(255,255,255,${Math.min(0.04, eased * 0.05)})`;
+      }
+
+      // Navbar: same interpolation
+      const na = 0.88 + eased * 0.04;
+      navbar.style.background = `rgba(${bgR},${bgG},${bgB},${na})`;
+
+      if (eased < 0.33) {
+        navbar.style.borderBottomColor = `rgba(226,232,240,${Math.max(0, 0.6*(1-eased*3))})`;
+      } else {
+        navbar.style.borderBottomColor = `rgba(255,255,255,${Math.min(0.06,(eased-0.3)*0.09)})`;
+      }
+
+      // Nav links: dark text → light text
+      navbar.querySelectorAll('.nav-links a:not(.nav-cta)').forEach(link => {
+        link.style.color = `rgba(${lerp(74,255,eased)},${lerp(85,255,eased)},${lerp(104,255,eased)},${eased>0.5?0.6:0.55+eased*0.1})`;
+      });
+
+      // Hero badge: adjust bg for dark mode
+      const badge = document.querySelector('.hero-badge');
+      if (badge) {
+        badge.style.background = `rgba(${lerp(255,30,eased)},${lerp(255,30,eased)},${lerp(255,40,eased)},${eased>0.5?0.12:0.85-eased*1.2})`;
+        badge.style.borderColor = `rgba(76,201,208,${0.2+eased*0.1})`;
+        badge.style.color = `rgb(${lerp(43,120,eased)},${lerp(168,210,eased)},${lerp(176,220,eased)})`;
+      }
+
+      requestAnimationFrame(updateScrollTransition);
+    }
+    requestAnimationFrame(updateScrollTransition);
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       OFFERING ACCORDION
+       ═══════════════════════════════════════════════════════════════ */
+    function toggleOffering(header) {
+      const offering = header.parentElement;
+      const wasActive = offering.classList.contains('active');
+      // Close siblings
+      offering.closest('.offerings-list').querySelectorAll('.offering').forEach(o => o.classList.remove('active'));
+      if (!wasActive) offering.classList.add('active');
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       CHAT WIDGET
+       ═══════════════════════════════════════════════════════════════ */
+    function toggleChat() {
+      document.getElementById('chatPanel').classList.toggle('open');
+    }
+
+    // Demo: quick action responses
+    document.querySelectorAll('.quick-action').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const topic = btn.textContent;
+        const msgs = document.getElementById('chatMessages');
+
+        // User message
+        const userMsg = document.createElement('div');
+        userMsg.className = 'chat-msg user';
+        userMsg.style.cssText = 'align-self:flex-end; background:rgba(76,201,208,0.12); color:rgba(255,255,255,0.85); border:1px solid rgba(76,201,208,0.15); border-bottom-right-radius:4px; border-radius:14px; border-bottom-right-radius:4px; padding:12px 16px; font-family:Inter; font-size:14px; max-width:85%;';
+        userMsg.textContent = `Tell me about ${topic.toLowerCase()}`;
+        msgs.appendChild(userMsg);
+
+        // Simulated agent response
+        setTimeout(() => {
+          const agentMsg = document.createElement('div');
+          agentMsg.className = 'chat-msg agent';
+          const responses = {
+            'Our services': 'We offer four interconnected stages that form the complete agent lifecycle — <b>Context first. Secure by design. Assured at scale.</b><br><br><b>01 — Context Engineering</b> — We start by layering System, Domain, Task, Interaction, and Response context. Intelligence before code.<br><br><b>02 — Agent Engineering</b> — Design and build multi-agent systems using ReAct reasoning, CoT, and MCP tool integration.<br><br><b>03 — Agent Security</b> — Prompt injection defense, data protection, access control, and runtime guardrails. Security as a dedicated lifecycle stage.<br><br><b>04 — AI Assurance</b> — Validate reliability with RAGAS, SHAP explainability, bias detection, and trustworthiness metrics.<div class="reasoning">Retrieved from: company knowledge base → 4-pillar service taxonomy → generated summary</div>',
+            'Case studies': 'Here are two recent projects:<br><br><b>Contract Q&A Chatbot</b> — Multi-agent system with a Supervisor, Vector RAG agent for single-contract queries, and Graph RAG agent for cross-contract analysis.<br><br><b>Automated Contract Creation</b> — ReAct-based extraction agent + Critique agent pipeline with structural, completeness, and correctness validation.<div class="reasoning">Retrieved from: case studies database → architecture summaries → contextual formatting</div>',
+            'My use case': 'I\'d love to help! To recommend the right approach, could you share:<br><br>1. What\'s your current AI maturity? (No agents / Basic / Multi-agent)<br>2. What problem are you looking to solve?<br>3. What systems need to be integrated?<div class="reasoning">Initiating: Service Recommendation Agent → Step 1: Assess maturity → Step 2: Map requirements → Step 3: Generate recommendation</div>',
+          };
+          agentMsg.innerHTML = responses[topic] || 'I can help with that! Let me look into it.';
+          msgs.appendChild(agentMsg);
+          msgs.scrollTop = msgs.scrollHeight;
+        }, 800);
+
+        msgs.scrollTop = msgs.scrollHeight;
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digixr Hero — Option A2: Particle Network + Gradient Orb</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #FAFCFD;
+      color: #2D3436;
+      overflow-x: hidden;
+    }
+
+    /* ──────────── NAVBAR ──────────── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(250,252,253,0.88);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(226,232,240,0.6);
+      padding: 16px 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo-text {
+      font-size: 22px; font-weight: 700; letter-spacing: 0.12em;
+      background: linear-gradient(135deg, #4CC9D0, #42C68B);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .logo-sub { font-size: 10px; letter-spacing: 0.3em; color: #A0AEC0; font-weight: 500; }
+    .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+    .nav-links a {
+      text-decoration: none; color: #4A5568; font-size: 15px; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #3BBFA6; }
+    .nav-cta {
+      background: linear-gradient(135deg, #4CC9D0, #42C68B);
+      color: white !important; padding: 10px 24px; border-radius: 10px;
+      font-weight: 600 !important; box-shadow: 0 4px 14px rgba(66,198,139,0.25);
+      transition: all 0.3s;
+    }
+    .nav-cta:hover { box-shadow: 0 6px 20px rgba(66,198,139,0.4); transform: translateY(-1px); }
+
+    /* ──────────── HERO ──────────── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; padding-top: 80px;
+    }
+
+    #particle-canvas {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+    }
+
+    /* Large animated gradient orb behind text */
+    .gradient-orb {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%,
+        rgba(76,201,208,0.18) 0%,
+        rgba(59,191,166,0.12) 30%,
+        rgba(66,198,139,0.08) 60%,
+        transparent 80%
+      );
+      filter: blur(60px);
+      z-index: 1;
+      animation: orbFloat 8s ease-in-out infinite, orbRotate 20s linear infinite;
+    }
+
+    /* Secondary smaller orb */
+    .gradient-orb-2 {
+      position: absolute;
+      width: 350px; height: 350px;
+      border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(66,198,139,0.12) 0%,
+        rgba(76,201,208,0.06) 50%,
+        transparent 80%
+      );
+      filter: blur(40px);
+      z-index: 1;
+      top: 15%; right: 20%;
+      animation: orbFloat 6s ease-in-out 2s infinite;
+    }
+
+    .hero-content {
+      position: relative; z-index: 10; text-align: center;
+      max-width: 880px; padding: 0 32px;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.8); border: 1px solid rgba(76,201,208,0.2);
+      border-radius: 100px; padding: 8px 20px;
+      font-size: 14px; font-weight: 500; color: #2BA8B0;
+      margin-bottom: 32px; backdrop-filter: blur(10px);
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .hero-badge .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #42C68B; animation: pulse 2s ease-in-out infinite;
+    }
+
+    .hero-headline {
+      font-size: 76px; font-weight: 800; line-height: 1.02;
+      letter-spacing: -0.035em; margin-bottom: 24px;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+    }
+    .hero-headline .line2 {
+      background: linear-gradient(135deg, #4CC9D0 0%, #3BBFA6 40%, #42C68B 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-size: 200% auto;
+      animation: gradientShift 4s ease-in-out infinite;
+    }
+
+    .hero-sub {
+      font-family: 'Inter', sans-serif; font-size: 19px; line-height: 1.65;
+      color: #718096; max-width: 580px; margin: 0 auto 44px;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+    }
+
+    .hero-ctas {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4CC9D0, #42C68B);
+      color: white; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px; font-weight: 600; letter-spacing: 0.02em;
+      padding: 16px 40px; border-radius: 14px; border: none; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(66,198,139,0.3);
+      transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .btn-primary::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .btn-primary:hover { box-shadow: 0 8px 28px rgba(66,198,139,0.4); transform: translateY(-2px); }
+    .btn-primary:hover::after { opacity: 1; }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.7); color: #3BBFA6;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px; font-weight: 600;
+      padding: 16px 40px; border-radius: 14px;
+      border: 1.5px solid rgba(59,191,166,0.25); cursor: pointer;
+      transition: all 0.3s ease; backdrop-filter: blur(8px);
+    }
+    .btn-secondary:hover { background: rgba(59,191,166,0.06); border-color: #3BBFA6; }
+
+    /* Stats row below CTA */
+    .hero-stats {
+      display: flex; gap: 48px; justify-content: center; margin-top: 56px;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s both;
+    }
+    .stat { text-align: center; }
+    .stat h3 {
+      font-size: 32px; font-weight: 800;
+      background: linear-gradient(135deg, #4CC9D0, #42C68B);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat p { font-size: 13px; color: #A0AEC0; margin-top: 4px; font-weight: 500; }
+
+    /* Trusted by section at bottom */
+    .social-proof {
+      position: absolute; bottom: 40px; left: 0; right: 0; z-index: 10;
+      text-align: center;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.7s both;
+    }
+    .social-proof p {
+      font-size: 12px; color: #A0AEC0; letter-spacing: 0.1em;
+      text-transform: uppercase; font-weight: 500; margin-bottom: 16px;
+    }
+    .logo-strip { display: flex; justify-content: center; gap: 48px; opacity: 0.3; }
+    .logo-strip span { font-size: 17px; font-weight: 700; letter-spacing: 0.04em; color: #4A5568; }
+
+    /* ──────────── MINI AGENT (floating card) ──────────── */
+    .agent-float {
+      position: fixed; bottom: 28px; right: 28px; z-index: 50;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 1.2s both;
+    }
+    .agent-trigger {
+      width: 60px; height: 60px; border-radius: 18px;
+      background: linear-gradient(135deg, #4CC9D0, #42C68B);
+      box-shadow: 0 8px 30px rgba(66,198,139,0.35);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.3s; font-size: 24px;
+      border: none; color: white; position: relative;
+    }
+    .agent-trigger:hover { transform: scale(1.08); box-shadow: 0 10px 35px rgba(66,198,139,0.45); }
+    .agent-trigger .ping {
+      position: absolute; inset: -4px; border-radius: 22px;
+      border: 2px solid #42C68B; animation: ping 2s cubic-bezier(0,0,0.2,1) infinite;
+    }
+    .agent-tooltip {
+      position: absolute; bottom: 72px; right: 0;
+      background: white; border-radius: 14px; padding: 14px 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1); border: 1px solid #E2E8F0;
+      white-space: nowrap; font-size: 14px; color: #2D3436;
+      animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) 2s both;
+    }
+    .agent-tooltip::after {
+      content: ''; position: absolute; bottom: -6px; right: 24px;
+      width: 12px; height: 12px; background: white;
+      border-right: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;
+      transform: rotate(45deg);
+    }
+    .agent-tooltip strong { color: #3BBFA6; }
+
+    /* ──────────── ANIMATIONS ──────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0); }
+      33% { transform: translate(30px, -20px); }
+      66% { transform: translate(-20px, 15px); }
+    }
+    @keyframes orbRotate {
+      from { transform: rotate(0deg); } to { transform: rotate(360deg); }
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% center; }
+      50% { background-position: 100% center; }
+    }
+    @keyframes ping {
+      75%, 100% { transform: scale(1.3); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div>
+      <div class="logo-text">DIGIXR</div>
+      <div class="logo-sub">TECHNOLOGIES</div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">Services</a></li>
+      <li><a href="#">Case Studies</a></li>
+      <li><a href="#">Playground</a></li>
+      <li><a href="#">Insights</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#" class="nav-cta">Talk to Agent</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <canvas id="particle-canvas"></canvas>
+    <div class="gradient-orb"></div>
+    <div class="gradient-orb-2"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Agentic AI Native Organization
+      </div>
+
+      <h1 class="hero-headline">
+        Intelligence That<br>
+        <span class="line2">Works For You.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Digixr Technologies builds autonomous AI agents that don't just assist — they operate, decide, and deliver measurable outcomes for your business.
+      </p>
+
+      <div class="hero-ctas">
+        <button class="btn-primary">Explore Our Agents →</button>
+        <button class="btn-secondary">See How It Works</button>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <h3 id="c1">0+</h3>
+          <p>Agents Deployed</p>
+        </div>
+        <div class="stat">
+          <h3 id="c2">0%</h3>
+          <p>Avg Cost Savings</p>
+        </div>
+        <div class="stat">
+          <h3 id="c3">0x</h3>
+          <p>Faster Delivery</p>
+        </div>
+        <div class="stat">
+          <h3 id="c4">0+</h3>
+          <p>Happy Clients</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="social-proof">
+      <p>Trusted by forward-thinking organizations</p>
+      <div class="logo-strip">
+        <span>ACME</span><span>NOVA</span><span>PULSE</span><span>ORBIT</span><span>VERTEX</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENT BUTTON -->
+  <div class="agent-float">
+    <div class="agent-tooltip">👋 Hi! I'm <strong>Dex</strong>. Need help?</div>
+    <button class="agent-trigger">
+      <span class="ping"></span>
+      🤖
+    </button>
+  </div>
+
+  <script>
+    // ──────────── PARTICLE NETWORK ────────────
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], mouse = { x: -1000, y: -1000 };
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function createParticles() {
+      particles = [];
+      const count = Math.min(70, Math.floor(W * H / 18000));
+      for (let i = 0; i < count; i++) {
+        const t = Math.random();
+        particles.push({
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+          size: Math.random() * 2.5 + 1,
+          r: Math.round(76 + t * (66-76)),
+          g: Math.round(201 + t * (198-201)),
+          b: Math.round(208 + t * (139-208)),
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        const dx = mouse.x - p.x, dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 280) { p.vx += dx * 0.00004; p.vy += dy * 0.00004; }
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.r},${p.g},${p.b},0.5)`;
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const d = Math.sqrt((p.x-p2.x)**2 + (p.y-p2.y)**2);
+          if (d < 140) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(76,201,208,${0.08 * (1 - d/140)})`;
+            ctx.lineWidth = 0.7; ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+
+    canvas.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener('resize', () => { resize(); createParticles(); });
+    resize(); createParticles(); draw();
+
+    // ──────────── COUNTERS ────────────
+    function count(el, target, suffix, dur) {
+      const t0 = performance.now();
+      (function step(now) {
+        const p = Math.min((now - t0) / dur, 1);
+        const e = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * e) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      })(t0);
+    }
+    setTimeout(() => {
+      count(document.getElementById('c1'), 150, '+', 2000);
+      count(document.getElementById('c2'), 40, '%', 2000);
+      count(document.getElementById('c3'), 5, 'x', 2000);
+      count(document.getElementById('c4'), 45, '+', 2000);
+    }, 700);
+  </script>
+</body>
+</html>
