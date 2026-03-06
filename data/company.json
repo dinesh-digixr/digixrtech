@@ -310,5 +310,256 @@
         ]
       }
     }
+  ],
+
+  "blueprints": [
+    {
+      "id": "appointment-intelligence",
+      "title": "Appointment Intelligence",
+      "hook": "Multi-agent scheduling for hospitals",
+      "domain": "Healthcare",
+      "icon": "heart-pulse",
+      "description": "An intelligent multi-agent system that transforms hospital appointment scheduling from a fragmented, manual process into a seamless, context-aware experience — without touching clinical decisions.",
+      "pipeline": [
+        {
+          "step": "Patient Request",
+          "description": "Patient initiates via chat, voice, or web portal",
+          "type": "input"
+        },
+        {
+          "agent": "Supervisor Agent",
+          "role": "Classifies intent, extracts key info, routes to appropriate worker",
+          "type": "supervisor"
+        },
+        {
+          "agent": "Intake Agent",
+          "role": "Gathers insurance details, preferences, accessibility needs, symptoms in plain language",
+          "output": "Structured Patient Profile",
+          "type": "worker"
+        },
+        {
+          "agent": "Scheduling Agent",
+          "role": "Checks doctor availability, matches specialty, suggests optimal slots",
+          "tools": ["EHR System", "Calendar API", "Department Directory"],
+          "output": "Appointment Confirmed",
+          "type": "worker"
+        },
+        {
+          "agent": "Notification Agent",
+          "role": "Sends confirmation, prep instructions, reminders",
+          "tools": ["SMS Gateway", "Email Service", "Patient Portal"],
+          "type": "worker"
+        }
+      ],
+      "pillars": {
+        "context": "Patient history context, department knowledge base, insurance provider rules",
+        "build": "Supervisor + 3 worker agents, MCP tool integrations (EHR, Calendar, SMS)",
+        "secure": "PHI/PII redaction, insurance data boundaries, HIPAA-compliant guardrails, input sanitization",
+        "assure": "Scheduling accuracy validation, agent denial rate for edge cases, bias detection (equitable wait times)"
+      },
+      "demoConversation": [
+        {
+          "turn": 1,
+          "agent": "Supervisor Agent",
+          "highlightNodes": ["supervisor"],
+          "highlightEdges": [],
+          "message": "Welcome to Metro General Hospital's scheduling assistant. I'm the Supervisor Agent — I'll understand what you need and route you to the right specialist agent.\n\nWhat can I help you with today?",
+          "reasoning": "[Supervisor] Initializing — awaiting patient intent classification",
+          "choices": [
+            { "label": "I need to see a cardiologist", "nextTurn": 2 },
+            { "label": "I'd like a general health checkup", "nextTurn": 2 },
+            { "label": "I need to reschedule an existing appointment", "nextTurn": 2 }
+          ]
+        },
+        {
+          "turn": 2,
+          "agent": "Intake Agent",
+          "highlightNodes": ["supervisor", "intake"],
+          "highlightEdges": ["supervisor-intake"],
+          "message": "I'm the Intake Agent. Before I hand you off to scheduling, I need a few details to find the best match.\n\nWhich insurance provider are you with?",
+          "reasoning": "[Supervisor] Intent: new-appointment | Specialty: cardiology | Priority: routine\n[Supervisor] Routing → Intake Agent (need insurance + patient details before scheduling)",
+          "choices": [
+            { "label": "BlueCross BlueShield", "nextTurn": 3 },
+            { "label": "Aetna", "nextTurn": 3 },
+            { "label": "I'm self-pay / no insurance", "nextTurn": 3 }
+          ]
+        },
+        {
+          "turn": 3,
+          "agent": "Intake Agent",
+          "highlightNodes": ["intake"],
+          "highlightEdges": [],
+          "message": "Got it — BlueCross PPO is in-network here. A couple more things:\n\nDo you have any scheduling preferences or accessibility needs?",
+          "reasoning": "[Intake] Insurance: BlueCross PPO — verified in-network with Metro General\n[Intake] Building patient profile... need: preferences, accessibility\n[Security] PII boundary check — insurance ID will not be stored in conversation log",
+          "choices": [
+            { "label": "Morning appointments preferred, no special needs", "nextTurn": 4 },
+            { "label": "Afternoons only — I need wheelchair accessible rooms", "nextTurn": 4 },
+            { "label": "No preference, just the earliest available", "nextTurn": 4 }
+          ]
+        },
+        {
+          "turn": 4,
+          "agent": "Scheduling Agent",
+          "highlightNodes": ["intake", "scheduling"],
+          "highlightEdges": ["intake-scheduling"],
+          "highlightTools": ["EHR System", "Calendar API", "Department Directory"],
+          "message": "I'm the Scheduling Agent. I've checked availability across our cardiology department. Here are your best options:\n\n**Dr. Sarah Chen** — Mon, Mar 10 at 9:30 AM (next available)\n**Dr. James Park** — Wed, Mar 12 at 10:15 AM\n**Dr. Priya Sharma** — Thu, Mar 13 at 8:45 AM\n\nAll accept BlueCross PPO. Which works best?",
+          "reasoning": "[Intake] Patient profile complete → {specialty: cardiology, insurance: BlueCross PPO, preference: mornings, accessibility: none}\n[Intake] Output: Structured Patient Profile — handing off to Scheduling Agent\n[Scheduling] Received profile. Querying tools...\n[Tool Call] EHR System → checking cardiologists accepting BlueCross PPO\n[Tool Call] Calendar API → fetching available morning slots, next 2 weeks\n[Tool Call] Department Directory → Cardiology dept, floor 3",
+          "choices": [
+            { "label": "Dr. Sarah Chen — Monday 9:30 AM", "nextTurn": 5 },
+            { "label": "Dr. Priya Sharma — Thursday 8:45 AM", "nextTurn": 5 },
+            { "label": "Can you check next week instead?", "nextTurn": 5 }
+          ]
+        },
+        {
+          "turn": 5,
+          "agent": "Notification Agent",
+          "highlightNodes": ["scheduling", "notification"],
+          "highlightEdges": ["scheduling-notification"],
+          "highlightTools": ["SMS Gateway", "Email Service", "Patient Portal"],
+          "message": "All set! Here's your appointment summary:\n\n**Dr. Sarah Chen — Cardiology**\nMonday, March 10 at 9:30 AM\nMetro General Hospital, Floor 3, Room 312\n\nI've sent a confirmation to your email and scheduled an SMS reminder for the day before. You can also view this in your patient portal.\n\n**Prep instructions**: No caffeine 12 hours before visit. Bring recent blood work if available.",
+          "reasoning": "[Scheduling] Appointment confirmed: Dr. Sarah Chen, Mon Mar 10, 9:30 AM, Cardiology Floor 3, Room 312\n[Scheduling] Output: Appointment Confirmed — routing to Notification Agent\n[Notification] Preparing confirmation across channels...\n[Tool Call] Email Service → sending confirmation to patient@email.com\n[Tool Call] SMS Gateway → sending reminder scheduled for Sun Mar 9, 6:00 PM\n[Tool Call] Patient Portal → appointment visible in patient dashboard",
+          "choices": [
+            { "label": "Can I also get a reminder 2 hours before?", "nextTurn": 6 },
+            { "label": "What should I bring to the appointment?", "nextTurn": 6 },
+            { "label": "That's everything, thank you!", "nextTurn": 6 }
+          ]
+        },
+        {
+          "turn": 6,
+          "agent": "Supervisor Agent",
+          "highlightNodes": ["supervisor", "intake", "scheduling", "notification"],
+          "highlightEdges": ["supervisor-intake", "intake-scheduling", "scheduling-notification"],
+          "message": "Appointment scheduled successfully! Here's what happened behind the scenes:\n\n**4 agents collaborated** in under 30 seconds — Supervisor classified your intent, Intake built your profile, Scheduling queried 3 external systems, and Notification dispatched across 3 channels.",
+          "reasoning": "[Pipeline Complete]\nContext: Patient history context loaded, insurance rules applied, department knowledge queried\nBuild: Supervisor + 3 worker agents orchestrated via MCP protocol\nSecure: PII boundaries enforced, insurance data not persisted, input sanitized\nAssure: Scheduling accuracy validated, wait time equity checked, no bias detected",
+          "isFinal": true
+        }
+      ]
+    },
+    {
+      "id": "first-gen-navigator",
+      "title": "First-Gen College Navigator",
+      "hook": "AI equity for underserved students",
+      "domain": "Education",
+      "icon": "graduation-cap",
+      "description": "A multilingual AI navigator that bridges the information gap for first-generation college students — guiding them through admissions, scholarships, and documents that privileged students learn from family.",
+      "pipeline": [
+        {
+          "step": "Student Query",
+          "description": "Student asks in their preferred language via chat",
+          "type": "input"
+        },
+        {
+          "agent": "Navigator Agent",
+          "role": "Understands intent, assesses student profile, routes to specialist",
+          "type": "supervisor"
+        },
+        {
+          "agent": "Eligibility Agent",
+          "role": "Matches student background to programs, scholarships, financial aid options",
+          "tools": ["University Catalog", "Scholarship Database", "Financial Aid Rules"],
+          "output": "Personalized Options List",
+          "type": "worker"
+        },
+        {
+          "agent": "Document Agent",
+          "role": "Explains required documents, tracks submission status, sends deadline reminders",
+          "tools": ["Document Checklist API", "Calendar", "Notification Service"],
+          "output": "Application Readiness Score",
+          "type": "worker"
+        },
+        {
+          "agent": "Counselor Agent",
+          "role": "Answers questions in simple language, provides step-by-step guidance",
+          "tools": ["FAQ Knowledge Base", "Application Guides", "Campus Resources"],
+          "type": "worker"
+        }
+      ],
+      "pillars": {
+        "context": "Student background (first-gen status, economic situation, academic interests), institutional knowledge, regional language context",
+        "build": "Navigator supervisor + 3 specialized agents, multilingual NLP, RAG over institutional knowledge",
+        "secure": "Minor's data protection, economic data sensitivity, no demographic profiling for steering",
+        "assure": "Bias detection (agent must not steer based on demographics), recommendation fairness, hallucination prevention on eligibility info"
+      },
+      "demoConversation": [
+        {
+          "turn": 1,
+          "agent": "Navigator Agent",
+          "highlightNodes": ["navigator"],
+          "highlightEdges": [],
+          "message": "Hi! I'm the Navigator — an AI assistant built to help first-generation college students find their path. I speak multiple languages and I'm here to make this process less overwhelming.\n\nWhat's on your mind today?",
+          "reasoning": "[Navigator] Initializing — language: English (auto-detected) — awaiting student intent",
+          "choices": [
+            { "label": "I want to find scholarships I qualify for", "nextTurn": 2 },
+            { "label": "I don't know what documents I need for applications", "nextTurn": 2 },
+            { "label": "I got accepted but I'm confused about financial aid", "nextTurn": 2 }
+          ]
+        },
+        {
+          "turn": 2,
+          "agent": "Eligibility Agent",
+          "highlightNodes": ["navigator", "eligibility"],
+          "highlightEdges": ["navigator-eligibility"],
+          "message": "I'm the Eligibility Agent. I'll match you with scholarships and aid you actually qualify for — no generic lists.\n\nTo find the best matches, are you currently in high school or already enrolled in college?",
+          "reasoning": "[Navigator] Intent: scholarship-search | Profile: first-gen, needs financial support\n[Navigator] Routing → Eligibility Agent (scholarship + financial aid matching)\n[Security] Minor's data protection check — no demographic profiling for steering",
+          "choices": [
+            { "label": "High school senior — applying this year", "nextTurn": 3 },
+            { "label": "High school junior — planning ahead", "nextTurn": 3 },
+            { "label": "Already in college — looking for ongoing aid", "nextTurn": 3 }
+          ]
+        },
+        {
+          "turn": 3,
+          "agent": "Eligibility Agent",
+          "highlightNodes": ["eligibility"],
+          "highlightEdges": [],
+          "highlightTools": ["University Catalog", "Scholarship Database", "Financial Aid Rules"],
+          "message": "Great — here's what I found for high school seniors who are first-generation:\n\n**Scholarships** (3 strong matches):\n- First in Family Scholarship — $5,000/year (deadline: Apr 15)\n- Gates Millennium Scholars — full tuition (deadline: Jan 15)\n- Coca-Cola First Gen Fund — $2,500 one-time (deadline: Mar 30)\n\n**Financial Aid**:\n- You likely qualify for Federal Pell Grant (up to $7,395/year)\n- Most state universities have first-gen fee waivers\n\nWant me to dig into any of these, or check what documents you'd need?",
+          "reasoning": "[Eligibility] Profile: HS senior, first-gen, seeking scholarships\n[Tool Call] Scholarship Database → filtering: first-generation, HS senior, need-based\n[Tool Call] Financial Aid Rules → checking FAFSA eligibility indicators\n[Tool Call] University Catalog → programs with first-gen support services\n[Assure] Bias check — recommendations not influenced by ZIP code or ethnicity",
+          "choices": [
+            { "label": "Tell me more about the Gates Scholarship", "nextTurn": 4 },
+            { "label": "What documents do I need for these?", "nextTurn": 4 },
+            { "label": "Can you check scholarships for a specific major?", "nextTurn": 4 }
+          ]
+        },
+        {
+          "turn": 4,
+          "agent": "Document Agent",
+          "highlightNodes": ["eligibility", "document"],
+          "highlightEdges": ["eligibility-document"],
+          "highlightTools": ["Document Checklist API", "Calendar", "Notification Service"],
+          "message": "I'm the Document Agent. Here's your personalized checklist:\n\n**Must-have documents**:\n- FAFSA (Free Application) — opens Oct 1, priority deadline Mar 1\n- High school transcript (request from counselor)\n- Parent/guardian tax return (or non-filer statement)\n- Personal essay (most scholarships require one)\n\n**For Gates Scholarship specifically**:\n- Community service record\n- Two recommendation letters\n\n**Your Application Readiness Score: 2 of 6 items ready**\n\nWant me to explain any of these in simpler terms?",
+          "reasoning": "[Eligibility] Output: Personalized Options List — 3 scholarships + federal aid matched\n[Eligibility] Student chose document guidance → routing to Document Agent\n[Document] Loading checklist for: first-gen HS senior, scholarship + FAFSA applications\n[Tool Call] Document Checklist API → generating personalized requirements\n[Tool Call] Calendar → mapping deadlines",
+          "choices": [
+            { "label": "What's a non-filer statement? My parents don't file taxes", "nextTurn": 5 },
+            { "label": "How do I request my transcript?", "nextTurn": 5 },
+            { "label": "Set deadline reminders for me", "nextTurn": 5 }
+          ]
+        },
+        {
+          "turn": 5,
+          "agent": "Counselor Agent",
+          "highlightNodes": ["document", "counselor"],
+          "highlightEdges": ["document-counselor"],
+          "highlightTools": ["FAQ Knowledge Base", "Application Guides", "Campus Resources"],
+          "message": "Great question — this confuses a lot of people, so you're not alone.\n\nA **non-filer statement** is simply a letter saying \"my parents didn't earn enough to file taxes.\" Here's exactly what to do:\n\n1. **Write a short letter** — \"I, [Parent Name], did not file a federal tax return for [year] because my income was below the filing threshold.\"\n2. **Parent signs it**\n3. **Optional but helpful**: Get it notarized at your local library (usually free)\n\nThe FAFSA also has a checkbox for this — select \"Will not file\" under parent tax status.\n\nMany first-gen families are in this situation. It will *not* hurt your application — it actually strengthens your case for need-based aid.",
+          "reasoning": "[Document] Student needs guidance on non-filer statement → routing to Counselor Agent\n[Counselor] Loading: FAQ Knowledge Base → \"non-filer statement\" explanation\n[Counselor] Adjusting language: plain English, no jargon, step-by-step\n[Assure] Hallucination check — verifying against official FAFSA guidelines",
+          "choices": [
+            { "label": "That's really helpful. What's next on my checklist?", "nextTurn": 6 },
+            { "label": "Can you explain FAFSA in simple terms too?", "nextTurn": 6 },
+            { "label": "I think I'm ready — summarize everything for me", "nextTurn": 6 }
+          ]
+        },
+        {
+          "turn": 6,
+          "agent": "Navigator Agent",
+          "highlightNodes": ["navigator", "eligibility", "document", "counselor"],
+          "highlightEdges": ["navigator-eligibility", "eligibility-document", "document-counselor"],
+          "message": "Here's your complete summary:\n\n**3 scholarships** matched to your profile (total potential: $14,895+/year)\n**Application Readiness**: 2 of 6 documents ready\n**Next deadline**: Coca-Cola First Gen Fund — Mar 30\n\n4 agents worked together to get you here — Navigator understood your needs, Eligibility searched 3 databases, Document built your checklist, and Counselor explained everything in plain language.",
+          "reasoning": "[Pipeline Complete]\nContext: First-gen student profile, institutional knowledge base, financial aid rules applied\nBuild: Navigator + 3 specialized agents, RAG over scholarship database\nSecure: Minor's data protected, no demographic steering, economic data kept private\nAssure: Bias detection passed — recommendations based on eligibility only, not demographics",
+          "isFinal": true
+        }
+      ]
+    }
   ]
 }

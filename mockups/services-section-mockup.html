@@ -400,6 +400,254 @@
     .reveal-delay-2 { transition-delay: 0.2s; }
     .reveal-delay-3 { transition-delay: 0.3s; }
 
+    /* ─── Solution Blueprints section ─── */
+    .blueprints-section {
+      position: relative; padding: 100px 0 80px; max-width: 100%; margin: 0 auto;
+      background: linear-gradient(180deg,
+        rgba(10,10,18,1) 0%,
+        rgba(16,20,32,1) 12%,
+        rgba(16,20,32,1) 88%,
+        rgba(10,10,18,1) 100%);
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .blueprints-section > * { max-width: 1280px; margin-left: auto; margin-right: auto; }
+    .blueprints-section::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(var(--teal-rgb),0.4), transparent);
+    }
+    .blueprints-section::after {
+      content: ''; position: absolute; top: 60px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 300px; border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(var(--teal-rgb),0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .blueprint-tabs {
+      display: flex; gap: 12px; justify-content: center; margin-bottom: 48px; padding: 0 32px;
+      position: relative; z-index: 1;
+    }
+    .blueprint-tab {
+      display: flex; align-items: center; gap: 12px; padding: 16px 28px;
+      border-radius: 14px; border: 1px solid var(--dark-border); cursor: pointer;
+      background: rgba(255,255,255,0.02); transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+      max-width: 340px; flex: 1;
+    }
+    .blueprint-tab:hover { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); }
+    .blueprint-tab.active { border-color: rgba(var(--teal-rgb),0.4); background: rgba(var(--teal-rgb),0.06); }
+    .blueprint-tab[data-bp="healthcare"].active { border-color: rgba(255,100,100,0.35); background: rgba(255,100,100,0.06); }
+    .blueprint-tab[data-bp="education"].active { border-color: rgba(100,180,255,0.35); background: rgba(100,180,255,0.06); }
+    .blueprint-tab svg { width: 18px; height: 18px; flex-shrink: 0; transition: color 0.3s; }
+    .blueprint-tab[data-bp="healthcare"] svg { color: #ff6b6b; }
+    .blueprint-tab[data-bp="education"] svg { color: #64b5ff; }
+    .blueprint-tab span { font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.5); transition: color 0.3s; }
+    .blueprint-tab.active span { color: white; }
+    .blueprint-tab small { font-size: 12px; color: rgba(255,255,255,0.3); font-family: 'Inter'; }
+    .blueprint-tab.active small { color: rgba(255,255,255,0.5); }
+
+    .blueprint-content {
+      display: none; grid-template-columns: 1fr 1fr; gap: 48px;
+      padding: 0 64px; align-items: start;
+      opacity: 0; transition: opacity 0.5s ease;
+    }
+    .blueprint-content.active {
+      display: grid; opacity: 1;
+    }
+    .blueprint-viz {
+      position: relative; aspect-ratio: 4/3; border-radius: 20px;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--dark-border);
+      overflow: hidden;
+    }
+    .blueprint-viz canvas { width: 100%; height: 100%; display: block; }
+
+    .blueprint-details { position: relative; }
+    .blueprint-domain-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 100px; margin-bottom: 16px;
+    }
+    .blueprint-details[data-domain="healthcare"] .blueprint-domain-badge {
+      background: rgba(255,100,100,0.1); color: #ff8a8a; border: 1px solid rgba(255,100,100,0.2);
+    }
+    .blueprint-details[data-domain="education"] .blueprint-domain-badge {
+      background: rgba(100,180,255,0.1); color: #8ac4ff; border: 1px solid rgba(100,180,255,0.2);
+    }
+    .blueprint-title { font-size: 32px; font-weight: 800; color: white; margin-bottom: 12px; line-height: 1.15; }
+    .blueprint-desc { font-family: 'Inter'; font-size: 15px; color: rgba(255,255,255,0.45); line-height: 1.7; margin-bottom: 28px; }
+
+    .pipeline-steps { display: flex; flex-direction: column; gap: 6px; }
+    .pipeline-step {
+      display: flex; align-items: center; gap: 14px; padding: 12px 16px;
+      border-radius: 12px; border: 1px solid var(--dark-border);
+      background: rgba(255,255,255,0.02); transition: all 0.3s;
+    }
+    .pipeline-step:hover { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); }
+    .pipeline-step-icon {
+      width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .pipeline-step[data-type="input"] .pipeline-step-icon { background: rgba(var(--cyan-rgb),0.12); color: var(--cyan); }
+    .pipeline-step[data-type="supervisor"] .pipeline-step-icon { background: rgba(var(--teal-rgb),0.12); color: var(--teal); }
+    .pipeline-step[data-type="worker"] .pipeline-step-icon { background: rgba(var(--emerald-rgb),0.12); color: var(--emerald); }
+    .pipeline-step-content { flex: 1; min-width: 0; }
+    .pipeline-step-name { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); }
+    .pipeline-step-role { font-size: 12px; color: rgba(255,255,255,0.35); font-family: 'Inter'; margin-top: 2px; }
+    .pipeline-step-tools {
+      display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;
+    }
+    .pipeline-tool {
+      font-size: 10px; padding: 2px 8px; border-radius: 100px;
+      background: rgba(var(--teal-rgb),0.08); color: var(--teal);
+      border: 1px solid rgba(var(--teal-rgb),0.12); font-family: 'Inter'; font-weight: 500;
+    }
+
+    .pillar-badges {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; padding-top: 20px;
+      border-top: 1px solid var(--dark-border);
+    }
+    .pillar-badge {
+      display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+      border-radius: 8px; font-size: 11px; font-weight: 600; font-family: 'Inter';
+      letter-spacing: 0.05em; cursor: default;
+    }
+    .pillar-badge[data-pillar="context"] { background: rgba(var(--cyan-rgb),0.08); color: var(--cyan); border: 1px solid rgba(var(--cyan-rgb),0.15); }
+    .pillar-badge[data-pillar="build"] { background: rgba(var(--teal-rgb),0.08); color: var(--teal); border: 1px solid rgba(var(--teal-rgb),0.15); }
+    .pillar-badge[data-pillar="secure"] { background: rgba(var(--amber-rgb),0.08); color: var(--amber); border: 1px solid rgba(var(--amber-rgb),0.15); }
+    .pillar-badge[data-pillar="assure"] { background: rgba(var(--emerald-rgb),0.08); color: var(--emerald); border: 1px solid rgba(var(--emerald-rgb),0.15); }
+    .pillar-badge .pillar-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .pillar-badge[data-pillar="context"] .pillar-dot { background: var(--cyan); }
+    .pillar-badge[data-pillar="build"] .pillar-dot { background: var(--teal); }
+    .pillar-badge[data-pillar="secure"] .pillar-dot { background: var(--amber); }
+    .pillar-badge[data-pillar="assure"] .pillar-dot { background: var(--emerald); }
+
+    /* Class-based pillar badge fallbacks (matching HTML) */
+    .pillar-badge.context { background: rgba(var(--cyan-rgb),0.08); color: var(--cyan); border: 1px solid rgba(var(--cyan-rgb),0.15); }
+    .pillar-badge.build { background: rgba(var(--teal-rgb),0.08); color: var(--teal); border: 1px solid rgba(var(--teal-rgb),0.15); }
+    .pillar-badge.secure { background: rgba(var(--amber-rgb),0.08); color: var(--amber); border: 1px solid rgba(var(--amber-rgb),0.15); }
+    .pillar-badge.assure { background: rgba(var(--emerald-rgb),0.08); color: var(--emerald); border: 1px solid rgba(var(--emerald-rgb),0.15); }
+    .pillar-badge strong { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .pillar-badge span { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 400; }
+
+    /* Domain badge (class-based) */
+    .domain-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 100px; margin-bottom: 16px;
+    }
+    .domain-badge.healthcare {
+      background: rgba(255,100,100,0.1); color: #ff8a8a; border: 1px solid rgba(255,100,100,0.2);
+    }
+    .domain-badge.education {
+      background: rgba(100,180,255,0.1); color: #8ac4ff; border: 1px solid rgba(100,180,255,0.2);
+    }
+
+    /* Pipeline step inner layout */
+    .pipeline-step-header {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .pipeline-step-header svg { color: inherit; flex-shrink: 0; }
+    .pipeline-step[data-type="input"] .pipeline-step-header svg { color: var(--cyan); }
+    .pipeline-step[data-type="supervisor"] .pipeline-step-header svg { color: var(--teal); }
+    .pipeline-step[data-type="worker"] .pipeline-step-header svg { color: var(--emerald); }
+    .pipeline-step-header strong { font-size: 14px; color: rgba(255,255,255,0.85); }
+    .pipeline-step p { font-size: 12px; color: rgba(255,255,255,0.35); font-family: 'Inter'; margin-top: 4px; line-height: 1.5; }
+    .pipeline-output {
+      font-size: 10px; padding: 2px 8px; border-radius: 100px;
+      background: rgba(var(--emerald-rgb),0.08); color: var(--emerald);
+      border: 1px solid rgba(var(--emerald-rgb),0.12); font-family: 'Inter'; font-weight: 500;
+      margin-left: auto;
+    }
+    .pipeline-tools {
+      display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;
+    }
+
+    /* ─── Blueprint demo CTA ─── */
+    .blueprint-demo-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 24px; padding: 14px 28px; border-radius: 12px;
+      font-size: 15px; font-weight: 700; text-decoration: none;
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      color: #0a0a12; transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .blueprint-demo-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(var(--teal-rgb),0.3);
+    }
+
+    /* ─── Our Belief section ─── */
+    .belief-section {
+      position: relative; padding: 100px 64px; max-width: 1280px; margin: 0 auto;
+    }
+    .belief-blocks { display: flex; flex-direction: column; gap: 48px; max-width: 720px; margin: 0 auto; }
+    .belief-block { position: relative; padding-left: 32px; }
+    .belief-block::before {
+      content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 2px;
+      border-radius: 2px;
+    }
+    .belief-block:nth-child(1)::before { background: linear-gradient(180deg, var(--cyan), var(--teal)); }
+    .belief-block:nth-child(2)::before { background: linear-gradient(180deg, var(--teal), var(--amber)); }
+    .belief-block:nth-child(3)::before { background: linear-gradient(180deg, var(--amber), var(--emerald)); }
+    .belief-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .belief-block:nth-child(1) .belief-label { color: var(--cyan); }
+    .belief-block:nth-child(2) .belief-label { color: var(--amber); }
+    .belief-block:nth-child(3) .belief-label { color: var(--emerald); }
+    .belief-text {
+      font-size: 20px; font-weight: 500; color: rgba(255,255,255,0.75); line-height: 1.7;
+    }
+    .belief-text strong { color: white; font-weight: 700; }
+    .belief-highlight {
+      font-weight: 700; color: white;
+      -webkit-text-fill-color: white;
+    }
+    .belief-headline {
+      display: block; font-size: 28px; font-weight: 800; color: white;
+      margin-bottom: 12px; letter-spacing: -0.01em; line-height: 1.3;
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    /* ─── CTA section ─── */
+    .cta-section {
+      position: relative; padding: 100px 64px 120px; text-align: center;
+      max-width: 800px; margin: 0 auto;
+    }
+    .cta-section::before {
+      content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(var(--teal-rgb),0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-headline {
+      font-size: 40px; font-weight: 800; color: white; letter-spacing: -0.02em;
+      line-height: 1.2; margin-bottom: 16px; position: relative;
+    }
+    .cta-sub {
+      font-family: 'Inter'; font-size: 17px; color: rgba(255,255,255,0.45);
+      line-height: 1.65; max-width: 520px; margin: 0 auto 36px;
+    }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; position: relative; }
+    .cta-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 32px; border-radius: 14px; font-size: 16px; font-weight: 700;
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      color: #0a0a12; border: none; cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      font-family: 'Outfit', system-ui, sans-serif;
+    }
+    .cta-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(var(--teal-rgb),0.3); }
+    .cta-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 16px 32px; border-radius: 14px; font-size: 16px; font-weight: 600;
+      background: transparent; color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      font-family: 'Outfit', system-ui, sans-serif;
+    }
+    .cta-secondary:hover { border-color: rgba(255,255,255,0.25); color: white; transform: translateY(-2px); }
+
     /* ─── Reduced motion ─── */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -419,6 +667,9 @@
       .service-panel.reversed { direction: ltr; }
       .service-title { font-size: 30px; }
       .lifecycle-node span:not(.num) { display: none; }
+      .blueprint-content { grid-template-columns: 1fr; }
+      .blueprint-viz { min-height: 280px; }
+      .belief-blocks { gap: 32px; }
     }
 
     /* ─── Mobile ─── */
@@ -441,6 +692,20 @@
       .service-panel::before { font-size: 180px; }
       .lifecycle-bar { top: 56px; padding: 12px 16px; }
       .chat-panel { width: calc(100vw - 48px); right: -12px; height: 460px; }
+      .blueprints-section { padding: 60px 20px; }
+      .blueprint-tabs { flex-direction: column; gap: 8px; }
+      .blueprint-tab { padding: 12px 16px; }
+      .blueprint-tab small { display: none; }
+      .blueprint-viz { min-height: 240px; }
+      .pipeline-step { padding: 12px 14px; }
+      .pillar-badges { grid-template-columns: 1fr; }
+      .belief-section { padding: 60px 20px; }
+      .belief-block { padding: 24px; }
+      .belief-headline { font-size: 22px; }
+      .cta-section { padding: 60px 20px; }
+      .cta-headline { font-size: 26px; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+      .cta-primary, .cta-secondary { width: 100%; max-width: 280px; }
     }
 
     /* ─── Small mobile ─── */
@@ -460,9 +725,9 @@
       <div><div class="logo-text">DIGIXR</div><div class="logo-sub">TECHNOLOGIES</div></div>
     </div>
     <ul class="nav-links">
-      <li><a href="#services">Services</a></li><li><a href="#">Case Studies</a></li>
-      <li><a href="#">Playground</a></li><li><a href="#">Insights</a></li>
-      <li><a href="#">About</a></li><li><a href="#" class="nav-cta">Talk to Agent</a></li>
+      <li><a href="#services">Services</a></li><li><a href="#blueprints">Blueprints</a></li>
+      <li><a href="#belief">Our Belief</a></li><li><a href="#">Insights</a></li>
+      <li><a href="#" class="nav-cta" onclick="document.getElementById('chatWidget').classList.add('open'); document.getElementById('chatInput').focus(); return false;">Talk to Agent</a></li>
     </ul>
   </nav>
 
@@ -791,6 +1056,263 @@
     </div>
   </section>
 
+  <!-- ═══════════════════════════════════════════════════════════════
+       Section 2: Solution Blueprints (Tabbed)
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="blueprints-section" id="blueprints">
+    <div class="section-header reveal">
+      <h2 class="section-title">Solution Blueprints</h2>
+      <p class="section-subtitle">Same methodology. Different domains. See how our 4-pillar lifecycle applies.</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="blueprint-tabs reveal">
+      <button class="blueprint-tab active" data-bp="healthcare" onclick="switchBlueprint('healthcare')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <span>Healthcare</span>
+        <small>Appointment Intelligence</small>
+      </button>
+      <button class="blueprint-tab" data-bp="education" onclick="switchBlueprint('education')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"/>
+        </svg>
+        <span>Education</span>
+        <small>First-Gen Navigator</small>
+      </button>
+    </div>
+
+    <!-- Healthcare Blueprint -->
+    <div class="blueprint-content active" id="bp-healthcare">
+      <div class="blueprint-viz reveal">
+        <canvas id="vizHealthcare"></canvas>
+      </div>
+      <div class="blueprint-details reveal">
+        <span class="domain-badge healthcare">Healthcare</span>
+        <h3 class="blueprint-title">Appointment Intelligence</h3>
+        <p class="blueprint-desc">An intelligent multi-agent system that transforms hospital appointment scheduling from a fragmented, manual process into a seamless, context-aware experience — without touching clinical decisions.</p>
+
+        <div class="pipeline-steps">
+          <!-- Input -->
+          <div class="pipeline-step" data-type="input">
+            <div class="pipeline-step-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              <strong>Patient Request</strong>
+            </div>
+            <p>Patient initiates via chat, voice, or web portal</p>
+          </div>
+          <!-- Supervisor -->
+          <div class="pipeline-step" data-type="supervisor">
+            <div class="pipeline-step-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+              <strong>Supervisor Agent</strong>
+            </div>
+            <p>Classifies intent, extracts key info, routes to appropriate worker</p>
+          </div>
+          <!-- Workers -->
+          <div class="pipeline-step" data-type="worker">
+            <div class="pipeline-step-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>
+              <strong>Intake Agent</strong>
+              <span class="pipeline-output">Structured Patient Profile</span>
+            </div>
+            <p>Gathers insurance details, preferences, accessibility needs, symptoms in plain language</p>
+          </div>
+          <div class="pipeline-step" data-type="worker">
+            <div class="pipeline-step-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <strong>Scheduling Agent</strong>
+              <span class="pipeline-output">Appointment Confirmed</span>
+            </div>
+            <p>Checks doctor availability, matches specialty, suggests optimal slots</p>
+            <div class="pipeline-tools">
+              <span class="pipeline-tool">EHR System</span>
+              <span class="pipeline-tool">Calendar API</span>
+              <span class="pipeline-tool">Department Directory</span>
+            </div>
+          </div>
+          <div class="pipeline-step" data-type="worker">
+            <div class="pipeline-step-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+              <strong>Notification Agent</strong>
+            </div>
+            <p>Sends confirmation, prep instructions, reminders</p>
+            <div class="pipeline-tools">
+              <span class="pipeline-tool">SMS Gateway</span>
+              <span class="pipeline-tool">Email Service</span>
+              <span class="pipeline-tool">Patient Portal</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4-Pillar Badges -->
+        <div class="pillar-badges">
+          <div class="pillar-badge context">
+            <strong>Context</strong>
+            <span>Patient history, department knowledge base, insurance rules</span>
+          </div>
+          <div class="pillar-badge build">
+            <strong>Build</strong>
+            <span>Supervisor + 3 worker agents, MCP tools (EHR, Calendar, SMS)</span>
+          </div>
+          <div class="pillar-badge secure">
+            <strong>Secure</strong>
+            <span>PHI/PII redaction, HIPAA-compliant guardrails, input sanitization</span>
+          </div>
+          <div class="pillar-badge assure">
+            <strong>Assure</strong>
+            <span>Scheduling accuracy, agent denial rate, bias detection</span>
+          </div>
+        </div>
+
+        <a href="blueprint-demo-healthcare.html" class="blueprint-demo-cta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Try the Demo
+        </a>
+      </div>
+    </div>
+
+    <!-- Education Blueprint -->
+    <div class="blueprint-content" id="bp-education">
+      <div class="blueprint-viz reveal">
+        <canvas id="vizEducation"></canvas>
+      </div>
+      <div class="blueprint-details reveal">
+        <span class="domain-badge education">Education</span>
+        <h3 class="blueprint-title">First-Gen College Navigator</h3>
+        <p class="blueprint-desc">A multilingual AI navigator that bridges the information gap for first-generation college students — guiding them through admissions, scholarships, and documents that privileged students learn from family.</p>
+
+        <div class="pipeline-steps">
+          <!-- Input -->
+          <div class="pipeline-step" data-type="input">
+            <div class="pipeline-step-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              <strong>Student Query</strong>
+            </div>
+            <p>Student asks in their preferred language via chat</p>
+          </div>
+          <!-- Supervisor -->
+          <div class="pipeline-step" data-type="supervisor">
+            <div class="pipeline-step-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+              <strong>Navigator Agent</strong>
+            </div>
+            <p>Understands intent, assesses student profile, routes to specialist</p>
+          </div>
+          <!-- Workers -->
+          <div class="pipeline-step" data-type="worker">
+            <div class="pipeline-step-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+              <strong>Eligibility Agent</strong>
+              <span class="pipeline-output">Personalized Options List</span>
+            </div>
+            <p>Matches student background to programs, scholarships, financial aid options</p>
+            <div class="pipeline-tools">
+              <span class="pipeline-tool">University Catalog</span>
+              <span class="pipeline-tool">Scholarship Database</span>
+              <span class="pipeline-tool">Financial Aid Rules</span>
+            </div>
+          </div>
+          <div class="pipeline-step" data-type="worker">
+            <div class="pipeline-step-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8M16 17H8M10 9H8"/></svg>
+              <strong>Document Agent</strong>
+              <span class="pipeline-output">Application Readiness Score</span>
+            </div>
+            <p>Explains required documents, tracks submission status, sends deadline reminders</p>
+            <div class="pipeline-tools">
+              <span class="pipeline-tool">Document Checklist API</span>
+              <span class="pipeline-tool">Calendar</span>
+              <span class="pipeline-tool">Notification Service</span>
+            </div>
+          </div>
+          <div class="pipeline-step" data-type="worker">
+            <div class="pipeline-step-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+              <strong>Counselor Agent</strong>
+            </div>
+            <p>Answers questions in simple language, provides step-by-step guidance</p>
+            <div class="pipeline-tools">
+              <span class="pipeline-tool">FAQ Knowledge Base</span>
+              <span class="pipeline-tool">Application Guides</span>
+              <span class="pipeline-tool">Campus Resources</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4-Pillar Badges -->
+        <div class="pillar-badges">
+          <div class="pillar-badge context">
+            <strong>Context</strong>
+            <span>Student background, institutional knowledge, regional language context</span>
+          </div>
+          <div class="pillar-badge build">
+            <strong>Build</strong>
+            <span>Navigator + 3 agents, multilingual NLP, RAG over institutional knowledge</span>
+          </div>
+          <div class="pillar-badge secure">
+            <strong>Secure</strong>
+            <span>Minor's data protection, no demographic profiling for steering</span>
+          </div>
+          <div class="pillar-badge assure">
+            <strong>Assure</strong>
+            <span>Bias detection, recommendation fairness, hallucination prevention</span>
+          </div>
+        </div>
+
+        <a href="blueprint-demo-education.html" class="blueprint-demo-cta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Try the Demo
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Section 3: Our Belief
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="belief-section" id="belief">
+    <div class="section-header reveal">
+      <h2 class="section-title">Our Belief</h2>
+    </div>
+
+    <div class="belief-blocks">
+      <div class="belief-block reveal" data-belief="problem">
+        <span class="belief-label">The Problem We See</span>
+        <p class="belief-text">Most companies ship agents without context, security, or validation. They bolt AI onto existing systems, skip the hard questions, and hope for the best. The result: <span class="belief-highlight">agents that hallucinate, leak data, and erode trust.</span></p>
+      </div>
+
+      <div class="belief-block reveal" data-belief="principle">
+        <span class="belief-label">What We Believe</span>
+        <p class="belief-text belief-headline">Context first. Secure by design. Assured at scale.</p>
+        <p class="belief-text">We built our 4-pillar lifecycle because cutting corners on AI isn't just bad engineering — it's irresponsible. Every agent we ship goes through Context, Build, Secure, and Assure. <span class="belief-highlight">No exceptions.</span></p>
+      </div>
+
+      <div class="belief-block reveal" data-belief="aspiration">
+        <span class="belief-label">Our Aspiration</span>
+        <p class="belief-text">We believe <span class="belief-highlight">the impact of AI should be equitable to all.</span> From hospital scheduling systems to first-generation college navigators — we build AI that reaches those who need it most, not just those who can afford it most.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Section 4: CTA
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="cta-section" id="cta">
+    <h2 class="cta-headline reveal">Tell our agent what you're building.</h2>
+    <p class="cta-sub reveal">It'll map your challenge to our lifecycle and suggest where to start.</p>
+    <div class="cta-buttons reveal">
+      <button class="cta-primary" onclick="document.getElementById('chatWidget').classList.add('open'); document.getElementById('chatInput').focus();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Talk to Our Agent
+      </button>
+      <button class="cta-secondary" onclick="document.getElementById('blueprints').scrollIntoView({behavior:'smooth'});">
+        Explore Blueprints
+      </button>
+    </div>
+  </section>
+
   <!-- ═══ Agent chat widget ═══ -->
   <div class="chat-widget" id="chatWidget">
     <div class="chat-panel" id="chatPanel">
@@ -807,13 +1329,13 @@
         <div class="chat-msg agent">
           Hi! I'm an AI agent built using the same practices we offer to our clients.
           <br><br>
-          I can help you understand our services, walk through case studies, or discuss how we'd approach your specific challenge.
+          I can help you understand our services, explore solution blueprints, or discuss how we'd approach your specific challenge.
           <div class="reasoning">Using ReAct reasoning with layered context: System (Digixr knowledge) + Domain (your industry) + Task (your question)</div>
         </div>
       </div>
       <div class="chat-quick-actions">
         <button class="quick-action">Our services</button>
-        <button class="quick-action">Case studies</button>
+        <button class="quick-action">Solution blueprints</button>
         <button class="quick-action">My use case</button>
       </div>
       <div class="chat-input-area">
@@ -1772,6 +2294,257 @@
 
 
     /* ═══════════════════════════════════════════════════════════════
+       BLUEPRINT PIPELINE CANVAS
+       ═══════════════════════════════════════════════════════════════ */
+
+    const blueprintConfigs = {
+      healthcare: {
+        canvasId: 'vizHealthcare',
+        color: { r: 239, g: 68, b: 68 },   // red-ish healthcare
+        accentColors: [CYAN, TEAL, EMERALD],
+        nodes: [
+          { label: 'Patient', type: 'input', x: 0.12, y: 0.15 },
+          { label: 'Supervisor', type: 'supervisor', x: 0.5, y: 0.15 },
+          { label: 'Intake', type: 'worker', x: 0.22, y: 0.55 },
+          { label: 'Scheduling', type: 'worker', x: 0.5, y: 0.55 },
+          { label: 'Notification', type: 'worker', x: 0.78, y: 0.55 },
+          { label: 'EHR', type: 'tool', x: 0.35, y: 0.85 },
+          { label: 'Calendar', type: 'tool', x: 0.55, y: 0.85 },
+          { label: 'SMS', type: 'tool', x: 0.75, y: 0.85 },
+        ],
+        edges: [
+          [0, 1], [1, 2], [1, 3], [1, 4],
+          [3, 5], [3, 6], [4, 7]
+        ]
+      },
+      education: {
+        canvasId: 'vizEducation',
+        color: { r: 59, g: 130, b: 246 },   // blue education
+        accentColors: [CYAN, TEAL, EMERALD],
+        nodes: [
+          { label: 'Student', type: 'input', x: 0.12, y: 0.15 },
+          { label: 'Navigator', type: 'supervisor', x: 0.5, y: 0.15 },
+          { label: 'Eligibility', type: 'worker', x: 0.22, y: 0.55 },
+          { label: 'Document', type: 'worker', x: 0.5, y: 0.55 },
+          { label: 'Counselor', type: 'worker', x: 0.78, y: 0.55 },
+          { label: 'Scholarships', type: 'tool', x: 0.15, y: 0.85 },
+          { label: 'Checklist', type: 'tool', x: 0.42, y: 0.85 },
+          { label: 'FAQ KB', type: 'tool', x: 0.72, y: 0.85 },
+        ],
+        edges: [
+          [0, 1], [1, 2], [1, 3], [1, 4],
+          [2, 5], [3, 6], [4, 7]
+        ]
+      }
+    };
+
+    const blueprintCanvases = {};
+
+    function initBlueprintViz(key) {
+      const config = blueprintConfigs[key];
+      const canvas = document.getElementById(config.canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+
+      // Particles flowing along edges
+      const particles = [];
+      const MAX_PARTICLES = 30;
+
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function getNodePos(node) {
+        const w = canvas.width / dpr;
+        const h = canvas.height / dpr;
+        return { x: node.x * w, y: node.y * h };
+      }
+
+      function spawnParticle() {
+        if (particles.length >= MAX_PARTICLES) return;
+        const edgeIdx = Math.floor(Math.random() * config.edges.length);
+        const edge = config.edges[edgeIdx];
+        particles.push({
+          edge: edgeIdx,
+          t: 0,
+          speed: 0.003 + Math.random() * 0.004,
+          size: 2 + Math.random() * 2,
+          alpha: 0.6 + Math.random() * 0.4
+        });
+      }
+
+      function drawNode(node, time) {
+        const pos = getNodePos(node);
+        const c = config.color;
+        let radius, fillAlpha, strokeColor;
+
+        if (node.type === 'input') {
+          radius = 18;
+          fillAlpha = 0.15;
+          strokeColor = `rgba(${CYAN.r},${CYAN.g},${CYAN.b},0.8)`;
+        } else if (node.type === 'supervisor') {
+          radius = 22;
+          fillAlpha = 0.2;
+          strokeColor = `rgba(${TEAL.r},${TEAL.g},${TEAL.b},0.9)`;
+          // Pulsing glow
+          const pulse = 0.5 + 0.5 * Math.sin(time * 0.002);
+          ctx.beginPath();
+          ctx.arc(pos.x, pos.y, radius + 8 + pulse * 6, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${TEAL.r},${TEAL.g},${TEAL.b},${0.05 + pulse * 0.05})`;
+          ctx.fill();
+        } else if (node.type === 'worker') {
+          radius = 16;
+          fillAlpha = 0.12;
+          strokeColor = `rgba(${EMERALD.r},${EMERALD.g},${EMERALD.b},0.7)`;
+        } else { // tool
+          radius = 12;
+          fillAlpha = 0.08;
+          strokeColor = `rgba(${AMBER.r},${AMBER.g},${AMBER.b},0.6)`;
+        }
+
+        // Node circle
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${fillAlpha})`;
+        ctx.fill();
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Label
+        ctx.fillStyle = 'rgba(255,255,255,0.75)';
+        ctx.font = `${node.type === 'tool' ? 10 : 11}px Inter, system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(node.label, pos.x, pos.y + radius + 14);
+      }
+
+      function drawEdge(edge) {
+        const from = getNodePos(config.nodes[edge[0]]);
+        const to = getNodePos(config.nodes[edge[1]]);
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        // Curved edges
+        const midX = (from.x + to.x) / 2;
+        const midY = (from.y + to.y) / 2 - 15;
+        ctx.quadraticCurveTo(midX, midY, to.x, to.y);
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      function drawParticle(p) {
+        const edge = config.edges[p.edge];
+        const from = getNodePos(config.nodes[edge[0]]);
+        const to = getNodePos(config.nodes[edge[1]]);
+        const midX = (from.x + to.x) / 2;
+        const midY = (from.y + to.y) / 2 - 15;
+
+        // Quadratic bezier position
+        const t = p.t;
+        const x = (1-t)*(1-t)*from.x + 2*(1-t)*t*midX + t*t*to.x;
+        const y = (1-t)*(1-t)*from.y + 2*(1-t)*t*midY + t*t*to.y;
+
+        const accent = config.accentColors[p.edge % config.accentColors.length];
+        ctx.beginPath();
+        ctx.arc(x, y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${accent.r},${accent.g},${accent.b},${p.alpha * (1 - Math.abs(t - 0.5) * 0.5)})`;
+        ctx.fill();
+
+        // Glow trail
+        ctx.beginPath();
+        ctx.arc(x, y, p.size + 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${accent.r},${accent.g},${accent.b},${p.alpha * 0.15})`;
+        ctx.fill();
+      }
+
+      // Pillar shield overlay indicators (small icons at corners)
+      function drawPillarIndicators(time) {
+        const w = canvas.width / dpr;
+        const h = canvas.height / dpr;
+        const pillars = [
+          { label: 'C', color: CYAN, x: w - 60, y: 20 },
+          { label: 'B', color: TEAL, x: w - 40, y: 20 },
+          { label: 'S', color: AMBER, x: w - 20, y: 20 },
+          { label: 'A', color: EMERALD, x: w - 0, y: 20 },
+        ];
+        pillars.forEach((p, i) => {
+          const pulse = 0.6 + 0.4 * Math.sin(time * 0.001 + i * 1.5);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${p.color.r},${p.color.g},${p.color.b},${0.2 + pulse * 0.3})`;
+          ctx.fill();
+          ctx.fillStyle = `rgba(255,255,255,${0.4 + pulse * 0.3})`;
+          ctx.font = '8px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(p.label, p.x, p.y + 3);
+        });
+      }
+
+      let animFrame;
+      function animate(time) {
+        const w = canvas.width / dpr;
+        const h = canvas.height / dpr;
+        ctx.clearRect(0, 0, w, h);
+
+        // Draw edges
+        config.edges.forEach(e => drawEdge(e));
+
+        // Draw nodes
+        config.nodes.forEach(n => drawNode(n, time));
+
+        // Spawn and update particles
+        if (Math.random() < 0.08) spawnParticle();
+        for (let i = particles.length - 1; i >= 0; i--) {
+          particles[i].t += particles[i].speed;
+          if (particles[i].t >= 1) {
+            particles.splice(i, 1);
+          } else {
+            drawParticle(particles[i]);
+          }
+        }
+
+        // Pillar indicators
+        drawPillarIndicators(time);
+
+        animFrame = requestAnimationFrame(animate);
+      }
+
+      resize();
+      animate(0);
+      window.addEventListener('resize', resize);
+
+      blueprintCanvases[key] = { canvas, ctx, resize, animFrame };
+    }
+
+    // Tab switching
+    function switchBlueprint(key) {
+      // Update tabs
+      document.querySelectorAll('.blueprint-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.bp === key);
+      });
+      // Update content panels
+      document.querySelectorAll('.blueprint-content').forEach(panel => {
+        const isActive = panel.id === 'bp-' + key;
+        panel.classList.toggle('active', isActive);
+      });
+      // Resize canvas after display change
+      if (blueprintCanvases[key]) {
+        setTimeout(() => blueprintCanvases[key].resize(), 50);
+      }
+    }
+
+    // Initialize both blueprint canvases
+    initBlueprintViz('healthcare');
+    initBlueprintViz('education');
+
+
+    /* ═══════════════════════════════════════════════════════════════
        SCROLL INTERACTIONS
        ═══════════════════════════════════════════════════════════════ */
 
@@ -1940,7 +2713,7 @@
           agentMsg.className = 'chat-msg agent';
           const responses = {
             'Our services': 'We offer four interconnected stages that form the complete agent lifecycle — <b>Context first. Secure by design. Assured at scale.</b><br><br><b>01 — Context Engineering</b> — We start by layering System, Domain, Task, Interaction, and Response context. Intelligence before code.<br><br><b>02 — Agent Engineering</b> — Design and build multi-agent systems using ReAct reasoning, CoT, and MCP tool integration.<br><br><b>03 — Agent Security</b> — Prompt injection defense, data protection, access control, and runtime guardrails. Security as a dedicated lifecycle stage.<br><br><b>04 — AI Assurance</b> — Validate reliability with RAGAS, SHAP explainability, bias detection, and trustworthiness metrics.<div class="reasoning">Retrieved from: company knowledge base → 4-pillar service taxonomy → generated summary</div>',
-            'Case studies': 'Here are two recent projects:<br><br><b>Contract Q&A Chatbot</b> — Multi-agent system with a Supervisor, Vector RAG agent for single-contract queries, and Graph RAG agent for cross-contract analysis.<br><br><b>Automated Contract Creation</b> — ReAct-based extraction agent + Critique agent pipeline with structural, completeness, and correctness validation.<div class="reasoning">Retrieved from: case studies database → architecture summaries → contextual formatting</div>',
+            'Solution blueprints': 'We have two solution blueprints that demonstrate our 4-pillar lifecycle in action:<br><br><b>Appointment Intelligence</b> (Healthcare) — Multi-agent scheduling system with Supervisor + 3 worker agents (Intake, Scheduling, Notification). MCP integrations with EHR, Calendar API, and SMS Gateway. HIPAA-compliant guardrails throughout.<br><br><b>First-Gen College Navigator</b> (Education) — Multilingual AI navigator for underserved students. Eligibility matching, document tracking, and step-by-step counseling — with bias detection to ensure equitable recommendations.<br><br><a href="#blueprints" style="color:var(--cyan)">View the blueprints &rarr;</a><div class="reasoning">Retrieved from: solution blueprints database → architecture summaries → 4-pillar mapping</div>',
             'My use case': 'I\'d love to help! To recommend the right approach, could you share:<br><br>1. What\'s your current AI maturity? (No agents / Basic / Multi-agent)<br>2. What problem are you looking to solve?<br>3. What systems need to be integrated?<div class="reasoning">Initiating: Service Recommendation Agent → Step 1: Assess maturity → Step 2: Map requirements → Step 3: Generate recommendation</div>',
           };
           agentMsg.innerHTML = responses[topic] || 'I can help with that! Let me look into it.';

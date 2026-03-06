@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digixr — First-Gen College Navigator Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0a0a12; color: #fff; overflow: hidden; height: 100vh; }
+
+    :root {
+      --cyan: #4CC9D0; --cyan-rgb: 76,201,208;
+      --teal: #3BBFA6; --teal-rgb: 59,191,166;
+      --emerald: #42C68B; --emerald-rgb: 66,198,139;
+      --amber: #FFB84D; --amber-rgb: 255,184,77;
+      --education: #64b5ff; --education-rgb: 100,181,255;
+      --dark-bg: #0a0a12; --dark-surface: #12121e;
+      --dark-border: rgba(255,255,255,0.06);
+    }
+
+    /* ─── Top bar ─── */
+    .demo-topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 32px; height: 56px;
+      background: rgba(10,10,18,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--dark-border);
+    }
+    .demo-topbar-left { display: flex; align-items: center; gap: 16px; }
+    .demo-back {
+      display: flex; align-items: center; gap: 6px;
+      color: rgba(255,255,255,0.5); font-size: 13px; text-decoration: none;
+      font-family: 'Inter'; transition: color 0.2s;
+    }
+    .demo-back:hover { color: white; }
+    .demo-back svg { width: 16px; height: 16px; }
+    .demo-domain-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 100px;
+      background: rgba(var(--education-rgb),0.1); color: var(--education);
+      border: 1px solid rgba(var(--education-rgb),0.2);
+    }
+    .demo-title-text {
+      font-size: 15px; font-weight: 700; color: white; letter-spacing: -0.01em;
+    }
+    .demo-topbar-right { display: flex; align-items: center; gap: 12px; }
+    .demo-btn {
+      padding: 8px 18px; border-radius: 10px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.3s; font-family: 'Inter'; text-decoration: none;
+    }
+    .demo-btn-ghost {
+      background: transparent; border: 1px solid var(--dark-border); color: rgba(255,255,255,0.6);
+    }
+    .demo-btn-ghost:hover { border-color: rgba(255,255,255,0.15); color: white; }
+    .demo-btn-primary {
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      border: none; color: #0a0a12; font-weight: 700;
+    }
+    .demo-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(var(--teal-rgb),0.3); }
+
+    /* ─── Split layout ─── */
+    .demo-layout {
+      display: grid; grid-template-columns: 40% 60%;
+      height: 100vh; padding-top: 56px;
+    }
+
+    /* ─── Architecture panel (left) ─── */
+    .arch-panel {
+      position: relative; border-right: 1px solid var(--dark-border);
+      background: rgba(255,255,255,0.01); overflow: hidden;
+    }
+    .arch-panel canvas { width: 100%; height: 100%; display: block; }
+    .arch-legend {
+      position: absolute; bottom: 16px; left: 16px; right: 16px;
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .arch-legend-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 10px; color: rgba(255,255,255,0.4); font-family: 'Inter';
+      padding: 4px 10px; border-radius: 6px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--dark-border);
+    }
+    .arch-legend-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    /* ─── Chat panel (right) ─── */
+    .chat-panel {
+      display: flex; flex-direction: column; height: 100%;
+      background: var(--dark-bg);
+    }
+    .chat-header {
+      padding: 20px 32px 16px; border-bottom: 1px solid var(--dark-border);
+    }
+    .chat-header h2 {
+      font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px;
+    }
+    .chat-header p {
+      font-size: 13px; color: rgba(255,255,255,0.4); font-family: 'Inter'; line-height: 1.5;
+    }
+    .chat-progress {
+      display: flex; gap: 4px; margin-top: 12px;
+    }
+    .chat-progress-dot {
+      width: 32px; height: 3px; border-radius: 2px;
+      background: rgba(255,255,255,0.08); transition: all 0.5s;
+    }
+    .chat-progress-dot.done { background: var(--teal); }
+    .chat-progress-dot.active { background: var(--education); }
+
+    /* ─── Messages area ─── */
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 24px 32px;
+      display: flex; flex-direction: column; gap: 16px;
+      scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+    .msg { max-width: 85%; animation: msgIn 0.4s cubic-bezier(0.16,1,0.3,1); }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+    .msg-agent { align-self: flex-start; }
+    .msg-user { align-self: flex-end; }
+
+    .msg-agent-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .msg-agent-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    .msg-bubble {
+      padding: 16px 20px; border-radius: 16px;
+      font-size: 14px; line-height: 1.7; font-family: 'Inter';
+    }
+    .msg-agent .msg-bubble {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--dark-border);
+      color: rgba(255,255,255,0.8); border-bottom-left-radius: 4px;
+    }
+    .msg-user .msg-bubble {
+      background: rgba(var(--education-rgb),0.12);
+      border: 1px solid rgba(var(--education-rgb),0.2);
+      color: rgba(255,255,255,0.85); border-bottom-right-radius: 4px;
+    }
+    .msg-bubble strong { color: white; font-weight: 600; }
+    .msg-bubble p { margin-top: 8px; }
+    .msg-bubble p:first-child { margin-top: 0; }
+
+    /* ─── Reasoning trace ─── */
+    .msg-reasoning {
+      margin-top: 8px; border-radius: 10px; overflow: hidden;
+      border: 1px solid rgba(var(--teal-rgb),0.1);
+      background: rgba(var(--teal-rgb),0.03);
+    }
+    .msg-reasoning-toggle {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 14px; cursor: pointer; width: 100%;
+      font-size: 11px; font-weight: 600; color: var(--teal);
+      font-family: 'Inter'; letter-spacing: 0.05em; text-transform: uppercase;
+      background: none; border: none;
+    }
+    .msg-reasoning-toggle svg { width: 12px; height: 12px; transition: transform 0.3s; }
+    .msg-reasoning.open .msg-reasoning-toggle svg { transform: rotate(90deg); }
+    .msg-reasoning-body {
+      max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .msg-reasoning.open .msg-reasoning-body { max-height: 400px; }
+    .msg-reasoning-content {
+      padding: 0 14px 12px;
+      font-size: 12px; line-height: 1.8; color: rgba(255,255,255,0.5);
+      font-family: 'JetBrains Mono', monospace; white-space: pre-line;
+    }
+    .msg-reasoning-content .tool-call { color: var(--amber); }
+    .msg-reasoning-content .security { color: var(--education); }
+    .msg-reasoning-content .routing { color: var(--teal); }
+    .msg-reasoning-content .assure { color: var(--emerald); }
+
+    /* ─── Choice buttons ─── */
+    .msg-choices {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-top: 16px; align-self: flex-end; max-width: 85%;
+      animation: msgIn 0.4s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+    }
+    .msg-choice {
+      padding: 12px 20px; border-radius: 12px;
+      background: rgba(var(--education-rgb),0.06);
+      border: 1px solid rgba(var(--education-rgb),0.15);
+      color: rgba(255,255,255,0.75); font-size: 14px; font-family: 'Inter';
+      cursor: pointer; text-align: left;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .msg-choice:hover {
+      background: rgba(var(--education-rgb),0.12);
+      border-color: rgba(var(--education-rgb),0.3);
+      color: white; transform: translateX(4px);
+    }
+
+    /* ─── Final CTA area ─── */
+    .chat-final {
+      padding: 20px 32px; text-align: center;
+      display: flex; flex-direction: column; gap: 12px; align-items: center;
+      animation: msgIn 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    .chat-final-note {
+      font-size: 12px; color: rgba(255,255,255,0.35); font-family: 'Inter';
+      padding: 8px 16px; border-radius: 8px;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--dark-border);
+    }
+    .chat-final-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+    /* ─── Typing indicator ─── */
+    .typing-indicator {
+      display: flex; gap: 4px; padding: 12px 16px; align-self: flex-start;
+    }
+    .typing-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      animation: typingBounce 1.4s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 1024px) {
+      .demo-layout { grid-template-columns: 1fr; }
+      .arch-panel { display: none; }
+    }
+    @media (max-width: 768px) {
+      .demo-topbar { padding: 10px 16px; }
+      .demo-title-text { display: none; }
+      .chat-header { padding: 16px 20px 12px; }
+      .chat-header h2 { font-size: 18px; }
+      .chat-messages { padding: 16px 20px; }
+      .msg { max-width: 95%; }
+      .msg-choices { max-width: 95%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <div class="demo-topbar">
+    <div class="demo-topbar-left">
+      <a href="services-section-mockup.html#blueprints" class="demo-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+      </a>
+      <span class="demo-domain-badge">Education</span>
+      <span class="demo-title-text">First-Gen College Navigator</span>
+    </div>
+    <div class="demo-topbar-right">
+      <button class="demo-btn demo-btn-ghost" onclick="restartDemo()">Restart</button>
+      <a href="blueprint-demo-healthcare.html" class="demo-btn demo-btn-ghost">Try Healthcare Demo</a>
+      <button class="demo-btn demo-btn-primary" onclick="window.open('services-section-mockup.html#cta','_self')">Talk to Digixr</button>
+    </div>
+  </div>
+
+  <!-- Split layout -->
+  <div class="demo-layout">
+
+    <!-- Architecture panel -->
+    <div class="arch-panel">
+      <canvas id="archCanvas"></canvas>
+      <div class="arch-legend">
+        <div class="arch-legend-item"><div class="arch-legend-dot" style="background:var(--cyan)"></div> Input</div>
+        <div class="arch-legend-item"><div class="arch-legend-dot" style="background:var(--teal)"></div> Supervisor</div>
+        <div class="arch-legend-item"><div class="arch-legend-dot" style="background:var(--emerald)"></div> Worker</div>
+        <div class="arch-legend-item"><div class="arch-legend-dot" style="background:var(--amber)"></div> Knowledge Base</div>
+      </div>
+    </div>
+
+    <!-- Chat panel -->
+    <div class="chat-panel">
+      <div class="chat-header">
+        <h2>First-Gen College Navigator</h2>
+        <p>Experience a multilingual AI assistant that helps first-generation students find scholarships, documents, and guidance.</p>
+        <div class="chat-progress" id="progressDots"></div>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════════
+       CONVERSATION DATA
+       ═══════════════════════════════════════════════════════ */
+
+    const conversation = [
+      {
+        turn: 1, agent: "Navigator Agent", agentColor: "var(--teal)",
+        highlightNodes: ["navigator"],
+        message: "Hi! I'm the Navigator — an AI assistant built to help first-generation college students find their path. I speak multiple languages and I'm here to make this process less overwhelming.\n\nWhat's on your mind today?",
+        reasoning: '<span class="routing">[Navigator]</span> Initializing — language: English (auto-detected) — awaiting student intent',
+        choices: [
+          "I want to find scholarships I qualify for",
+          "I don't know what documents I need for applications",
+          "I got accepted but I'm confused about financial aid"
+        ]
+      },
+      {
+        turn: 2, agent: "Eligibility Agent", agentColor: "var(--emerald)",
+        highlightNodes: ["navigator", "eligibility"], highlightEdges: ["navigator-eligibility"],
+        message: "I'm the Eligibility Agent. I'll match you with scholarships and aid you actually qualify for — no generic lists.\n\nTo find the best matches, are you currently in high school or already enrolled in college?",
+        reasoning: '<span class="routing">[Navigator]</span> Intent: scholarship-search | Profile: first-gen, needs financial support\n<span class="routing">[Navigator]</span> Routing → Eligibility Agent (scholarship + financial aid matching)\n<span class="security">[Security]</span> Minor\'s data protection check — no demographic profiling for steering',
+        choices: [
+          "High school senior — applying this year",
+          "High school junior — planning ahead",
+          "Already in college — looking for ongoing aid"
+        ]
+      },
+      {
+        turn: 3, agent: "Eligibility Agent", agentColor: "var(--emerald)",
+        highlightNodes: ["eligibility"],
+        highlightTools: ["scholarships", "faid", "catalog"],
+        message: "Great — here's what I found for high school seniors who are first-generation:\n\n<strong>Scholarships</strong> (3 strong matches):\n- First in Family Scholarship — $5,000/year (deadline: Apr 15)\n- Gates Millennium Scholars — full tuition (deadline: Jan 15)\n- Coca-Cola First Gen Fund — $2,500 one-time (deadline: Mar 30)\n\n<strong>Financial Aid</strong>:\n- You likely qualify for Federal Pell Grant (up to $7,395/year)\n- Most state universities have first-gen fee waivers\n\nWant me to dig into any of these, or check what documents you'd need?",
+        reasoning: '<span class="routing">[Eligibility]</span> Profile: HS senior, first-gen, seeking scholarships\n<span class="tool-call">[Tool Call]</span> Scholarship Database → filtering: first-generation, HS senior, need-based\n<span class="tool-call">[Tool Call]</span> Financial Aid Rules → checking FAFSA eligibility indicators\n<span class="tool-call">[Tool Call]</span> University Catalog → programs with first-gen support services\n<span class="assure">[Assure]</span> Bias check — recommendations not influenced by ZIP code or ethnicity',
+        choices: [
+          "Tell me more about the Gates Scholarship",
+          "What documents do I need for these?",
+          "Can you check scholarships for a specific major?"
+        ]
+      },
+      {
+        turn: 4, agent: "Document Agent", agentColor: "var(--emerald)",
+        highlightNodes: ["eligibility", "document"], highlightEdges: ["eligibility-document"],
+        highlightTools: ["checklist", "calendar2", "notif"],
+        message: "I'm the Document Agent. Here's your personalized checklist:\n\n<strong>Must-have documents</strong>:\n- FAFSA (Free Application) — opens Oct 1, priority deadline Mar 1\n- High school transcript (request from counselor)\n- Parent/guardian tax return (or non-filer statement)\n- Personal essay (most scholarships require one)\n\n<strong>For Gates Scholarship specifically</strong>:\n- Community service record\n- Two recommendation letters\n\n<strong>Your Application Readiness Score: 2 of 6 items ready</strong>\n\nWant me to explain any of these in simpler terms?",
+        reasoning: '<span class="routing">[Eligibility]</span> Output: Personalized Options List — 3 scholarships + federal aid matched\n<span class="routing">[Eligibility]</span> Student chose document guidance → routing to Document Agent\n<span class="routing">[Document]</span> Loading checklist for: first-gen HS senior, scholarship + FAFSA\n<span class="tool-call">[Tool Call]</span> Document Checklist API → generating personalized requirements\n<span class="tool-call">[Tool Call]</span> Calendar → mapping deadlines',
+        choices: [
+          "What's a non-filer statement? My parents don't file taxes",
+          "How do I request my transcript?",
+          "Set deadline reminders for me"
+        ]
+      },
+      {
+        turn: 5, agent: "Counselor Agent", agentColor: "var(--emerald)",
+        highlightNodes: ["document", "counselor"], highlightEdges: ["document-counselor"],
+        highlightTools: ["faq", "guides", "campus"],
+        message: "Great question — this confuses a lot of people, so you're not alone.\n\nA <strong>non-filer statement</strong> is simply a letter saying \"my parents didn't earn enough to file taxes.\" Here's exactly what to do:\n\n1. <strong>Write a short letter</strong> — \"I, [Parent Name], did not file a federal tax return for [year] because my income was below the filing threshold.\"\n2. <strong>Parent signs it</strong>\n3. <strong>Optional but helpful</strong>: Get it notarized at your local library (usually free)\n\nThe FAFSA also has a checkbox for this — select \"Will not file\" under parent tax status.\n\nMany first-gen families are in this situation. It will <strong>not</strong> hurt your application — it actually strengthens your case for need-based aid.",
+        reasoning: '<span class="routing">[Document]</span> Student needs guidance on non-filer statement → routing to Counselor Agent\n<span class="routing">[Counselor]</span> Loading: FAQ Knowledge Base → "non-filer statement" explanation\n<span class="routing">[Counselor]</span> Adjusting language: plain English, no jargon, step-by-step\n<span class="assure">[Assure]</span> Hallucination check — verifying against official FAFSA guidelines',
+        choices: [
+          "That's really helpful. What's next on my checklist?",
+          "Can you explain FAFSA in simple terms too?",
+          "I think I'm ready — summarize everything for me"
+        ]
+      },
+      {
+        turn: 6, agent: "Navigator Agent", agentColor: "var(--teal)",
+        highlightNodes: ["navigator", "eligibility", "document", "counselor"],
+        highlightEdges: ["navigator-eligibility", "eligibility-document", "document-counselor"],
+        message: "Here's your complete summary:\n\n<strong>3 scholarships</strong> matched to your profile (total potential: $14,895+/year)\n<strong>Application Readiness</strong>: 2 of 6 documents ready\n<strong>Next deadline</strong>: Coca-Cola First Gen Fund — Mar 30\n\n4 agents worked together to get you here — Navigator understood your needs, Eligibility searched 3 databases, Document built your checklist, and Counselor explained everything in plain language.",
+        reasoning: '<span class="routing">[Pipeline Complete]</span>\n<span class="routing">Context:</span> First-gen student profile, institutional knowledge base, financial aid rules applied\n<span class="routing">Build:</span> Navigator + 3 specialized agents, RAG over scholarship database\n<span class="security">Secure:</span> Minor\'s data protected, no demographic steering, economic data kept private\n<span class="assure">Assure:</span> Bias detection passed — recommendations based on eligibility only, not demographics',
+        isFinal: true
+      }
+    ];
+
+    /* ═══════════════════════════════════════════════════════
+       ARCHITECTURE CANVAS
+       ═══════════════════════════════════════════════════════ */
+
+    const canvas = document.getElementById('archCanvas');
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+
+    const CYAN = { r: 76, g: 201, b: 208 };
+    const TEAL = { r: 59, g: 191, b: 166 };
+    const EMERALD = { r: 66, g: 198, b: 139 };
+    const AMBER = { r: 255, g: 184, b: 77 };
+    const EDUCATION = { r: 100, g: 181, b: 255 };
+
+    const archNodes = {
+      student:     { x: 0.12, y: 0.18, label: 'Student',        type: 'input',      color: CYAN },
+      navigator:   { x: 0.50, y: 0.18, label: 'Navigator',      type: 'supervisor',  color: TEAL },
+      eligibility: { x: 0.20, y: 0.50, label: 'Eligibility',    type: 'worker',      color: EMERALD },
+      document:    { x: 0.50, y: 0.50, label: 'Document',       type: 'worker',      color: EMERALD },
+      counselor:   { x: 0.80, y: 0.50, label: 'Counselor',      type: 'worker',      color: EMERALD },
+      scholarships:{ x: 0.12, y: 0.80, label: 'Scholarships DB', type: 'tool',       color: AMBER },
+      faid:        { x: 0.28, y: 0.80, label: 'Financial Aid',  type: 'tool',        color: AMBER },
+      catalog:     { x: 0.44, y: 0.80, label: 'Univ Catalog',   type: 'tool',        color: AMBER },
+      checklist:   { x: 0.44, y: 0.80, label: 'Checklist API',  type: 'tool',        color: AMBER },
+      calendar2:   { x: 0.56, y: 0.80, label: 'Calendar',       type: 'tool',        color: AMBER },
+      notif:       { x: 0.68, y: 0.80, label: 'Notifications',  type: 'tool',        color: AMBER },
+      faq:         { x: 0.68, y: 0.80, label: 'FAQ KB',         type: 'tool',        color: AMBER },
+      guides:      { x: 0.80, y: 0.80, label: 'App Guides',     type: 'tool',        color: AMBER },
+      campus:      { x: 0.92, y: 0.80, label: 'Campus',         type: 'tool',        color: AMBER },
+    };
+
+    const archEdges = {
+      'student-navigator':        ['student', 'navigator'],
+      'navigator-eligibility':    ['navigator', 'eligibility'],
+      'navigator-document':       ['navigator', 'document'],
+      'navigator-counselor':      ['navigator', 'counselor'],
+      'eligibility-document':     ['eligibility', 'document'],
+      'document-counselor':       ['document', 'counselor'],
+      'eligibility-scholarships': ['eligibility', 'scholarships'],
+      'eligibility-faid':         ['eligibility', 'faid'],
+      'eligibility-catalog':      ['eligibility', 'catalog'],
+      'document-checklist':       ['document', 'checklist'],
+      'document-calendar2':       ['document', 'calendar2'],
+      'document-notif':           ['document', 'notif'],
+      'counselor-faq':            ['counselor', 'faq'],
+      'counselor-guides':         ['counselor', 'guides'],
+      'counselor-campus':         ['counselor', 'campus'],
+    };
+
+    let activeNodes = new Set();
+    let activeEdges = new Set();
+    let activeTools = new Set();
+    let completedNodes = new Set();
+    let particles = [];
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function getPos(node) {
+      const w = canvas.width / dpr, h = canvas.height / dpr;
+      return { x: node.x * w, y: node.y * h };
+    }
+
+    // Determine which tool set to show based on active worker
+    function getVisibleToolKeys() {
+      if (activeNodes.has('counselor')) return ['faq', 'guides', 'campus'];
+      if (activeNodes.has('document')) return ['checklist', 'calendar2', 'notif'];
+      return ['scholarships', 'faid', 'catalog']; // default: eligibility tools
+    }
+
+    function drawEdge(key, time) {
+      const [fromKey, toKey] = archEdges[key];
+      // Skip edges to hidden tools
+      const node = archNodes[toKey];
+      if (node && node.type === 'tool') {
+        const visible = getVisibleToolKeys();
+        if (!visible.includes(toKey)) return;
+      }
+      const from = getPos(archNodes[fromKey]);
+      const to = getPos(archNodes[toKey]);
+      const isActive = activeEdges.has(key);
+      const midX = (from.x + to.x) / 2;
+      const midY = Math.min(from.y, to.y) - 20;
+
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.quadraticCurveTo(midX, midY, to.x, to.y);
+
+      if (isActive) {
+        ctx.strokeStyle = `rgba(${TEAL.r},${TEAL.g},${TEAL.b},0.4)`;
+        ctx.lineWidth = 2;
+        if (Math.random() < 0.06) {
+          particles.push({ edge: key, t: 0, speed: 0.004 + Math.random() * 0.003, size: 2 + Math.random() * 2, alpha: 0.7 + Math.random() * 0.3 });
+        }
+      } else {
+        ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+        ctx.lineWidth = 1;
+      }
+      ctx.stroke();
+    }
+
+    function drawNode(key, time) {
+      const node = archNodes[key];
+      if (node.type === 'tool') {
+        const visible = getVisibleToolKeys();
+        if (!visible.includes(key)) return;
+      }
+      const pos = getPos(node);
+      const c = node.color;
+      const isActive = activeNodes.has(key);
+      const isCompleted = completedNodes.has(key);
+      const isTool = node.type === 'tool';
+      let radius = isTool ? 14 : (node.type === 'supervisor' ? 24 : 18);
+
+      if (isActive) {
+        const pulse = 0.5 + 0.5 * Math.sin(time * 0.003);
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, radius + 10 + pulse * 8, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${0.03 + pulse * 0.04})`;
+        ctx.fill();
+      }
+
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${isActive ? 0.2 : 0.03})`;
+      ctx.fill();
+      ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},${isActive ? 0.8 : 0.15})`;
+      ctx.lineWidth = isActive ? 2 : 1;
+      ctx.stroke();
+
+      if (isCompleted && !isActive) {
+        ctx.fillStyle = `rgba(${EMERALD.r},${EMERALD.g},${EMERALD.b},0.6)`;
+        ctx.font = `${radius * 0.8}px system-ui`;
+        ctx.textAlign = 'center';
+        ctx.fillText('\u2713', pos.x, pos.y + radius * 0.3);
+      }
+
+      const labelAlpha = isActive ? 0.9 : (isCompleted ? 0.5 : 0.3);
+      ctx.fillStyle = `rgba(255,255,255,${labelAlpha})`;
+      ctx.font = `${isTool ? 10 : 11}px Inter, system-ui`;
+      ctx.textAlign = 'center';
+      ctx.fillText(node.label, pos.x, pos.y + radius + 16);
+    }
+
+    function drawParticles(time) {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.t += p.speed;
+        if (p.t >= 1) { particles.splice(i, 1); continue; }
+        const [fromKey, toKey] = archEdges[p.edge];
+        if (!archNodes[fromKey] || !archNodes[toKey]) { particles.splice(i, 1); continue; }
+        const from = getPos(archNodes[fromKey]);
+        const to = getPos(archNodes[toKey]);
+        const midX = (from.x + to.x) / 2, midY = Math.min(from.y, to.y) - 20;
+        const t = p.t;
+        const x = (1-t)*(1-t)*from.x + 2*(1-t)*t*midX + t*t*to.x;
+        const y = (1-t)*(1-t)*from.y + 2*(1-t)*t*midY + t*t*to.y;
+
+        ctx.beginPath();
+        ctx.arc(x, y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${EDUCATION.r},${EDUCATION.g},${EDUCATION.b},${p.alpha * (1 - Math.abs(t - 0.5))})`;
+        ctx.fill();
+      }
+    }
+
+    function drawArch(time) {
+      const w = canvas.width / dpr, h = canvas.height / dpr;
+      ctx.clearRect(0, 0, w, h);
+      Object.keys(archEdges).forEach(key => drawEdge(key, time));
+      drawParticles(time);
+      Object.keys(archNodes).forEach(key => drawNode(key, time));
+      requestAnimationFrame(drawArch);
+    }
+
+    resizeCanvas();
+    requestAnimationFrame(drawArch);
+    window.addEventListener('resize', resizeCanvas);
+
+    /* ═══════════════════════════════════════════════════════
+       CHAT ENGINE (same as healthcare, reused)
+       ═══════════════════════════════════════════════════════ */
+
+    const messagesEl = document.getElementById('chatMessages');
+    const progressEl = document.getElementById('progressDots');
+    let currentTurn = 0;
+
+    conversation.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'chat-progress-dot';
+      dot.id = 'progress-' + i;
+      progressEl.appendChild(dot);
+    });
+
+    function updateProgress(turnIndex) {
+      conversation.forEach((_, i) => {
+        const dot = document.getElementById('progress-' + i);
+        if (i < turnIndex) dot.className = 'chat-progress-dot done';
+        else if (i === turnIndex) dot.className = 'chat-progress-dot active';
+        else dot.className = 'chat-progress-dot';
+      });
+    }
+
+    function updateArchState(turnData) {
+      activeNodes.forEach(n => completedNodes.add(n));
+      activeNodes.clear(); activeEdges.clear(); activeTools.clear();
+      if (turnData.highlightNodes) turnData.highlightNodes.forEach(n => activeNodes.add(n));
+      if (turnData.highlightEdges) turnData.highlightEdges.forEach(e => activeEdges.add(e));
+      if (turnData.highlightTools) turnData.highlightTools.forEach(t => activeTools.add(t));
+      if (currentTurn >= 1) activeEdges.add('student-navigator');
+    }
+
+    function renderMessage(turnData) {
+      const msgWrap = document.createElement('div');
+      msgWrap.className = 'msg msg-agent';
+
+      const label = document.createElement('div');
+      label.className = 'msg-agent-label';
+      label.innerHTML = `<div class="msg-agent-dot" style="background:${turnData.agentColor}"></div> ${turnData.agent}`;
+      msgWrap.appendChild(label);
+
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      bubble.innerHTML = turnData.message.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+      if (!bubble.innerHTML.startsWith('<p>')) bubble.innerHTML = '<p>' + bubble.innerHTML + '</p>';
+      msgWrap.appendChild(bubble);
+
+      if (turnData.reasoning) {
+        const reasoning = document.createElement('div');
+        reasoning.className = 'msg-reasoning' + (turnData.isFinal ? ' open' : '');
+        reasoning.innerHTML = `
+          <button class="msg-reasoning-toggle" onclick="this.parentElement.classList.toggle('open')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            Agent Thinking
+          </button>
+          <div class="msg-reasoning-body">
+            <div class="msg-reasoning-content">${turnData.reasoning}</div>
+          </div>
+        `;
+        msgWrap.appendChild(reasoning);
+      }
+
+      messagesEl.appendChild(msgWrap);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      if (turnData.choices && !turnData.isFinal) {
+        setTimeout(() => {
+          const choicesWrap = document.createElement('div');
+          choicesWrap.className = 'msg-choices';
+          choicesWrap.id = 'choices-' + turnData.turn;
+          turnData.choices.forEach(choiceText => {
+            const btn = document.createElement('button');
+            btn.className = 'msg-choice';
+            btn.textContent = choiceText;
+            btn.onclick = () => handleChoice(choiceText, turnData.turn);
+            choicesWrap.appendChild(btn);
+          });
+          messagesEl.appendChild(choicesWrap);
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        }, 400);
+      }
+
+      if (turnData.isFinal) {
+        setTimeout(() => {
+          const finalEl = document.createElement('div');
+          finalEl.className = 'chat-final';
+          finalEl.innerHTML = `
+            <div class="chat-final-note">This is a mock demo. In production, these agents connect to real university catalogs, live scholarship databases, and notification services.</div>
+            <div class="chat-final-actions">
+              <button class="demo-btn demo-btn-primary" onclick="window.open('services-section-mockup.html#cta','_self')">Talk to Digixr about building this</button>
+              <button class="demo-btn demo-btn-ghost" onclick="restartDemo()">Restart Demo</button>
+              <a href="blueprint-demo-healthcare.html" class="demo-btn demo-btn-ghost">Try Healthcare Demo</a>
+            </div>
+          `;
+          messagesEl.appendChild(finalEl);
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        }, 600);
+      }
+    }
+
+    function handleChoice(text, fromTurn) {
+      const choicesEl = document.getElementById('choices-' + fromTurn);
+      if (choicesEl) choicesEl.remove();
+
+      const userMsg = document.createElement('div');
+      userMsg.className = 'msg msg-user';
+      userMsg.innerHTML = `<div class="msg-bubble">${text}</div>`;
+      messagesEl.appendChild(userMsg);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      const typingEl = document.createElement('div');
+      typingEl.className = 'typing-indicator';
+      typingEl.id = 'typing';
+      typingEl.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+      messagesEl.appendChild(typingEl);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      currentTurn++;
+      setTimeout(() => {
+        const typing = document.getElementById('typing');
+        if (typing) typing.remove();
+        if (currentTurn < conversation.length) {
+          const turnData = conversation[currentTurn];
+          updateProgress(currentTurn);
+          updateArchState(turnData);
+          renderMessage(turnData);
+        }
+      }, 1200 + Math.random() * 600);
+    }
+
+    function restartDemo() {
+      currentTurn = 0;
+      activeNodes.clear(); activeEdges.clear(); activeTools.clear();
+      completedNodes.clear(); particles = [];
+      messagesEl.innerHTML = '';
+      startDemo();
+    }
+
+    function startDemo() {
+      updateProgress(0);
+      const firstTurn = conversation[0];
+      updateArchState(firstTurn);
+      renderMessage(firstTurn);
+    }
+
+    startDemo();
+  </script>
+</body>
+</html>

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digixr — Appointment Intelligence Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0a0a12; color: #fff; overflow: hidden; height: 100vh; }
+
+    :root {
+      --cyan: #4CC9D0; --cyan-rgb: 76,201,208;
+      --teal: #3BBFA6; --teal-rgb: 59,191,166;
+      --emerald: #42C68B; --emerald-rgb: 66,198,139;
+      --amber: #FFB84D; --amber-rgb: 255,184,77;
+      --healthcare: #ff6b6b; --healthcare-rgb: 255,107,107;
+      --dark-bg: #0a0a12; --dark-surface: #12121e;
+      --dark-border: rgba(255,255,255,0.06);
+    }
+
+    /* ─── Top bar ─── */
+    .demo-topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 32px; height: 56px;
+      background: rgba(10,10,18,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--dark-border);
+    }
+    .demo-topbar-left { display: flex; align-items: center; gap: 16px; }
+    .demo-back {
+      display: flex; align-items: center; gap: 6px;
+      color: rgba(255,255,255,0.5); font-size: 13px; text-decoration: none;
+      font-family: 'Inter'; transition: color 0.2s;
+    }
+    .demo-back:hover { color: white; }
+    .demo-back svg { width: 16px; height: 16px; }
+    .demo-domain-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 100px;
+      background: rgba(var(--healthcare-rgb),0.1); color: var(--healthcare);
+      border: 1px solid rgba(var(--healthcare-rgb),0.2);
+    }
+    .demo-title-text {
+      font-size: 15px; font-weight: 700; color: white; letter-spacing: -0.01em;
+    }
+    .demo-topbar-right { display: flex; align-items: center; gap: 12px; }
+    .demo-btn {
+      padding: 8px 18px; border-radius: 10px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.3s; font-family: 'Inter';
+    }
+    .demo-btn-ghost {
+      background: transparent; border: 1px solid var(--dark-border); color: rgba(255,255,255,0.6);
+    }
+    .demo-btn-ghost:hover { border-color: rgba(255,255,255,0.15); color: white; }
+    .demo-btn-primary {
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      border: none; color: #0a0a12; font-weight: 700;
+    }
+    .demo-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(var(--teal-rgb),0.3); }
+
+    /* ─── Split layout ─── */
+    .demo-layout {
+      display: grid; grid-template-columns: 40% 60%;
+      height: 100vh; padding-top: 56px;
+    }
+
+    /* ─── Architecture panel (left) ─── */
+    .arch-panel {
+      position: relative; border-right: 1px solid var(--dark-border);
+      background: rgba(255,255,255,0.01); overflow: hidden;
+    }
+    .arch-panel canvas { width: 100%; height: 100%; display: block; }
+    .arch-legend {
+      position: absolute; bottom: 16px; left: 16px; right: 16px;
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .arch-legend-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 10px; color: rgba(255,255,255,0.4); font-family: 'Inter';
+      padding: 4px 10px; border-radius: 6px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--dark-border);
+    }
+    .arch-legend-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    /* ─── Chat panel (right) ─── */
+    .chat-panel {
+      display: flex; flex-direction: column; height: 100%;
+      background: var(--dark-bg);
+    }
+    .chat-header {
+      padding: 20px 32px 16px; border-bottom: 1px solid var(--dark-border);
+    }
+    .chat-header h2 {
+      font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 4px;
+    }
+    .chat-header p {
+      font-size: 13px; color: rgba(255,255,255,0.4); font-family: 'Inter'; line-height: 1.5;
+    }
+    .chat-progress {
+      display: flex; gap: 4px; margin-top: 12px;
+    }
+    .chat-progress-dot {
+      width: 32px; height: 3px; border-radius: 2px;
+      background: rgba(255,255,255,0.08); transition: all 0.5s;
+    }
+    .chat-progress-dot.done { background: var(--teal); }
+    .chat-progress-dot.active { background: var(--healthcare); }
+
+    /* ─── Messages area ─── */
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 24px 32px;
+      display: flex; flex-direction: column; gap: 16px;
+      scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+    .msg { max-width: 85%; animation: msgIn 0.4s cubic-bezier(0.16,1,0.3,1); }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+    .msg-agent { align-self: flex-start; }
+    .msg-user { align-self: flex-end; }
+
+    .msg-agent-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .msg-agent-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    .msg-bubble {
+      padding: 16px 20px; border-radius: 16px;
+      font-size: 14px; line-height: 1.7; font-family: 'Inter';
+    }
+    .msg-agent .msg-bubble {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--dark-border);
+      color: rgba(255,255,255,0.8); border-bottom-left-radius: 4px;
+    }
+    .msg-user .msg-bubble {
+      background: rgba(var(--healthcare-rgb),0.12);
+      border: 1px solid rgba(var(--healthcare-rgb),0.2);
+      color: rgba(255,255,255,0.85); border-bottom-right-radius: 4px;
+    }
+    .msg-bubble strong { color: white; font-weight: 600; }
+    .msg-bubble p { margin-top: 8px; }
+    .msg-bubble p:first-child { margin-top: 0; }
+
+    /* ─── Reasoning trace ─── */
+    .msg-reasoning {
+      margin-top: 8px; border-radius: 10px; overflow: hidden;
+      border: 1px solid rgba(var(--teal-rgb),0.1);
+      background: rgba(var(--teal-rgb),0.03);
+    }
+    .msg-reasoning-toggle {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 14px; cursor: pointer; width: 100%;
+      font-size: 11px; font-weight: 600; color: var(--teal);
+      font-family: 'Inter'; letter-spacing: 0.05em; text-transform: uppercase;
+      background: none; border: none;
+    }
+    .msg-reasoning-toggle svg { width: 12px; height: 12px; transition: transform 0.3s; }
+    .msg-reasoning.open .msg-reasoning-toggle svg { transform: rotate(90deg); }
+    .msg-reasoning-body {
+      max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .msg-reasoning.open .msg-reasoning-body { max-height: 400px; }
+    .msg-reasoning-content {
+      padding: 0 14px 12px;
+      font-size: 12px; line-height: 1.8; color: rgba(255,255,255,0.5);
+      font-family: 'JetBrains Mono', monospace; white-space: pre-line;
+    }
+    .msg-reasoning-content .tool-call { color: var(--amber); }
+    .msg-reasoning-content .security { color: var(--healthcare); }
+    .msg-reasoning-content .routing { color: var(--teal); }
+    .msg-reasoning-content .assure { color: var(--emerald); }
+
+    /* ─── Choice buttons ─── */
+    .msg-choices {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-top: 16px; align-self: flex-end; max-width: 85%;
+      animation: msgIn 0.4s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+    }
+    .msg-choice {
+      padding: 12px 20px; border-radius: 12px;
+      background: rgba(var(--healthcare-rgb),0.06);
+      border: 1px solid rgba(var(--healthcare-rgb),0.15);
+      color: rgba(255,255,255,0.75); font-size: 14px; font-family: 'Inter';
+      cursor: pointer; text-align: left;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .msg-choice:hover {
+      background: rgba(var(--healthcare-rgb),0.12);
+      border-color: rgba(var(--healthcare-rgb),0.3);
+      color: white; transform: translateX(4px);
+    }
+
+    /* ─── Final CTA area ─── */
+    .chat-final {
+      padding: 20px 32px; text-align: center;
+      display: flex; flex-direction: column; gap: 12px; align-items: center;
+      animation: msgIn 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    .chat-final-note {
+      font-size: 12px; color: rgba(255,255,255,0.35); font-family: 'Inter';
+      padding: 8px 16px; border-radius: 8px;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--dark-border);
+    }
+    .chat-final-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+    /* ─── Typing indicator ─── */
+    .typing-indicator {
+      display: flex; gap: 4px; padding: 12px 16px; align-self: flex-start;
+    }
+    .typing-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      animation: typingBounce 1.4s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 1024px) {
+      .demo-layout { grid-template-columns: 1fr; }
+      .arch-panel { display: none; }
+    }
+    @media (max-width: 768px) {
+      .demo-topbar { padding: 10px 16px; }
+      .demo-title-text { display: none; }
+      .chat-header { padding: 16px 20px 12px; }
+      .chat-header h2 { font-size: 18px; }
+      .chat-messages { padding: 16px 20px; }
+      .msg { max-width: 95%; }
+      .msg-choices { max-width: 95%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <div class="demo-topbar">
+    <div class="demo-topbar-left">
+      <a href="services-section-mockup.html#blueprints" class="demo-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
+      </a>
+      <span class="demo-domain-badge">Healthcare</span>
+      <span class="demo-title-text">Appointment Intelligence</span>
+    </div>
+    <div class="demo-topbar-right">
+      <button class="demo-btn demo-btn-ghost" onclick="restartDemo()">Restart</button>
+      <a href="blueprint-demo-education.html" class="demo-btn demo-btn-ghost">Try Education Demo</a>
+      <button class="demo-btn demo-btn-primary" onclick="window.open('services-section-mockup.html#cta','_self')">Talk to Digixr</button>
+    </div>
+  </div>
+
+  <!-- Split layout -->
+  <div class="demo-layout">
+
+    <!-- Architecture panel -->
+    <div class="arch-panel">
+      <canvas id="archCanvas"></canvas>
+      <div class="arch-legend">
+        <div class="arch-legend-item"><div class="arch-legend-dot" style="background:var(--cyan)"></div> Input</div>
+        <div class="arch-legend-item"><div class="arch-legend-dot" style="background:var(--teal)"></div> Supervisor</div>
+        <div class="arch-legend-item"><div class="arch-legend-dot" style="background:var(--emerald)"></div> Worker</div>
+        <div class="arch-legend-item"><div class="arch-legend-dot" style="background:var(--amber)"></div> Tool</div>
+      </div>
+    </div>
+
+    <!-- Chat panel -->
+    <div class="chat-panel">
+      <div class="chat-header">
+        <h2>Appointment Intelligence</h2>
+        <p>Experience a multi-agent scheduling system. Pick your choices and watch the agents collaborate.</p>
+        <div class="chat-progress" id="progressDots"></div>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════════
+       CONVERSATION DATA
+       ═══════════════════════════════════════════════════════ */
+
+    const conversation = [
+      {
+        turn: 1, agent: "Supervisor Agent", agentColor: "var(--teal)",
+        highlightNodes: ["supervisor"],
+        message: "Welcome to Metro General Hospital's scheduling assistant. I'm the Supervisor Agent — I'll understand what you need and route you to the right specialist agent.\n\nWhat can I help you with today?",
+        reasoning: '<span class="routing">[Supervisor]</span> Initializing — awaiting patient intent classification',
+        choices: [
+          "I need to see a cardiologist",
+          "I'd like a general health checkup",
+          "I need to reschedule an existing appointment"
+        ]
+      },
+      {
+        turn: 2, agent: "Intake Agent", agentColor: "var(--emerald)",
+        highlightNodes: ["supervisor", "intake"], highlightEdges: ["supervisor-intake"],
+        message: "I'm the Intake Agent. Before I hand you off to scheduling, I need a few details to find the best match.\n\nWhich insurance provider are you with?",
+        reasoning: '<span class="routing">[Supervisor]</span> Intent: new-appointment | Specialty: cardiology | Priority: routine\n<span class="routing">[Supervisor]</span> Routing → Intake Agent (need insurance + patient details before scheduling)',
+        choices: [
+          "BlueCross BlueShield",
+          "Aetna",
+          "I'm self-pay / no insurance"
+        ]
+      },
+      {
+        turn: 3, agent: "Intake Agent", agentColor: "var(--emerald)",
+        highlightNodes: ["intake"],
+        message: "Got it — BlueCross PPO is in-network here. A couple more things:\n\nDo you have any scheduling preferences or accessibility needs?",
+        reasoning: '<span class="routing">[Intake]</span> Insurance: BlueCross PPO — verified in-network with Metro General\n<span class="routing">[Intake]</span> Building patient profile... need: preferences, accessibility\n<span class="security">[Security]</span> PII boundary check — insurance ID will not be stored in conversation log',
+        choices: [
+          "Morning appointments preferred, no special needs",
+          "Afternoons only — I need wheelchair accessible rooms",
+          "No preference, just the earliest available"
+        ]
+      },
+      {
+        turn: 4, agent: "Scheduling Agent", agentColor: "var(--emerald)",
+        highlightNodes: ["intake", "scheduling"], highlightEdges: ["intake-scheduling"],
+        highlightTools: ["ehr", "calendar", "directory"],
+        message: "I'm the Scheduling Agent. I've checked availability across our cardiology department. Here are your best options:\n\n<strong>Dr. Sarah Chen</strong> — Mon, Mar 10 at 9:30 AM (next available)\n<strong>Dr. James Park</strong> — Wed, Mar 12 at 10:15 AM\n<strong>Dr. Priya Sharma</strong> — Thu, Mar 13 at 8:45 AM\n\nAll accept BlueCross PPO. Which works best?",
+        reasoning: '<span class="routing">[Intake]</span> Patient profile complete → {specialty: cardiology, insurance: BlueCross PPO, preference: mornings}\n<span class="routing">[Intake]</span> Output: Structured Patient Profile — handing off to Scheduling Agent\n<span class="routing">[Scheduling]</span> Received profile. Querying tools...\n<span class="tool-call">[Tool Call]</span> EHR System → checking cardiologists accepting BlueCross PPO\n<span class="tool-call">[Tool Call]</span> Calendar API → fetching available morning slots, next 2 weeks\n<span class="tool-call">[Tool Call]</span> Department Directory → Cardiology dept, floor 3',
+        choices: [
+          "Dr. Sarah Chen — Monday 9:30 AM",
+          "Dr. Priya Sharma — Thursday 8:45 AM",
+          "Can you check next week instead?"
+        ]
+      },
+      {
+        turn: 5, agent: "Notification Agent", agentColor: "var(--emerald)",
+        highlightNodes: ["scheduling", "notification"], highlightEdges: ["scheduling-notification"],
+        highlightTools: ["sms", "email", "portal"],
+        message: "All set! Here's your appointment summary:\n\n<strong>Dr. Sarah Chen — Cardiology</strong>\nMonday, March 10 at 9:30 AM\nMetro General Hospital, Floor 3, Room 312\n\nI've sent a confirmation to your email and scheduled an SMS reminder for the day before. You can also view this in your patient portal.\n\n<strong>Prep instructions</strong>: No caffeine 12 hours before visit. Bring recent blood work if available.",
+        reasoning: '<span class="routing">[Scheduling]</span> Appointment confirmed: Dr. Sarah Chen, Mon Mar 10, 9:30 AM, Floor 3, Room 312\n<span class="routing">[Scheduling]</span> Output: Appointment Confirmed — routing to Notification Agent\n<span class="routing">[Notification]</span> Preparing confirmation across channels...\n<span class="tool-call">[Tool Call]</span> Email Service → sending confirmation to patient@email.com\n<span class="tool-call">[Tool Call]</span> SMS Gateway → reminder scheduled for Sun Mar 9, 6:00 PM\n<span class="tool-call">[Tool Call]</span> Patient Portal → appointment visible in dashboard',
+        choices: [
+          "Can I also get a reminder 2 hours before?",
+          "What should I bring to the appointment?",
+          "That's everything, thank you!"
+        ]
+      },
+      {
+        turn: 6, agent: "Supervisor Agent", agentColor: "var(--teal)",
+        highlightNodes: ["supervisor", "intake", "scheduling", "notification"],
+        highlightEdges: ["supervisor-intake", "intake-scheduling", "scheduling-notification"],
+        message: "Appointment scheduled successfully! Here's what happened behind the scenes:\n\n<strong>4 agents collaborated</strong> in under 30 seconds — Supervisor classified your intent, Intake built your profile, Scheduling queried 3 external systems, and Notification dispatched across 3 channels.",
+        reasoning: '<span class="routing">[Pipeline Complete]</span>\n<span class="routing">Context:</span> Patient history context loaded, insurance rules applied, department knowledge queried\n<span class="routing">Build:</span> Supervisor + 3 worker agents orchestrated via MCP protocol\n<span class="security">Secure:</span> PII boundaries enforced, insurance data not persisted, input sanitized\n<span class="assure">Assure:</span> Scheduling accuracy validated, wait time equity checked, no bias detected',
+        isFinal: true
+      }
+    ];
+
+    /* ═══════════════════════════════════════════════════════
+       ARCHITECTURE CANVAS
+       ═══════════════════════════════════════════════════════ */
+
+    const canvas = document.getElementById('archCanvas');
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+
+    const CYAN = { r: 76, g: 201, b: 208 };
+    const TEAL = { r: 59, g: 191, b: 166 };
+    const EMERALD = { r: 66, g: 198, b: 139 };
+    const AMBER = { r: 255, g: 184, b: 77 };
+    const HEALTHCARE = { r: 255, g: 107, b: 107 };
+
+    const archNodes = {
+      patient:     { x: 0.12, y: 0.18, label: 'Patient',       type: 'input',      color: CYAN },
+      supervisor:  { x: 0.50, y: 0.18, label: 'Supervisor',     type: 'supervisor',  color: TEAL },
+      intake:      { x: 0.20, y: 0.50, label: 'Intake',         type: 'worker',      color: EMERALD },
+      scheduling:  { x: 0.50, y: 0.50, label: 'Scheduling',     type: 'worker',      color: EMERALD },
+      notification:{ x: 0.80, y: 0.50, label: 'Notification',   type: 'worker',      color: EMERALD },
+      ehr:         { x: 0.32, y: 0.80, label: 'EHR System',     type: 'tool',        color: AMBER },
+      calendar:    { x: 0.50, y: 0.80, label: 'Calendar API',   type: 'tool',        color: AMBER },
+      directory:   { x: 0.68, y: 0.80, label: 'Dept Directory', type: 'tool',        color: AMBER },
+      sms:         { x: 0.68, y: 0.80, label: 'SMS Gateway',    type: 'tool',        color: AMBER, altOf: 'directory' },
+      email:       { x: 0.50, y: 0.80, label: 'Email Service',  type: 'tool',        color: AMBER, altOf: 'calendar' },
+      portal:      { x: 0.86, y: 0.80, label: 'Patient Portal', type: 'tool',        color: AMBER },
+    };
+
+    const archEdges = {
+      'patient-supervisor':       ['patient', 'supervisor'],
+      'supervisor-intake':        ['supervisor', 'intake'],
+      'supervisor-scheduling':    ['supervisor', 'scheduling'],
+      'supervisor-notification':  ['supervisor', 'notification'],
+      'intake-scheduling':        ['intake', 'scheduling'],
+      'scheduling-notification':  ['scheduling', 'notification'],
+      'scheduling-ehr':           ['scheduling', 'ehr'],
+      'scheduling-calendar':      ['scheduling', 'calendar'],
+      'scheduling-directory':     ['scheduling', 'directory'],
+      'notification-sms':         ['notification', 'sms'],
+      'notification-email':       ['notification', 'email'],
+      'notification-portal':      ['notification', 'portal'],
+    };
+
+    // Visualization state
+    let activeNodes = new Set();
+    let activeEdges = new Set();
+    let activeTools = new Set();
+    let completedNodes = new Set();
+    let particles = [];
+    const MAX_PARTICLES = 25;
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function getPos(node) {
+      const w = canvas.width / dpr;
+      const h = canvas.height / dpr;
+      return { x: node.x * w, y: node.y * h };
+    }
+
+    function drawEdge(key, time) {
+      const [fromKey, toKey] = archEdges[key];
+      const from = getPos(archNodes[fromKey]);
+      const to = getPos(archNodes[toKey]);
+      const isActive = activeEdges.has(key);
+
+      const midX = (from.x + to.x) / 2;
+      const midY = Math.min(from.y, to.y) - 20;
+
+      ctx.beginPath();
+      ctx.moveTo(from.x, from.y);
+      ctx.quadraticCurveTo(midX, midY, to.x, to.y);
+
+      if (isActive) {
+        ctx.strokeStyle = `rgba(${TEAL.r},${TEAL.g},${TEAL.b},0.4)`;
+        ctx.lineWidth = 2;
+        // Spawn particles on active edges
+        if (Math.random() < 0.06) {
+          particles.push({
+            edge: key, t: 0, speed: 0.004 + Math.random() * 0.003,
+            size: 2 + Math.random() * 2, alpha: 0.7 + Math.random() * 0.3
+          });
+        }
+      } else {
+        ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+        ctx.lineWidth = 1;
+      }
+      ctx.stroke();
+    }
+
+    function drawNode(key, time) {
+      const node = archNodes[key];
+      if (node.altOf) return; // Skip alt tools unless active
+      const pos = getPos(node);
+      const c = node.color;
+      const isActive = activeNodes.has(key);
+      const isCompleted = completedNodes.has(key);
+      const isTool = node.type === 'tool';
+      const isToolActive = activeTools.has(key);
+
+      let radius = isTool ? 14 : (node.type === 'supervisor' ? 24 : 18);
+      let glowAlpha = isActive ? 0.2 : 0.03;
+      let strokeAlpha = isActive ? 0.8 : 0.15;
+
+      // Pulse for active node
+      if (isActive) {
+        const pulse = 0.5 + 0.5 * Math.sin(time * 0.003);
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, radius + 10 + pulse * 8, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${0.03 + pulse * 0.04})`;
+        ctx.fill();
+      }
+
+      // Node circle
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${glowAlpha})`;
+      ctx.fill();
+      ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},${strokeAlpha})`;
+      ctx.lineWidth = isActive ? 2 : 1;
+      ctx.stroke();
+
+      // Completed checkmark
+      if (isCompleted && !isActive) {
+        ctx.fillStyle = `rgba(${EMERALD.r},${EMERALD.g},${EMERALD.b},0.6)`;
+        ctx.font = `${radius * 0.8}px system-ui`;
+        ctx.textAlign = 'center';
+        ctx.fillText('\u2713', pos.x, pos.y + radius * 0.3);
+      }
+
+      // Label
+      const labelAlpha = isActive ? 0.9 : (isCompleted ? 0.5 : 0.3);
+      ctx.fillStyle = `rgba(255,255,255,${labelAlpha})`;
+      ctx.font = `${isTool ? 10 : 11}px Inter, system-ui`;
+      ctx.textAlign = 'center';
+      ctx.fillText(node.label, pos.x, pos.y + radius + 16);
+    }
+
+    function drawParticles(time) {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.t += p.speed;
+        if (p.t >= 1) { particles.splice(i, 1); continue; }
+
+        const [fromKey, toKey] = archEdges[p.edge];
+        const from = getPos(archNodes[fromKey]);
+        const to = getPos(archNodes[toKey]);
+        const midX = (from.x + to.x) / 2;
+        const midY = Math.min(from.y, to.y) - 20;
+        const t = p.t;
+        const x = (1-t)*(1-t)*from.x + 2*(1-t)*t*midX + t*t*to.x;
+        const y = (1-t)*(1-t)*from.y + 2*(1-t)*t*midY + t*t*to.y;
+
+        ctx.beginPath();
+        ctx.arc(x, y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${TEAL.r},${TEAL.g},${TEAL.b},${p.alpha * (1 - Math.abs(t - 0.5))})`;
+        ctx.fill();
+      }
+    }
+
+    function drawArch(time) {
+      const w = canvas.width / dpr;
+      const h = canvas.height / dpr;
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw edges
+      Object.keys(archEdges).forEach(key => drawEdge(key, time));
+
+      // Draw particles
+      drawParticles(time);
+
+      // Draw nodes (skip alt tool nodes unless specifically active)
+      const visibleTools = new Set(['ehr', 'calendar', 'directory', 'sms', 'email', 'portal']);
+      // Determine which tool set to show based on active agent
+      let showNotifTools = activeNodes.has('notification');
+      Object.keys(archNodes).forEach(key => {
+        const node = archNodes[key];
+        // For tool nodes: show scheduling tools by default, notification tools when notification is active
+        if (node.type === 'tool') {
+          if (['sms', 'email', 'portal'].includes(key) && !showNotifTools) return;
+          if (['ehr', 'calendar', 'directory'].includes(key) && showNotifTools) return;
+        }
+        drawNode(key, time);
+      });
+
+      requestAnimationFrame(drawArch);
+    }
+
+    resizeCanvas();
+    requestAnimationFrame(drawArch);
+    window.addEventListener('resize', resizeCanvas);
+
+    /* ═══════════════════════════════════════════════════════
+       CHAT ENGINE
+       ═══════════════════════════════════════════════════════ */
+
+    const messagesEl = document.getElementById('chatMessages');
+    const progressEl = document.getElementById('progressDots');
+    let currentTurn = 0;
+
+    // Build progress dots
+    conversation.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'chat-progress-dot';
+      dot.id = 'progress-' + i;
+      progressEl.appendChild(dot);
+    });
+
+    function updateProgress(turnIndex) {
+      conversation.forEach((_, i) => {
+        const dot = document.getElementById('progress-' + i);
+        if (i < turnIndex) dot.className = 'chat-progress-dot done';
+        else if (i === turnIndex) dot.className = 'chat-progress-dot active';
+        else dot.className = 'chat-progress-dot';
+      });
+    }
+
+    function updateArchState(turnData) {
+      // Move current active to completed
+      activeNodes.forEach(n => completedNodes.add(n));
+      activeNodes.clear();
+      activeEdges.clear();
+      activeTools.clear();
+
+      if (turnData.highlightNodes) turnData.highlightNodes.forEach(n => activeNodes.add(n));
+      if (turnData.highlightEdges) turnData.highlightEdges.forEach(e => activeEdges.add(e));
+      if (turnData.highlightTools) turnData.highlightTools.forEach(t => activeTools.add(t));
+
+      // Always keep patient-supervisor active from turn 2+
+      if (currentTurn >= 1) {
+        activeEdges.add('patient-supervisor');
+      }
+    }
+
+    function renderMessage(turnData) {
+      // Agent label
+      const msgWrap = document.createElement('div');
+      msgWrap.className = 'msg msg-agent';
+
+      const label = document.createElement('div');
+      label.className = 'msg-agent-label';
+      label.innerHTML = `<div class="msg-agent-dot" style="background:${turnData.agentColor}"></div> ${turnData.agent}`;
+      msgWrap.appendChild(label);
+
+      // Message bubble
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      bubble.innerHTML = turnData.message.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+      // Wrap in <p> if not already
+      if (!bubble.innerHTML.startsWith('<p>')) bubble.innerHTML = '<p>' + bubble.innerHTML + '</p>';
+      msgWrap.appendChild(bubble);
+
+      // Reasoning trace
+      if (turnData.reasoning) {
+        const reasoning = document.createElement('div');
+        reasoning.className = 'msg-reasoning' + (turnData.isFinal ? ' open' : '');
+        reasoning.innerHTML = `
+          <button class="msg-reasoning-toggle" onclick="this.parentElement.classList.toggle('open')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            Agent Thinking
+          </button>
+          <div class="msg-reasoning-body">
+            <div class="msg-reasoning-content">${turnData.reasoning}</div>
+          </div>
+        `;
+        msgWrap.appendChild(reasoning);
+      }
+
+      messagesEl.appendChild(msgWrap);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      // Choices (if not final)
+      if (turnData.choices && !turnData.isFinal) {
+        setTimeout(() => {
+          const choicesWrap = document.createElement('div');
+          choicesWrap.className = 'msg-choices';
+          choicesWrap.id = 'choices-' + turnData.turn;
+
+          turnData.choices.forEach(choiceText => {
+            const btn = document.createElement('button');
+            btn.className = 'msg-choice';
+            btn.textContent = choiceText;
+            btn.onclick = () => handleChoice(choiceText, turnData.turn);
+            choicesWrap.appendChild(btn);
+          });
+
+          messagesEl.appendChild(choicesWrap);
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        }, 400);
+      }
+
+      // Final CTA
+      if (turnData.isFinal) {
+        setTimeout(() => {
+          const finalEl = document.createElement('div');
+          finalEl.className = 'chat-final';
+          finalEl.innerHTML = `
+            <div class="chat-final-note">This is a mock demo. In production, these agents connect to real EHR systems, calendars, and notification services.</div>
+            <div class="chat-final-actions">
+              <button class="demo-btn demo-btn-primary" onclick="window.open('services-section-mockup.html#cta','_self')">Talk to Digixr about building this</button>
+              <button class="demo-btn demo-btn-ghost" onclick="restartDemo()">Restart Demo</button>
+              <a href="blueprint-demo-education.html" class="demo-btn demo-btn-ghost">Try Education Demo</a>
+            </div>
+          `;
+          messagesEl.appendChild(finalEl);
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        }, 600);
+      }
+    }
+
+    function handleChoice(text, fromTurn) {
+      // Remove choices
+      const choicesEl = document.getElementById('choices-' + fromTurn);
+      if (choicesEl) choicesEl.remove();
+
+      // Add user message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'msg msg-user';
+      userMsg.innerHTML = `<div class="msg-bubble">${text}</div>`;
+      messagesEl.appendChild(userMsg);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      // Show typing indicator
+      const typingEl = document.createElement('div');
+      typingEl.className = 'typing-indicator';
+      typingEl.id = 'typing';
+      typingEl.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+      messagesEl.appendChild(typingEl);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      // Next turn after delay
+      currentTurn++;
+      setTimeout(() => {
+        const typing = document.getElementById('typing');
+        if (typing) typing.remove();
+
+        if (currentTurn < conversation.length) {
+          const turnData = conversation[currentTurn];
+          updateProgress(currentTurn);
+          updateArchState(turnData);
+          renderMessage(turnData);
+        }
+      }, 1200 + Math.random() * 600);
+    }
+
+    function restartDemo() {
+      currentTurn = 0;
+      activeNodes.clear();
+      activeEdges.clear();
+      activeTools.clear();
+      completedNodes.clear();
+      particles = [];
+      messagesEl.innerHTML = '';
+      startDemo();
+    }
+
+    function startDemo() {
+      updateProgress(0);
+      const firstTurn = conversation[0];
+      updateArchState(firstTurn);
+      renderMessage(firstTurn);
+    }
+
+    // Go
+    startDemo();
+  </script>
+</body>
+</html>
