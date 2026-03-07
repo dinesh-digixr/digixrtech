@@ -597,7 +597,31 @@
       background: linear-gradient(90deg, transparent, rgba(var(--teal-rgb),0.3), transparent);
       pointer-events: none;
     }
-    .belief-blocks { display: flex; flex-direction: column; gap: 48px; max-width: 720px; margin: 0 auto; }
+    .purpose-layout {
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: center;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .elixir-visual {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative; min-height: 420px;
+    }
+    #elixirCanvas { display: block; width: 100%; height: 340px; }
+    .elixir-quote {
+      font-size: 18px; font-weight: 400; letter-spacing: 0.01em;
+      text-align: center; margin-top: 28px; line-height: 1.6;
+      font-style: italic; color: rgba(255,255,255,0.35);
+      animation: titleGlow 4s ease-in-out infinite;
+    }
+    .elixir-quote em {
+      font-style: normal; font-weight: 600;
+      background: linear-gradient(135deg, var(--cyan), var(--teal), var(--emerald));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    @keyframes titleGlow {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(var(--teal-rgb),0)); }
+      50% { filter: drop-shadow(0 0 16px rgba(var(--teal-rgb),0.3)); }
+    }
+    .belief-blocks { display: flex; flex-direction: column; gap: 48px; }
     .belief-block { position: relative; padding-left: 32px; }
     .belief-block::before {
       content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 2px;
@@ -630,22 +654,14 @@
 
     /* ─── CTA section ─── */
     .cta-section {
-      position: relative; padding: 100px 64px 120px; text-align: center;
-      max-width: 800px; margin: 0 auto;
+      position: relative; padding: 0 64px 120px; text-align: center;
+      max-width: 900px; margin: 0 auto;
     }
     .cta-section::before {
       content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       width: 500px; height: 500px; border-radius: 50%;
       background: radial-gradient(circle, rgba(var(--teal-rgb),0.06) 0%, transparent 70%);
       pointer-events: none;
-    }
-    .cta-headline {
-      font-size: 40px; font-weight: 800; color: white; letter-spacing: -0.02em;
-      line-height: 1.2; margin-bottom: 16px; position: relative;
-    }
-    .cta-sub {
-      font-family: 'Inter'; font-size: 17px; color: rgba(255,255,255,0.45);
-      line-height: 1.65; max-width: 520px; margin: 0 auto 36px;
     }
     .cta-buttons { display: flex; gap: 16px; justify-content: center; position: relative; }
     .cta-primary {
@@ -666,6 +682,316 @@
       font-family: 'Outfit', system-ui, sans-serif;
     }
     .cta-secondary:hover { border-color: rgba(255,255,255,0.25); color: white; transform: translateY(-2px); }
+
+    /* ─── Discovery panel ─── */
+    .discovery-start { margin-top: 8px; }
+    .discovery-panel {
+      max-width: 700px; margin: 0 auto; text-align: left;
+      background: rgba(255,255,255,0.03); backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.07); border-radius: 20px;
+      overflow: hidden; max-height: 0; opacity: 0;
+      transition: max-height 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease, padding 0.4s ease;
+      padding: 0 28px;
+    }
+    .discovery-panel.active {
+      max-height: 2000px; opacity: 1; padding: 28px;
+    }
+    .discovery-messages {
+      display: flex; flex-direction: column; gap: 16px;
+      min-height: 60px;
+    }
+    .discovery-msg {
+      max-width: 88%; padding: 14px 18px; border-radius: 14px;
+      font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.6;
+      animation: fadeUp 0.45s cubic-bezier(0.16,1,0.3,1) both;
+    }
+    .discovery-msg.agent {
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.06); align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .discovery-msg.user {
+      background: linear-gradient(135deg, rgba(var(--teal-rgb),0.15), rgba(var(--emerald-rgb),0.15));
+      color: rgba(255,255,255,0.9); align-self: flex-end;
+      border: 1px solid rgba(var(--teal-rgb),0.2);
+      border-bottom-right-radius: 4px;
+    }
+    .discovery-msg .reasoning {
+      font-size: 12px; color: var(--teal); margin-top: 8px;
+      padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.06);
+      font-style: italic;
+    }
+
+    /* Discovery chips */
+    .discovery-chips {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+    }
+    .discovery-chip {
+      padding: 8px 18px; border-radius: 100px; font-size: 13px; font-weight: 500;
+      background: rgba(var(--teal-rgb), 0.08); color: var(--teal);
+      border: 1px solid rgba(var(--teal-rgb), 0.15); cursor: pointer;
+      transition: all 0.25s ease; font-family: 'Inter', sans-serif;
+    }
+    .discovery-chip:hover {
+      background: rgba(var(--teal-rgb), 0.18); border-color: rgba(var(--teal-rgb), 0.35);
+      transform: translateY(-1px);
+    }
+    .discovery-chip.selected {
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      color: #0a0a12; border-color: transparent; font-weight: 600;
+    }
+
+    /* Discovery text input */
+    .discovery-text-input {
+      width: 100%; padding: 14px 18px; border-radius: 12px; font-size: 14px;
+      background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.1); outline: none;
+      font-family: 'Inter', sans-serif; margin-top: 12px;
+      transition: border-color 0.3s;
+    }
+    .discovery-text-input:focus { border-color: rgba(var(--teal-rgb), 0.4); }
+    .discovery-text-input::placeholder { color: rgba(255,255,255,0.25); }
+
+    .discovery-input-area {
+      margin-top: 16px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .discovery-submit {
+      align-self: flex-end; padding: 10px 24px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      color: #0a0a12; font-family: 'Outfit', sans-serif;
+      transition: all 0.25s ease; margin-top: 8px;
+    }
+    .discovery-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(var(--teal-rgb),0.25); }
+    .discovery-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Architecture proposal card */
+    .architecture-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 24px; margin-top: 12px;
+    }
+    .architecture-card h4 {
+      font-size: 15px; font-weight: 700; color: white; margin-bottom: 16px;
+      font-family: 'Outfit', sans-serif;
+    }
+    .agent-row {
+      display: flex; align-items: flex-start; gap: 12px; padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .agent-row:last-child { border-bottom: none; }
+    .agent-icon {
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .agent-icon.cyan { background: rgba(76,201,208,0.12); color: var(--cyan); }
+    .agent-icon.teal { background: rgba(59,191,166,0.12); color: var(--teal); }
+    .agent-icon.emerald { background: rgba(66,198,139,0.12); color: var(--emerald); }
+    .agent-row .agent-name {
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.9);
+      font-family: 'Outfit', sans-serif;
+    }
+    .agent-row .agent-desc {
+      font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .lifecycle-map {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+      margin-top: 16px; padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .lifecycle-step {
+      text-align: center; padding: 10px 6px; border-radius: 8px;
+      background: rgba(255,255,255,0.03);
+    }
+    .lifecycle-step .step-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 4px;
+    }
+    .lifecycle-step:nth-child(1) .step-label { color: var(--cyan); }
+    .lifecycle-step:nth-child(2) .step-label { color: var(--teal); }
+    .lifecycle-step:nth-child(3) .step-label { color: var(--emerald); }
+    .lifecycle-step:nth-child(4) .step-label { color: var(--cyan); }
+    .lifecycle-step .step-detail {
+      font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.4;
+      font-family: 'Inter', sans-serif;
+    }
+    .complexity-badge {
+      display: inline-block; margin-top: 12px; padding: 4px 12px;
+      border-radius: 100px; font-size: 11px; font-weight: 600;
+      background: rgba(var(--teal-rgb), 0.1); color: var(--teal);
+      border: 1px solid rgba(var(--teal-rgb), 0.2);
+    }
+
+    /* Lead capture form */
+    .discovery-form {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;
+    }
+    .discovery-form input {
+      padding: 12px 16px; border-radius: 10px; font-size: 13px;
+      background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.1); outline: none;
+      font-family: 'Inter', sans-serif; transition: border-color 0.3s;
+    }
+    .discovery-form input:focus { border-color: rgba(var(--teal-rgb), 0.4); }
+    .discovery-form input::placeholder { color: rgba(255,255,255,0.25); }
+    .discovery-form-submit {
+      grid-column: 1 / -1; padding: 14px 28px; border-radius: 12px;
+      font-size: 15px; font-weight: 700; border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--teal), var(--emerald));
+      color: #0a0a12; font-family: 'Outfit', sans-serif;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1); margin-top: 4px;
+    }
+    .discovery-form-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(var(--teal-rgb),0.3); }
+
+    /* Thinking animation */
+    .discovery-thinking {
+      display: flex; gap: 6px; padding: 14px 18px;
+    }
+    .discovery-thinking span {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--teal); opacity: 0.3;
+      animation: thinkBounce 1.2s infinite;
+    }
+    .discovery-thinking span:nth-child(2) { animation-delay: 0.15s; }
+    .discovery-thinking span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes thinkBounce {
+      0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-4px); }
+    }
+
+    /* Thank you state */
+    .discovery-thankyou {
+      text-align: center; padding: 24px 0;
+    }
+    .discovery-thankyou h3 {
+      font-size: 20px; font-weight: 700; color: white; margin-bottom: 8px;
+      font-family: 'Outfit', sans-serif;
+    }
+    .discovery-thankyou p {
+      font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.6;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ─── Insights teaser section ─── */
+    .insights-teaser {
+      position: relative; padding: 100px 64px 80px; background: #0a0a12;
+    }
+    .insights-teaser > * { max-width: 1280px; margin-left: auto; margin-right: auto; }
+    .insights-teaser::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 300px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(var(--teal-rgb),0.2), transparent);
+      pointer-events: none;
+    }
+    .insights-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+    }
+    .insight-card {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--dark-border);
+      border-radius: 16px; padding: 28px; cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    .insight-card:hover {
+      border-color: rgba(255,255,255,0.12); transform: translateY(-4px);
+      background: rgba(255,255,255,0.04);
+    }
+    .insight-category {
+      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .insight-category[data-cat="context"] { color: var(--cyan); background: rgba(var(--cyan-rgb),0.08); border: 1px solid rgba(var(--cyan-rgb),0.15); }
+    .insight-category[data-cat="security"] { color: var(--amber); background: rgba(var(--amber-rgb),0.08); border: 1px solid rgba(var(--amber-rgb),0.15); }
+    .insight-category[data-cat="assurance"] { color: var(--emerald); background: rgba(var(--emerald-rgb),0.08); border: 1px solid rgba(var(--emerald-rgb),0.15); }
+    .insight-category[data-cat="agent"] { color: var(--teal); background: rgba(var(--teal-rgb),0.08); border: 1px solid rgba(var(--teal-rgb),0.15); }
+    .insight-category[data-cat="industry"] { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+    .insight-title {
+      font-size: 19px; font-weight: 700; color: white; margin-bottom: 10px; line-height: 1.35;
+    }
+    .insight-excerpt {
+      font-family: 'Inter'; font-size: 14px; color: rgba(255,255,255,0.4); line-height: 1.65;
+    }
+    .insight-read {
+      display: inline-block; margin-top: 16px; font-size: 14px; font-weight: 600;
+      color: var(--teal); text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .insight-read span { transition: transform 0.2s; display: inline-block; }
+    .insight-card:hover .insight-read span { transform: translateX(4px); }
+    .insights-cta { text-align: center; margin-top: 48px; }
+    .btn-view-all {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px; border-radius: 14px; font-size: 15px; font-weight: 600;
+      background: transparent; color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.12); cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    .btn-view-all:hover { border-color: rgba(255,255,255,0.25); color: white; transform: translateY(-2px); }
+
+    /* ─── Footer ─── */
+    .site-footer {
+      background: #08080f; padding: 80px 64px 0; position: relative;
+    }
+    .site-footer::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(var(--teal-rgb),0.15), transparent);
+      pointer-events: none;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px;
+      max-width: 1280px; margin: 0 auto;
+    }
+    .footer-col-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 20px;
+    }
+    .footer-logo-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .footer-logo-wrap img { height: 32px; width: auto; }
+    .footer-logo-text { font-size: 14px; font-weight: 800; letter-spacing: 0.08em; color: rgba(255,255,255,0.9); }
+    .footer-logo-sub { font-size: 8px; font-weight: 500; letter-spacing: 0.18em; color: rgba(255,255,255,0.45); margin-top: -1px; }
+    .footer-company-tagline {
+      font-family: 'Inter'; font-size: 14px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-bottom: 12px;
+    }
+    .footer-company-location {
+      font-family: 'Inter'; font-size: 13px; color: rgba(255,255,255,0.3);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 4px; }
+    .footer-links a {
+      color: rgba(255,255,255,0.45); font-size: 14px; text-decoration: none;
+      line-height: 2.2; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: rgba(255,255,255,0.8); }
+    .footer-service-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; color: rgba(255,255,255,0.45); line-height: 2.2;
+    }
+    .footer-dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    }
+    .footer-socials {
+      display: flex; gap: 16px; margin-top: 16px;
+    }
+    .footer-socials a {
+      color: rgba(255,255,255,0.4); transition: color 0.2s;
+    }
+    .footer-socials a:hover { color: var(--teal); }
+    .footer-socials svg { width: 20px; height: 20px; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.06); padding: 24px 0;
+      margin-top: 48px; display: flex; justify-content: space-between; align-items: center;
+      max-width: 1280px; margin-left: auto; margin-right: auto;
+      font-family: 'Inter'; font-size: 12px; color: rgba(255,255,255,0.3);
+    }
+    .footer-legal-links { display: flex; gap: 24px; }
+    .footer-legal-links a { color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.2s; }
+    .footer-legal-links a:hover { color: rgba(255,255,255,0.6); }
 
     /* ─── Reduced motion ─── */
     @media (prefers-reduced-motion: reduce) {
@@ -689,6 +1015,12 @@
       .blueprint-content { grid-template-columns: 1fr; }
       .blueprint-viz { min-height: 280px; }
       .belief-blocks { gap: 32px; }
+      .purpose-layout { grid-template-columns: 1fr; gap: 48px; }
+      .elixir-visual { min-height: 280px; }
+      .elixir-quote { font-size: 15px; }
+      #elixirCanvas { height: 280px; }
+      .insights-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
     }
 
     /* ─── Mobile ─── */
@@ -722,7 +1054,16 @@
       .belief-block { padding: 24px; }
       .belief-headline { font-size: 22px; }
       .cta-section { padding: 60px 20px; }
-      .cta-headline { font-size: 26px; }
+      .discovery-panel { padding: 0 16px; }
+      .discovery-panel.active { padding: 20px 16px; }
+      .discovery-form { grid-template-columns: 1fr; }
+      .lifecycle-map { grid-template-columns: repeat(2, 1fr); }
+      .insights-teaser { padding: 60px 20px; }
+      .site-footer { padding: 48px 20px 0; }
+      .footer-grid { grid-template-columns: 1fr; text-align: center; }
+      .footer-company-location { justify-content: center; }
+      .footer-socials { justify-content: center; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
       .cta-buttons { flex-direction: column; align-items: center; }
       .cta-primary, .cta-secondary { width: 100%; max-width: 280px; }
     }
@@ -745,8 +1086,8 @@
     </div>
     <ul class="nav-links">
       <li><a href="#services">Services</a></li><li><a href="#blueprints">Blueprints</a></li>
-      <li><a href="#belief">Our Belief</a></li><li><a href="#">Insights</a></li>
-      <li><a href="#" class="nav-cta" onclick="document.getElementById('chatWidget').classList.add('open'); document.getElementById('chatInput').focus(); return false;">Talk to Agent</a></li>
+      <li><a href="#purpose">Purpose</a></li><li><a href="#insights">Insights</a></li>
+      <li><a href="#cta" class="nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'}); return false;">Challenge Us</a></li>
     </ul>
   </nav>
 
@@ -754,12 +1095,12 @@
   <section class="hero" id="heroSection">
     <canvas id="heroCanvas"></canvas>
     <div class="hero-content">
-      <div class="hero-badge"><span class="dot"></span> Agentic AI Native Organization</div>
-      <h1 class="hero-headline">We Don't Just Build<br><span class="gradient">AI Agents.</span><br>We Are Built By Them.</h1>
-      <p class="hero-sub">Digixr Technologies deploys autonomous AI agents that power operations, accelerate delivery, and transform your business from the inside out.</p>
+      <div class="hero-badge"><span class="dot"></span> Context → Build → Secure → Assure</div>
+      <h1 class="hero-headline">Your AI Deserves Better<br>Than <span class="gradient">Hope.</span></h1>
+      <p class="hero-sub">Most teams ship agents without context, security, or validation. We built a 4-pillar lifecycle — Context, Build, Secure, Assure — because the world needs AI it can rely on.</p>
       <div class="hero-ctas">
-        <button class="btn-primary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">Talk to Our Agent →</button>
-        <button class="btn-secondary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">Explore Services</button>
+        <button class="btn-primary" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'});">Challenge Us →</button>
+        <button class="btn-secondary" onclick="document.getElementById('blueprints').scrollIntoView({behavior:'smooth'})">See It In Action</button>
       </div>
     </div>
   </section>
@@ -1080,8 +1421,9 @@
        ═══════════════════════════════════════════════════════════════ -->
   <section class="blueprints-section" id="blueprints">
     <div class="section-header reveal">
-      <h2 class="section-title">Solution Blueprints</h2>
-      <p class="section-subtitle">Same methodology. Different domains. See how our 4-pillar lifecycle applies.</p>
+      <div class="section-label">Solution Blueprints</div>
+      <h2 class="section-title">See our methodology <span class="gradient">in action.</span></h2>
+      <p class="section-subtitle">Explore interactive demos that show how our 4-pillar lifecycle solves real-world challenges across domains.</p>
     </div>
 
     <!-- Tabs -->
@@ -1289,48 +1631,169 @@
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════
-       Section 3: Our Belief
+       Section 3: Purpose
        ═══════════════════════════════════════════════════════════════ -->
-  <section class="belief-section" id="belief">
+  <section class="belief-section" id="purpose">
     <div class="section-header reveal">
-      <h2 class="section-title">Our Belief</h2>
+      <div class="section-label">Our Purpose</div>
+      <h2 class="section-title">Digixr. <span class="gradient"><em>Digital Elixir.</em></span></h2>
+      <p class="section-subtitle">We believe AI should be a transformative, healing force — built right, and equitable to all.</p>
     </div>
 
-    <div class="belief-blocks">
-      <div class="belief-block reveal" data-belief="problem">
-        <span class="belief-label">The Problem We See</span>
-        <p class="belief-text">Most companies ship agents without context, security, or validation. They bolt AI onto existing systems, skip the hard questions, and hope for the best. The result: <span class="belief-highlight">agents that hallucinate, leak data, and erode trust.</span></p>
+    <div class="purpose-layout">
+      <!-- Left: Elixir Core Canvas -->
+      <div class="elixir-visual reveal">
+        <canvas id="elixirCanvas"></canvas>
+        <div class="elixir-quote">AI must be a transformative, healing force, <em>equitable to all.</em></div>
       </div>
 
-      <div class="belief-block reveal" data-belief="principle">
-        <span class="belief-label">What We Believe</span>
-        <p class="belief-text belief-headline">Context first. Secure by design. Assured at scale.</p>
-        <p class="belief-text">We built our 4-pillar lifecycle because cutting corners on AI isn't just bad engineering — it's irresponsible. Every agent we ship goes through Context, Build, Secure, and Assure. <span class="belief-highlight">No exceptions.</span></p>
-      </div>
+      <!-- Right: Vision / Mission / Intent -->
+      <div class="belief-blocks">
+        <div class="belief-block reveal" data-belief="vision">
+          <span class="belief-label">Our Vision</span>
+          <p class="belief-text belief-headline">A <span class="belief-highlight">Digital Elixir</span> for all.</p>
+          <p class="belief-text">We envision a world where AI solves humanity's open challenges — not just the profitable ones. From transforming how businesses operate in the new AI era to ensuring that <span class="belief-highlight">the impact of AI is equitable to all</span> — not exclusive to a privileged few.</p>
+        </div>
 
-      <div class="belief-block reveal" data-belief="aspiration">
-        <span class="belief-label">Our Aspiration</span>
-        <p class="belief-text">We believe <span class="belief-highlight">the impact of AI should be equitable to all.</span> From hospital scheduling systems to first-generation college navigators — we build AI that reaches those who need it most, not just those who can afford it most.</p>
+        <div class="belief-block reveal" data-belief="mission">
+          <span class="belief-label">Our Mission</span>
+          <p class="belief-text belief-headline">Build safe. Build trusted. Build right.</p>
+          <p class="belief-text">Every agent we ship goes through Context, Build, Secure, and Assure — because cutting corners on AI isn't just bad engineering, it's irresponsible. We build safe, trusted AI with <span class="belief-highlight">engineering excellence</span> at every stage.</p>
+        </div>
+
+        <div class="belief-block reveal" data-belief="intent">
+          <span class="belief-label">Our Intent</span>
+          <p class="belief-text belief-headline">Why we started Digixr.</p>
+          <p class="belief-text">AI as a healing, transformative force. We exist to solve humanity's open challenges and ensure the benefits of AI reach everyone. Wherever there's a problem worth solving, we want AI there — built right, and <span class="belief-highlight">accessible to all.</span></p>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════
-       Section 4: CTA
+       Section 4: Insights Teaser
        ═══════════════════════════════════════════════════════════════ -->
-  <section class="cta-section" id="cta">
-    <h2 class="cta-headline reveal">Tell our agent what you're building.</h2>
-    <p class="cta-sub reveal">It'll map your challenge to our lifecycle and suggest where to start.</p>
-    <div class="cta-buttons reveal">
-      <button class="cta-primary" onclick="document.getElementById('chatWidget').classList.add('open'); document.getElementById('chatInput').focus();">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        Talk to Our Agent
-      </button>
-      <button class="cta-secondary" onclick="document.getElementById('blueprints').scrollIntoView({behavior:'smooth'});">
-        Explore Blueprints
-      </button>
+  <section class="insights-teaser" id="insights">
+    <div class="section-header reveal">
+      <div class="section-label">Insights</div>
+      <h2 class="section-title">Perspectives on <span class="gradient">Agentic AI</span></h2>
+      <p class="section-subtitle">Practical perspectives on building, securing, and scaling AI agents in production — so you can build smarter.</p>
+    </div>
+
+    <div class="insights-grid">
+      <article class="insight-card reveal">
+        <span class="insight-category" data-cat="context">Context Engineering</span>
+        <h3 class="insight-title">Context Engineering Is the New Prompt Engineering</h3>
+        <p class="insight-excerpt">Prompt engineering was never enough. The real leverage is in orchestrating the layers of context that surround every agent decision — system, domain, task, and interaction.</p>
+        <a href="insights.html" class="insight-read">Read <span>→</span></a>
+      </article>
+
+      <article class="insight-card reveal">
+        <span class="insight-category" data-cat="security">Agent Security</span>
+        <h3 class="insight-title">The Agent Security Blind Spot Most Teams Ignore</h3>
+        <p class="insight-excerpt">One prompt injection can undo months of agent engineering. We break down why security must be a dedicated lifecycle stage, not an afterthought bolted on before launch.</p>
+        <a href="insights.html" class="insight-read">Read <span>→</span></a>
+      </article>
+
+      <article class="insight-card reveal">
+        <span class="insight-category" data-cat="assurance">AI Assurance</span>
+        <h3 class="insight-title">AI Equity Is Not Optional — It's an Engineering Decision</h3>
+        <p class="insight-excerpt">From hospital scheduling to college navigation, the agents we build encode our values. Bias detection and fairness validation aren't features — they're responsibilities.</p>
+        <a href="insights.html" class="insight-read">Read <span>→</span></a>
+      </article>
+    </div>
+
+    <div class="insights-cta reveal">
+      <a href="insights.html" class="btn-view-all">View All Insights →</a>
     </div>
   </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Section 5: CTA
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="cta-section" id="cta">
+    <div class="section-header reveal">
+      <div class="section-label">Challenge Us</div>
+      <h2 class="section-title">Tell our agent what you're trying to <span class="gradient">solve.</span></h2>
+      <p class="section-subtitle">Tell us what you're solving — our agent will map it to an architecture before you finish your coffee.</p>
+    </div>
+
+    <!-- Entry buttons (hidden once discovery starts) -->
+    <div class="discovery-start reveal" id="discoveryStart">
+      <div class="cta-buttons">
+        <button class="cta-primary" onclick="discoveryFlow.start()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Start Discovery
+        </button>
+        <button class="cta-secondary" onclick="document.getElementById('blueprints').scrollIntoView({behavior:'smooth'});">
+          Explore Blueprints
+        </button>
+      </div>
+    </div>
+
+    <!-- Discovery conversation panel -->
+    <div class="discovery-panel" id="discoveryPanel">
+      <div class="discovery-messages" id="discoveryMessages"></div>
+      <div class="discovery-input-area" id="discoveryInput"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Footer
+       ═══════════════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-logo-wrap">
+          <img src="../image/logo/logo-symbol-dark.png" alt="Digixr">
+          <div><div class="footer-logo-text">DIGIXR</div><div class="footer-logo-sub">TECHNOLOGIES</div></div>
+        </div>
+        <p class="footer-company-tagline">Empowering Businesses with AI Powered Innovation</p>
+        <p class="footer-company-location">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Coimbatore, India
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Navigate</div>
+        <ul class="footer-links">
+          <li><a href="#services">Services</a></li>
+          <li><a href="#blueprints">Blueprints</a></li>
+          <li><a href="#purpose">Purpose</a></li>
+          <li><a href="#insights">Insights</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Services</div>
+        <div class="footer-service-item"><span class="footer-dot" style="background:var(--cyan)"></span> Context Engineering</div>
+        <div class="footer-service-item"><span class="footer-dot" style="background:var(--teal)"></span> Agent Engineering</div>
+        <div class="footer-service-item"><span class="footer-dot" style="background:var(--amber)"></span> Agent Security</div>
+        <div class="footer-service-item"><span class="footer-dot" style="background:var(--emerald)"></span> AI Assurance</div>
+      </div>
+
+      <div class="footer-col">
+        <div class="footer-col-title">Connect</div>
+        <ul class="footer-links">
+          <li><a href="mailto:hello@digixr.com">hello@digixr.com</a></li>
+        </ul>
+        <div class="footer-socials">
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+          <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2022–2026 Digixr Technologies. All rights reserved.</span>
+      <div class="footer-legal-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
 
   <!-- ═══ Agent chat widget ═══ -->
   <div class="chat-widget" id="chatWidget">
@@ -2562,6 +3025,318 @@
     initBlueprintViz('healthcare');
     initBlueprintViz('education');
 
+    /* ═══════════════════════════════════════════════════════════════
+       RIPPLE FIELD — PURPOSE SECTION CANVAS
+       "A Digital Elixir for all" — ripples reach every seed equally
+       ═══════════════════════════════════════════════════════════════ */
+    (function initRippleField() {
+      const canvas = document.getElementById('elixirCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let W, H, cx, cy, maxRadius;
+      let animId = null;
+      let frameCount = 0;
+      let rippleId = 0;
+
+      const seedColors = [CYAN, TEAL, EMERALD];
+
+      // State
+      let seeds = [];
+      let ripples = [];
+      let ambient = [];
+      let originFlash = 0; // brightness spike when emitting ripple
+
+      function generateSeeds() {
+        seeds = [];
+        const count = Math.max(12, Math.min(20, Math.floor(W * H / 5000)));
+        const cols = 5, rows = 4;
+        const cellW = W / cols, cellH = H / rows;
+
+        // Fill grid cells, pick ~count cells randomly
+        const cells = [];
+        for (let r = 0; r < rows; r++)
+          for (let c = 0; c < cols; c++)
+            cells.push({ c, r });
+
+        // Shuffle and pick
+        for (let i = cells.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [cells[i], cells[j]] = [cells[j], cells[i]];
+        }
+        const used = cells.slice(0, count);
+
+        used.forEach((cell, i) => {
+          const jitterX = (Math.random() - 0.5) * cellW * 0.7;
+          const jitterY = (Math.random() - 0.5) * cellH * 0.7;
+          const x = (cell.c + 0.5) * cellW + jitterX;
+          const y = (cell.r + 0.5) * cellH + jitterY;
+          const distFromCenter = Math.sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
+          seeds.push({
+            x, y,
+            distFromCenter,
+            baseSize: 1.2 + Math.random() * 1.3,
+            baseAlpha: 0.06 + Math.random() * 0.04,
+            currentAlpha: 0,
+            currentSize: 0,
+            bloomTimer: 0,
+            color: seedColors[i % 3],
+            phase: Math.random() * Math.PI * 2,
+            lastRippleId: -1
+          });
+          seeds[seeds.length - 1].currentAlpha = seeds[seeds.length - 1].baseAlpha;
+          seeds[seeds.length - 1].currentSize = seeds[seeds.length - 1].baseSize;
+        });
+      }
+
+      function generateAmbient() {
+        ambient = [];
+        const count = Math.min(8, Math.floor(W * H / 12000));
+        for (let i = 0; i < count; i++) {
+          ambient.push({
+            x: Math.random() * W, y: Math.random() * H,
+            vx: (Math.random() - 0.5) * 0.1, vy: (Math.random() - 0.5) * 0.1,
+            size: 0.6 + Math.random() * 0.9, alpha: 0.03 + Math.random() * 0.04
+          });
+        }
+      }
+
+      function resize() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.parentElement.getBoundingClientRect();
+        W = rect.width; H = parseInt(getComputedStyle(canvas).height) || 340;
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        cx = W / 2; cy = H / 2;
+        maxRadius = Math.sqrt(W * W + H * H) / 2 + 20;
+        generateSeeds();
+        generateAmbient();
+      }
+
+      function spawnRipple() {
+        rippleId++;
+        ripples.push({ id: rippleId, radius: 0, alpha: 0.35 });
+        originFlash = 1.0;
+      }
+
+      function getRippleColor(radius) {
+        const pct = radius / maxRadius;
+        if (pct < 0.3) return lerpColor(CYAN, TEAL, pct / 0.3);
+        if (pct < 0.6) return lerpColor(TEAL, EMERALD, (pct - 0.3) / 0.3);
+        return EMERALD;
+      }
+
+      function drawAmbient() {
+        ambient.forEach(p => {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0 || p.x > W) p.vx *= -1;
+          if (p.y < 0 || p.y > H) p.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = rgba(TEAL, p.alpha);
+          ctx.fill();
+        });
+      }
+
+      function drawRipples(t) {
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const rip = ripples[i];
+          const speed = Math.max(0.3, 0.6 - rip.radius * 0.0005);
+          rip.radius += speed;
+          rip.alpha = 0.35 * (1 - rip.radius / maxRadius);
+
+          if (rip.radius > maxRadius) { ripples.splice(i, 1); continue; }
+          if (rip.alpha <= 0) { ripples.splice(i, 1); continue; }
+
+          const color = getRippleColor(rip.radius);
+          const pts = 48;
+
+          // Primary ring
+          ctx.beginPath();
+          for (let j = 0; j <= pts; j++) {
+            const theta = (j / pts) * Math.PI * 2;
+            const distort = 2.5 * Math.sin(theta * 4 + t * 0.5) + 1.5 * Math.sin(theta * 6 - t * 0.8);
+            const r = rip.radius + distort;
+            const px = cx + Math.cos(theta) * r;
+            const py = cy + Math.sin(theta) * r;
+            if (j === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.strokeStyle = rgba(color, rip.alpha);
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          // Secondary ring (depth)
+          ctx.beginPath();
+          for (let j = 0; j <= pts; j++) {
+            const theta = (j / pts) * Math.PI * 2;
+            const distort = 2 * Math.sin(theta * 4 + t * 0.5 + 0.3) + 1.2 * Math.sin(theta * 6 - t * 0.8 + 0.5);
+            const r = rip.radius + 4 + distort;
+            const px = cx + Math.cos(theta) * r;
+            const py = cy + Math.sin(theta) * r;
+            if (j === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.strokeStyle = rgba(color, rip.alpha * 0.3);
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+
+          // Check seed blooms
+          seeds.forEach(seed => {
+            if (seed.lastRippleId === rip.id) return;
+            if (Math.abs(rip.radius - seed.distFromCenter) < 6) {
+              seed.bloomTimer = 1.0;
+              seed.lastRippleId = rip.id;
+            }
+          });
+        }
+      }
+
+      function drawSeeds(t) {
+        const glowR = Math.min(22, W * 0.045);
+
+        seeds.forEach(seed => {
+          // Gentle bob
+          const bobX = Math.sin(t * 0.7 + seed.phase) * 1;
+          const bobY = Math.cos(t * 0.6 + seed.phase + 1) * 0.8;
+          const sx = seed.x + bobX;
+          const sy = seed.y + bobY;
+
+          // Bloom decay
+          if (seed.bloomTimer > 0) {
+            seed.bloomTimer = Math.max(0, seed.bloomTimer - 0.01);
+          }
+
+          // EQUITY: same peak intensity for all seeds, near or far
+          const bt = seed.bloomTimer;
+          const bloomAlpha = seed.baseAlpha + (0.65 - seed.baseAlpha) * bt;
+          const bloomSize = seed.baseSize + 5 * bt;
+
+          // Color transformation: shift toward white during bloom
+          const bloomColor = bt > 0 ? lerpColor(seed.color, WHITE, bt * 0.5) : seed.color;
+
+          // Outer glow halo (visible during bloom)
+          if (bt > 0.15) {
+            const g1 = ctx.createRadialGradient(sx, sy, 0, sx, sy, glowR * 1.5);
+            g1.addColorStop(0, rgba(seed.color, 0.08 * bt));
+            g1.addColorStop(1, 'transparent');
+            ctx.fillStyle = g1;
+            ctx.beginPath();
+            ctx.arc(sx, sy, glowR * 1.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Inner glow burst (first 40% of bloom — brighter, tighter)
+          if (bt > 0.6) {
+            const burstIntensity = (bt - 0.6) / 0.4;
+            const g2 = ctx.createRadialGradient(sx, sy, 0, sx, sy, glowR);
+            g2.addColorStop(0, rgba(WHITE, 0.2 * burstIntensity));
+            g2.addColorStop(0.3, rgba(bloomColor, 0.25 * burstIntensity));
+            g2.addColorStop(1, 'transparent');
+            ctx.fillStyle = g2;
+            ctx.beginPath();
+            ctx.arc(sx, sy, glowR, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Seed dot — color transforms during bloom
+          ctx.beginPath();
+          ctx.arc(sx, sy, bloomSize, 0, Math.PI * 2);
+          ctx.fillStyle = rgba(bloomColor, bloomAlpha);
+          ctx.fill();
+        });
+      }
+
+      function drawOrigin(t) {
+        const breathe = 1 + 0.15 * Math.sin(t * 1.2);
+        const baseR = 6 * breathe;
+
+        // Flash decay
+        if (originFlash > 0) originFlash = Math.max(0, originFlash - 0.03);
+        const flashBoost = originFlash * 0.2;
+
+        // Outer atmospheric glow
+        const g1 = ctx.createRadialGradient(cx, cy, 0, cx, cy, 80);
+        g1.addColorStop(0, rgba(TEAL, 0.04 + flashBoost * 0.3));
+        g1.addColorStop(1, 'transparent');
+        ctx.fillStyle = g1;
+        ctx.beginPath(); ctx.arc(cx, cy, 80, 0, Math.PI * 2); ctx.fill();
+
+        // Mid glow
+        const g2 = ctx.createRadialGradient(cx, cy, 0, cx, cy, 30);
+        g2.addColorStop(0, rgba(CYAN, 0.12 + flashBoost));
+        g2.addColorStop(1, 'transparent');
+        ctx.fillStyle = g2;
+        ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI * 2); ctx.fill();
+
+        // Core
+        const g3 = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseR);
+        g3.addColorStop(0, rgba(WHITE, 0.3 + flashBoost));
+        g3.addColorStop(0.5, rgba(CYAN, 0.1 + flashBoost * 0.5));
+        g3.addColorStop(1, 'transparent');
+        ctx.fillStyle = g3;
+        ctx.beginPath(); ctx.arc(cx, cy, baseR, 0, Math.PI * 2); ctx.fill();
+      }
+
+      function drawBrandText(t) {
+        const textY = cy + 22;
+        const pulse = 0.18 + 0.07 * Math.sin(t * 0.8);
+        const fontSize = Math.max(11, Math.min(14, W * 0.028));
+
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+
+        // Single line: "Digixr. Digital Elixir"
+        ctx.font = `800 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
+        const brandText = 'Digixr.';
+        const brandWidth = ctx.measureText(brandText).width;
+
+        ctx.font = `italic 400 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
+        const meaningText = ' Digital Elixir';
+        const meaningWidth = ctx.measureText(meaningText).width;
+
+        const totalWidth = brandWidth + meaningWidth;
+        const startX = cx - totalWidth / 2;
+
+        // Brand name — bold, brighter
+        ctx.font = `800 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
+        ctx.fillStyle = rgba(CYAN, pulse + 0.15);
+        ctx.fillText(brandText, startX + brandWidth / 2, textY);
+
+        // Meaning — italic, softer
+        ctx.font = `italic 400 ${fontSize}px "Plus Jakarta Sans", sans-serif`;
+        ctx.fillStyle = rgba(TEAL, pulse + 0.08);
+        ctx.fillText(meaningText, startX + brandWidth + meaningWidth / 2, textY);
+
+        ctx.restore();
+      }
+
+      function animate(time) {
+        const t = time * 0.001;
+        ctx.clearRect(0, 0, W, H);
+
+        drawAmbient();
+        drawRipples(t);
+        drawSeeds(t);
+        drawOrigin(t);
+        drawBrandText(t);
+
+        // Spawn ripple every ~3 seconds
+        frameCount++;
+        if (frameCount % 180 === 0) spawnRipple();
+
+        animId = requestAnimationFrame(animate);
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Start with one ripple already in progress
+      spawnRipple();
+      animId = requestAnimationFrame(animate);
+    })();
+
 
     /* ═══════════════════════════════════════════════════════════════
        SCROLL INTERACTIONS
@@ -2712,6 +3487,323 @@
     function toggleChat() {
       document.getElementById('chatPanel').classList.toggle('open');
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       DISCOVERY FLOW — Guided Solution Discovery Agent
+       ═══════════════════════════════════════════════════════════════ */
+    const architectureTemplates = {
+      healthcare: {
+        challenges: ['Automate patient scheduling', 'Clinical decision support', 'Claims processing'],
+        agents: [
+          { name: 'Intake Agent', desc: 'Collects patient/claim data, validates context, and routes to the right workflow.', icon: '01', color: 'cyan' },
+          { name: 'Decision Agent', desc: 'Applies clinical/business rules, flags exceptions, and recommends actions.', icon: '02', color: 'teal' },
+          { name: 'Action Agent', desc: 'Executes scheduling/routing, triggers notifications, and logs outcomes.', icon: '03', color: 'emerald' },
+        ],
+        lifecycle: {
+          context: 'Patient data + EHR integration',
+          build: 'Multi-agent orchestration',
+          secure: 'HIPAA compliance, PHI handling',
+          assure: 'Accuracy evaluation, bias detection',
+        },
+        complexity: 'Moderate',
+      },
+      education: {
+        challenges: ['Student enrollment automation', 'Personalized learning paths', 'Administrative workflows'],
+        agents: [
+          { name: 'Navigator Agent', desc: 'Guides students through enrollment, course selection, and financial aid.', icon: '01', color: 'cyan' },
+          { name: 'Analytics Agent', desc: 'Tracks progress, identifies at-risk students, and surfaces insights.', icon: '02', color: 'teal' },
+          { name: 'Outreach Agent', desc: 'Automated, personalized communications across channels.', icon: '03', color: 'emerald' },
+        ],
+        lifecycle: {
+          context: 'Student records + curriculum data',
+          build: 'Conversational agents',
+          secure: 'FERPA compliance, data privacy',
+          assure: 'Outcome tracking, fairness audits',
+        },
+        complexity: 'Moderate',
+      },
+      finance: {
+        challenges: ['Fraud detection & prevention', 'Regulatory compliance automation', 'Customer onboarding'],
+        agents: [
+          { name: 'Monitor Agent', desc: 'Real-time transaction analysis, anomaly detection, and risk scoring.', icon: '01', color: 'cyan' },
+          { name: 'Compliance Agent', desc: 'Regulatory rule mapping, audit trail generation, and policy enforcement.', icon: '02', color: 'teal' },
+          { name: 'Service Agent', desc: 'Customer-facing interactions, document processing, and KYC workflows.', icon: '03', color: 'emerald' },
+        ],
+        lifecycle: {
+          context: 'Transaction data + regulatory frameworks',
+          build: 'Event-driven agent pipelines',
+          secure: 'PCI-DSS, SOX compliance, encryption',
+          assure: 'False-positive analysis, audit readiness',
+        },
+        complexity: 'Complex',
+      },
+      manufacturing: {
+        challenges: ['Quality inspection automation', 'Supply chain optimization', 'Predictive maintenance'],
+        agents: [
+          { name: 'Inspection Agent', desc: 'Visual and sensor-based quality checks with defect classification.', icon: '01', color: 'cyan' },
+          { name: 'Supply Chain Agent', desc: 'Demand forecasting, inventory optimization, and vendor coordination.', icon: '02', color: 'teal' },
+          { name: 'Maintenance Agent', desc: 'Equipment monitoring, failure prediction, and work order scheduling.', icon: '03', color: 'emerald' },
+        ],
+        lifecycle: {
+          context: 'IoT sensor data + ERP integration',
+          build: 'Edge + cloud agent coordination',
+          secure: 'OT network security, data integrity',
+          assure: 'Prediction accuracy, downtime reduction',
+        },
+        complexity: 'Complex',
+      },
+      retail: {
+        challenges: ['Personalized customer experiences', 'Inventory management', 'Customer support automation'],
+        agents: [
+          { name: 'Personalization Agent', desc: 'Real-time product recommendations and dynamic content.', icon: '01', color: 'cyan' },
+          { name: 'Inventory Agent', desc: 'Stock level optimization, reorder triggers, and demand planning.', icon: '02', color: 'teal' },
+          { name: 'Support Agent', desc: 'Multi-channel customer service with order tracking and returns.', icon: '03', color: 'emerald' },
+        ],
+        lifecycle: {
+          context: 'Customer behavior + catalog data',
+          build: 'Omni-channel agent mesh',
+          secure: 'PII protection, consent management',
+          assure: 'Conversion tracking, satisfaction metrics',
+        },
+        complexity: 'Moderate',
+      },
+      default: {
+        challenges: ['Process automation', 'Customer support', 'Data analysis & insights'],
+        agents: [
+          { name: 'Orchestrator Agent', desc: 'Coordinates workflow, manages task routing, and oversees execution.', icon: '01', color: 'cyan' },
+          { name: 'Specialist Agent', desc: 'Domain-specific processing, decision-making, and content generation.', icon: '02', color: 'teal' },
+          { name: 'Integration Agent', desc: 'Connects to existing systems, syncs data, and manages APIs.', icon: '03', color: 'emerald' },
+        ],
+        lifecycle: {
+          context: 'Domain data + system integration',
+          build: 'Agent development + testing',
+          secure: 'Access control, data governance',
+          assure: 'Performance monitoring, evaluation',
+        },
+        complexity: 'Varies',
+      },
+    };
+
+    const discoveryFlow = {
+      panel: null,
+      messages: null,
+      inputArea: null,
+      startBtn: null,
+      data: { industry: null, challenge: null },
+
+      init() {
+        this.panel = document.getElementById('discoveryPanel');
+        this.messages = document.getElementById('discoveryMessages');
+        this.inputArea = document.getElementById('discoveryInput');
+        this.startBtn = document.getElementById('discoveryStart');
+      },
+
+      addMessage(html, type, reasoning) {
+        const msg = document.createElement('div');
+        msg.className = `discovery-msg ${type}`;
+        let content = html;
+        if (reasoning) {
+          content += `<div class="reasoning">${reasoning}</div>`;
+        }
+        msg.innerHTML = content;
+        this.messages.appendChild(msg);
+        this.panel.scrollTop = this.panel.scrollHeight;
+        return msg;
+      },
+
+      addThinking() {
+        const msg = document.createElement('div');
+        msg.className = 'discovery-msg agent';
+        msg.innerHTML = '<div class="discovery-thinking"><span></span><span></span><span></span></div>';
+        this.messages.appendChild(msg);
+        this.panel.scrollTop = this.panel.scrollHeight;
+        return msg;
+      },
+
+      start() {
+        this.init();
+        this.startBtn.style.display = 'none';
+        this.panel.classList.add('active');
+
+        setTimeout(() => {
+          this.addMessage(
+            "Hi! I'm the Digixr discovery agent. Let's map your challenge to an agentic architecture.<br><br><b>What industry are you in?</b>",
+            'agent',
+            'Initiating: Solution Discovery → Step 1: Industry context'
+          );
+          this.showIndustryChips();
+        }, 300);
+      },
+
+      showIndustryChips() {
+        const industries = ['Healthcare', 'Education', 'Finance', 'Manufacturing', 'Retail', 'Other'];
+        this.inputArea.innerHTML = `
+          <div class="discovery-chips">
+            ${industries.map(i => `<button class="discovery-chip" onclick="discoveryFlow.selectIndustry('${i}')">${i}</button>`).join('')}
+          </div>
+        `;
+      },
+
+      selectIndustry(industry) {
+        this.data.industry = industry.toLowerCase();
+        // Highlight selected chip
+        this.inputArea.querySelectorAll('.discovery-chip').forEach(c => {
+          c.classList.toggle('selected', c.textContent === industry);
+          c.style.pointerEvents = 'none';
+        });
+
+        setTimeout(() => {
+          this.addMessage(industry, 'user');
+          this.inputArea.innerHTML = '';
+
+          setTimeout(() => {
+            const template = architectureTemplates[this.data.industry] || architectureTemplates.default;
+            this.addMessage(
+              "Great choice. <b>What's the biggest challenge you want AI to solve?</b><br><br>Pick one below or describe your own:",
+              'agent',
+              `Loading: ${industry} domain context → challenge templates`
+            );
+            this.showChallengeInput(template.challenges);
+          }, 400);
+        }, 300);
+      },
+
+      showChallengeInput(suggestions) {
+        this.inputArea.innerHTML = `
+          <div class="discovery-chips">
+            ${suggestions.map(s => `<button class="discovery-chip" onclick="discoveryFlow.selectChallenge('${s}')">${s}</button>`).join('')}
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input class="discovery-text-input" id="challengeInput" placeholder="Or describe your challenge..." onkeydown="if(event.key==='Enter' && this.value.trim()) discoveryFlow.submitChallenge(this.value.trim())">
+            <button class="discovery-submit" onclick="const v=document.getElementById('challengeInput').value.trim(); if(v) discoveryFlow.submitChallenge(v);">Send</button>
+          </div>
+        `;
+      },
+
+      selectChallenge(challenge) {
+        this.submitChallenge(challenge);
+      },
+
+      submitChallenge(challenge) {
+        this.data.challenge = challenge;
+        // Disable inputs
+        this.inputArea.querySelectorAll('.discovery-chip').forEach(c => c.style.pointerEvents = 'none');
+        const input = this.inputArea.querySelector('.discovery-text-input');
+        if (input) input.disabled = true;
+        const btn = this.inputArea.querySelector('.discovery-submit');
+        if (btn) btn.disabled = true;
+
+        this.addMessage(challenge, 'user');
+
+        setTimeout(() => {
+          this.inputArea.innerHTML = '';
+          const thinking = this.addThinking();
+
+          setTimeout(() => {
+            thinking.remove();
+            this.showProposal();
+          }, 1800);
+        }, 300);
+      },
+
+      showProposal() {
+        const template = architectureTemplates[this.data.industry] || architectureTemplates.default;
+
+        const agentsHtml = template.agents.map(a => `
+          <div class="agent-row">
+            <div class="agent-icon ${a.color}">${a.icon}</div>
+            <div>
+              <div class="agent-name">${a.name}</div>
+              <div class="agent-desc">${a.desc}</div>
+            </div>
+          </div>
+        `).join('');
+
+        const lifecycleHtml = `
+          <div class="lifecycle-map">
+            <div class="lifecycle-step">
+              <div class="step-label">Context</div>
+              <div class="step-detail">${template.lifecycle.context}</div>
+            </div>
+            <div class="lifecycle-step">
+              <div class="step-label">Build</div>
+              <div class="step-detail">${template.lifecycle.build}</div>
+            </div>
+            <div class="lifecycle-step">
+              <div class="step-label">Secure</div>
+              <div class="step-detail">${template.lifecycle.secure}</div>
+            </div>
+            <div class="lifecycle-step">
+              <div class="step-label">Assure</div>
+              <div class="step-detail">${template.lifecycle.assure}</div>
+            </div>
+          </div>
+        `;
+
+        this.addMessage(
+          `Here's how we'd architect an agentic solution for <b>${this.data.challenge.toLowerCase()}</b>:
+          <div class="architecture-card">
+            <h4>Proposed Agent Architecture</h4>
+            ${agentsHtml}
+            ${lifecycleHtml}
+            <span class="complexity-badge">Complexity: ${template.complexity}</span>
+          </div>`,
+          'agent',
+          `Generated: Architecture proposal → ${this.data.industry} domain × "${this.data.challenge}" → 4-pillar lifecycle mapping`
+        );
+
+        setTimeout(() => {
+          this.addMessage(
+            "Want us to build a detailed proposal for your use case? <b>Let us know how to reach you.</b>",
+            'agent'
+          );
+          this.showLeadForm();
+        }, 600);
+      },
+
+      showLeadForm() {
+        this.inputArea.innerHTML = `
+          <form class="discovery-form" onsubmit="event.preventDefault(); discoveryFlow.submitLead(this);">
+            <input type="text" name="name" placeholder="Your name" required>
+            <input type="email" name="email" placeholder="Work email" required>
+            <input type="text" name="company" placeholder="Company" required>
+            <input type="text" name="role" placeholder="Your role / designation" required>
+            <button type="submit" class="discovery-form-submit">
+              Send My Proposal &rarr;
+            </button>
+          </form>
+        `;
+      },
+
+      submitLead(form) {
+        const formData = new FormData(form);
+        const lead = {
+          name: formData.get('name'),
+          email: formData.get('email'),
+          company: formData.get('company'),
+          role: formData.get('role'),
+          industry: this.data.industry,
+          challenge: this.data.challenge,
+          timestamp: new Date().toISOString(),
+        };
+
+        // In production, this would POST to an API
+        console.log('Lead captured:', lead);
+
+        this.inputArea.innerHTML = '';
+        this.addMessage(`${lead.name} — ${lead.role} at ${lead.company}`, 'user');
+
+        setTimeout(() => {
+          this.messages.innerHTML += `
+            <div class="discovery-thankyou">
+              <h3>Thank you, ${lead.name.split(' ')[0]}!</h3>
+              <p>We'll put together a detailed proposal for <b>${this.data.challenge.toLowerCase()}</b> and reach out at <b>${lead.email}</b> within 24 hours.</p>
+            </div>
+          `;
+          this.panel.scrollTop = this.panel.scrollHeight;
+        }, 400);
+      },
+    };
 
     // Demo: quick action responses
     document.querySelectorAll('.quick-action').forEach(btn => {
