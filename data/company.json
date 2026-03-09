@@ -240,11 +240,12 @@
       "tags": ["ERP", "Supply Chain", "ERPNext", "Manufacturing"]
     },
     {
-      "id": "capsmart",
-      "name": "CAPSmart",
-      "logo": "image/clients/capsmart.png",
-      "description": "Managed the development of entire backend for the CAPSmart SaaS platform. Built with proper Microservices architecture and design paradigms, leveraging Java Spring Boot and MongoDB Technologies.",
-      "tags": ["SaaS", "Microservices", "Java Spring Boot", "MongoDB"]
+      "id": "hapicare",
+      "name": "Hapicare",
+      "logo": "image/clients/hapicare.png",
+      "url": "https://hapicare.ca/loginPage",
+      "description": "",
+      "tags": []
     },
     {
       "id": "iba",
@@ -253,6 +254,13 @@
       "logo": "image/clients/iba.png",
       "description": "Setting up the eCommerce platform for Ibacart using the Shopify engine. Custom development of key policies as per their business needs. Integration with 3rd party logistics and payment providers.",
       "tags": ["eCommerce", "Shopify", "Logistics", "Payments"]
+    },
+    {
+      "id": "seedflex",
+      "name": "SeedFlex",
+      "logo": "image/clients/seedflex.png",
+      "description": "",
+      "tags": []
     }
   ],
 

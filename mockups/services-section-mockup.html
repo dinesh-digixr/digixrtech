@@ -993,6 +993,101 @@
     .footer-legal-links a { color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.2s; }
     .footer-legal-links a:hover { color: rgba(255,255,255,0.6); }
 
+    /* ─── Clients Section ─── */
+    .clients-section {
+      position: relative;
+      padding: 100px 64px 80px;
+      background: var(--dark-bg);
+      text-align: center;
+    }
+    .clients-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(var(--teal-rgb),0.2), transparent);
+      pointer-events: none;
+    }
+    .clients-logo-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .client-logo-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 200px;
+      height: 112px;
+      padding: 18px 24px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      overflow: hidden;
+    }
+    .client-industry {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(var(--teal-rgb), 0.5);
+      transition: color 0.4s ease;
+    }
+    .client-logo-card:hover .client-industry {
+      color: rgba(var(--teal-rgb), 0.8);
+    }
+    .client-logo-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, transparent 40%, rgba(var(--cyan-rgb),0.3), rgba(var(--emerald-rgb),0.3));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .client-logo-card:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: transparent;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(var(--teal-rgb),0.15), 0 0 0 1px rgba(var(--teal-rgb),0.1);
+    }
+    .client-logo-card:hover::before {
+      opacity: 1;
+    }
+    .client-logo-card img {
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      mix-blend-mode: screen;
+      opacity: 0.8;
+      transition: all 0.4s ease;
+    }
+    .client-logo-card:hover img {
+      filter: brightness(1) saturate(1.2);
+      mix-blend-mode: screen;
+      opacity: 1;
+    }
+
     /* ─── Reduced motion ─── */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -1020,6 +1115,8 @@
       .elixir-quote { font-size: 15px; }
       #elixirCanvas { height: 280px; }
       .insights-grid { grid-template-columns: 1fr; }
+      .clients-logo-grid { gap: 32px; }
+      .client-logo-card { width: 160px; height: 90px; padding: 12px 20px 10px; }
       .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
     }
 
@@ -1059,6 +1156,13 @@
       .discovery-form { grid-template-columns: 1fr; }
       .lifecycle-map { grid-template-columns: repeat(2, 1fr); }
       .insights-teaser { padding: 60px 20px; }
+      .clients-section { padding: 60px 20px; }
+      .clients-logo-grid { gap: 20px; }
+      .client-logo-card { width: 140px; height: 84px; padding: 10px 16px 8px; }
+      .client-logo-card img {
+        filter: brightness(1) saturate(1.2);
+        opacity: 0.9;
+      }
       .site-footer { padding: 48px 20px 0; }
       .footer-grid { grid-template-columns: 1fr; text-align: center; }
       .footer-company-location { justify-content: center; }
@@ -1086,7 +1190,7 @@
     </div>
     <ul class="nav-links">
       <li><a href="#services">Services</a></li><li><a href="#blueprints">Blueprints</a></li>
-      <li><a href="#purpose">Purpose</a></li><li><a href="#insights">Insights</a></li>
+      <li><a href="#purpose">Purpose</a></li><li><a href="#insights">Insights</a></li><li><a href="#clients">Clients</a></li>
       <li><a href="#cta" class="nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'}); return false;">Challenge Us</a></li>
     </ul>
   </nav>
@@ -1709,7 +1813,40 @@
   </section>
 
   <!-- ═══════════════════════════════════════════════════════════════
-       Section 5: CTA
+       Section 5: Clients
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="clients-section" id="clients">
+    <div class="section-header reveal">
+      <div class="section-label">Trusted By</div>
+      <h2 class="section-title">Companies that <span class="gradient">trust us.</span></h2>
+      <p class="section-subtitle">From healthcare to fintech — delivering AI-powered solutions across industries.</p>
+    </div>
+    <div class="clients-logo-grid reveal">
+      <a href="https://timesmart.ai/" target="_blank" rel="noopener noreferrer" class="client-logo-card">
+        <img src="../image/clients/timesmart.png" alt="TimeSmart.AI" style="transform: scale(2.2);" />
+        <span class="client-industry">Healthcare SaaS</span>
+      </a>
+      <a href="https://smoor.in/" target="_blank" rel="noopener noreferrer" class="client-logo-card">
+        <img src="../image/clients/smoor.png" alt="SMOOR" />
+        <span class="client-industry">Manufacturing</span>
+      </a>
+      <a href="https://www.hapicare.com/" target="_blank" rel="noopener noreferrer" class="client-logo-card">
+        <img src="../image/clients/hapicare.png" alt="Hapicare" />
+        <span class="client-industry">Healthcare SaaS</span>
+      </a>
+      <a href="https://ibacart.com/" target="_blank" rel="noopener noreferrer" class="client-logo-card">
+        <img src="../image/clients/iba.png" alt="IBA Collections" />
+        <span class="client-industry">Retail</span>
+      </a>
+      <a href="https://www.seedflex.com/" target="_blank" rel="noopener noreferrer" class="client-logo-card">
+        <img src="../image/clients/seedflex.png" alt="SeedFlex" />
+        <span class="client-industry">FinTech</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Section 6: CTA
        ═══════════════════════════════════════════════════════════════ -->
   <section class="cta-section" id="cta">
     <div class="section-header reveal">
