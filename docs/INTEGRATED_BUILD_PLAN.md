@@ -10,8 +10,8 @@ This plan merges `PLATFORM_BUILD_PLAN.md` (what to build) with `CLAUDE_CODE_LEAR
 - [x] Step 0: CLAUDE.md, Next.js 15 scaffold, folder structure, dependencies
 - [x] Step 1: Layout shell — Navbar, Footer, globals.css, fonts, `.claude/rules/components.md`
 - [x] Step 2: Hero Section + Agent Network Canvas (desktop verified, mobile responsiveness deferred to Step 8)
-- [ ] Step 3: Services Section
-- [ ] Step 4: Clients + Blueprints Section
+- [x] Step 3: Services Section (lifecycle bar, service panels, offerings accordion, 4 canvas viz, river dividers)
+- [x] Step 4: Clients + Blueprints Section (logo grid, tabbed blueprints, canvas viz, pipeline steps)
 - [ ] Step 5: Purpose Section + Ripple Field Canvas
 - [ ] Step 6: Insights Teaser + Discovery Section
 - [ ] Step 7: Chat Widget
@@ -82,7 +82,7 @@ This plan merges `PLATFORM_BUILD_PLAN.md` (what to build) with `CLAUDE_CODE_LEAR
 
 ## Step 3: Services Section
 
-**Status:** Not started
+**Status:** Complete
 **Sessions:** ~1-2
 
 **Build:**
@@ -103,12 +103,13 @@ This plan merges `PLATFORM_BUILD_PLAN.md` (what to build) with `CLAUDE_CODE_LEAR
 
 ## Step 4: Clients + Blueprints Section
 
-**Status:** Not started
+**Status:** Complete
 **Sessions:** ~1
 
 **Build:**
 - `src/components/sections/ClientsSection.tsx` — client logos row
 - `src/components/sections/BlueprintsSection.tsx` — tabs, blueprint cards, demo links
+- `src/lib/canvas/viz-blueprint.ts` — blueprint network visualization canvas
 
 **Claude Code skills:**
 - `/rewind` — practice recovery if something breaks

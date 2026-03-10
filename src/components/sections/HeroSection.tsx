@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { initAgentNetwork } from '@/lib/canvas/agent-network';
+import { initScrollTransition } from '@/lib/scroll-transition';
 
 export function HeroSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -9,8 +10,12 @@ export function HeroSection() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const cleanup = initAgentNetwork(canvas);
-    return cleanup;
+    const cleanupCanvas = initAgentNetwork(canvas);
+    const cleanupScroll = initScrollTransition();
+    return () => {
+      cleanupCanvas();
+      cleanupScroll();
+    };
   }, []);
 
   return (
