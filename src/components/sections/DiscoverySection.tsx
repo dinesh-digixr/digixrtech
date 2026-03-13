@@ -60,7 +60,12 @@ export function DiscoverySection() {
   }, [messages, step]);
 
   const safeTimeout = useCallback((fn: () => void, ms: number) => {
-    const id = setTimeout(fn, ms);
+    const id = setTimeout(() => {
+      fn();
+      const arr = timeoutIdsRef.current;
+      const idx = arr.indexOf(id);
+      if (idx !== -1) arr.splice(idx, 1);
+    }, ms);
     timeoutIdsRef.current.push(id);
     return id;
   }, []);

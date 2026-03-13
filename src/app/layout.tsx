@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter, Outfit } from "next/font/google";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { ChatWidget } from "@/components/ui/ChatWidget";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -44,6 +45,7 @@ export default function RootLayout({
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <ChatWidget />
       </body>
     </html>
   );
