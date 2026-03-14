@@ -27,7 +27,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Digixr — Agentic AI, Built Right and Equitable to All",
+  title: "Digixr — Agentic AI — Engineered Right, Equitable to All",
   description:
     "We engineer production-grade AI agents through four lifecycle stages — Context, Build, Secure, Assure. Transformative AI with security and fairness built in, not bolted on.",
   metadataBase: new URL("https://digixr.com"),
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Digixr — Agentic AI, Built Right and Equitable to All",
+    title: "Digixr — Agentic AI — Engineered Right, Equitable to All",
     description:
       "We engineer production-grade AI agents through four lifecycle stages — Context, Build, Secure, Assure. Transformative AI with security and fairness built in, not bolted on.",
     url: "https://digixr.com",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
         url: "/images/og-home.png",
         width: 1200,
         height: 630,
-        alt: "Digixr Technologies — Agentic AI, Built Right and Equitable to All",
+        alt: "Digixr Technologies — Agentic AI, Engineered Right, Equitable to All",
       },
     ],
     locale: "en_US",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Digixr — Agentic AI, Built Right and Equitable to All",
+    title: "Digixr — Agentic AI — Engineered Right, Equitable to All",
     description:
       "Production-grade AI agents — Context, Build, Secure, Assure. Security and fairness built in, not bolted on.",
     images: ["/images/og-home.png"],
